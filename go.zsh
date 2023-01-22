@@ -1,7 +1,5 @@
 list-go-archives() {
     local current=$(go version | cut -d" " -f 3) 2>/dev/null
-    #echo ${current}
-    #echo "======="
 
     for a in $(curl -s https://go.dev/dl/ | pup 'a[class="download"] text{}' | grep "linux-amd64" | grep "1.19"); do
         if [[ "${a}" =~ "${current}" ]]; then
