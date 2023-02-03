@@ -1,3 +1,16 @@
+# ================
+# Common Settings
+# ================
+
+export FZF_DEFAULT_OPTS='--height 30% --layout=reverse --border'
+
+alias vim='nvim'
+
+
+# ==========
+# Utilities
+# ==========
+
 # cf. https://zenn.dev/kaityo256/articles/open_command_on_wsl
 function open() {
     if [ $# != 1 ]; then
@@ -13,4 +26,6 @@ function open() {
     fi
 }
 
-export FZF_DEFAULT_OPTS='--height 30% --layout=reverse --border'
+# cf. https://zenn.dev/kondounagi/scraps/184c884b5804a4
+alias pbcopy='clip.exe'
+alias pbpaste='powershell.exe -Command Get-Clipboard'
