@@ -29,3 +29,11 @@ function open() {
 # cf. https://zenn.dev/kondounagi/scraps/184c884b5804a4
 alias pbcopy='clip.exe'
 alias pbpaste='powershell.exe -Command Get-Clipboard'
+
+# history fuzzy finder
+function search-history() {
+    BUFFER=$(history -n -r 1 | fzf --exact --no-sort --prompt="History > ")
+    CURSOR=$#BUFFER
+}
+zle -N search-history
+bindkey '^h' search-history
