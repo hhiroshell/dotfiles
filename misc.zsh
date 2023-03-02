@@ -30,6 +30,12 @@ function open() {
 alias pbcopy='clip.exe'
 alias pbpaste='powershell.exe -Command Get-Clipboard'
 
+# today
+today() {
+    date '+%Y-%m-%d'
+
+}
+
 # history fuzzy finder
 function search-history() {
     BUFFER=$(history -n -r 1 | fzf --exact --no-sort --prompt="History > ")
