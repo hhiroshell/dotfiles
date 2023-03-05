@@ -3,7 +3,13 @@
 # ================
 
 # fzf
-export FZF_DEFAULT_OPTS='--height 30% --layout=reverse --border --color=bg:#FFFFFF,bg+:#C2D8E4,fg:#282629,fg+:#282629,pointer:#007BBB,marker:#656066,spinner:#81A1C1,hl:#616E88,header:#616E88,info:#81A1C1,prompt:#81A1C1,hl+:#81A1C1'
+export FZF_DEFAULT_OPTS=" \
+    --height 30% \
+    --layout=reverse \
+    --border \
+    --color=light \
+    --color=bg+:#E9E4E2 \
+    --color=pointer:red,marker:red,gutter:#F0EDEC"
 
 # bat
 alias bat='batcat'
