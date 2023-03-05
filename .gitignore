@@ -1,0 +1,20 @@
+# ignore all
+*
+*/
+
+# include all directories
+!*/
+
+# include inidividual files
+!/.config/nvim/init.lua
+!/.config/nvim/lua/*
+!/.config/starship.toml
+!/.gitconfig
+!/.gitignore_global
+!/.zshrc
+!/.zimrc
+
+!/.gitignore
+!.gitkeep
+!LICENSE
+!README.md
