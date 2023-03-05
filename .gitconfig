@@ -1,0 +1,16 @@
+[user]
+    name = hhiroshell
+    email = hhiroshell@gmail.com
+
+[core]
+    excludesfile = /home/hhiroshell/.gitignore_global
+
+[ghq]
+    root = /home/hhiroshell/src
+
+# -----------
+# github.com
+# -----------
+[github]
+	user = hhiroshell
+
