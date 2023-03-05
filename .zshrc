@@ -34,10 +34,13 @@ eval "$(starship init zsh)"
 export PATH="$PATH:$HOME/go/bin"
 
 
-# ========================
-# load external dot files
-# ========================
+# =========================
+# load external zsh scripts
+# =========================
 
-for file in $(ghq list --full-path --exact dotfiles)/zsh/*.zsh; do
-    source $file
+# load zsh scripts from multiple dotfiles repositories
+for repo in $(ghq list --full-path --exact dotfiles); do
+    for file in $(ls $repo/zsh/*.zsh); do
+        source $file
+    done
 done
