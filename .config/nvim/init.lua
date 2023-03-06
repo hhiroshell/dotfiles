@@ -38,18 +38,22 @@ o.shell = '/usr/bin/zsh --login'
 
 --- disable windows IME when exiting from insert mode.
 --- zenhan.exe must be installed on PATH.
-vim.api.nvim_create_autocmd({"InsertLeave", "CmdlineLeave"}, {
-  group = 'my-augroup',
-  pattern = {"*"},
-  command = ":call system('zenhan.exe 0')",
-})
+if os.execute('uname -a | grep microsoft') ~= '' then
+  vim.api.nvim_create_autocmd({"InsertLeave", "CmdlineLeave"}, {
+    group = 'my-augroup',
+    pattern = {"*"},
+    command = ":call system('zenhan.exe 0')",
+  })
+end
 
 --- send yanked text to the windows clipboard.
-vim.api.nvim_create_autocmd({"TextYankPost"}, {
-  group = 'my-augroup',
-  pattern = {"*"},
-  command = ":call system('clip.exe', @\")",
-})
+if os.execute('uname -a | grep microsoft') ~= '' then
+  vim.api.nvim_create_autocmd({"TextYankPost"}, {
+    group = 'my-augroup',
+    pattern = {"*"},
+    command = ":call system('clip.exe', @\")",
+  })
+end
 
 -- ==========
 -- key remaps
