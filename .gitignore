@@ -6,13 +6,14 @@
 !*/
 
 # include inidividual files
-!/.config/nvim/init.lua
-!/.config/nvim/lua/*
-!/.config/starship.toml
-!/.gitconfig
-!/.gitignore_global
-!/.zshrc
-!/.zimrc
+!/home/.config/nvim/init.lua
+!/home/.config/nvim/lua/*
+!/home/.config/starship.toml
+!/home/.gitconfig
+!/home/.gitignore_global
+!/home/.zshrc
+!/home/.zimrc
+!/zsh/*.zsh
 
 !/.gitignore
 !.gitkeep
