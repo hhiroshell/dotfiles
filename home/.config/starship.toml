@@ -24,6 +24,7 @@ format = '[$symbol($profile )(\($region\) )(\[$duration\] )]($style)'
 
 [gcloud]
 format = '[$symbol$account @ $project / $region]($style) '
+
 [gcloud.region_aliases]
 "us-central1" = "uc1"
 "asia-northeast1" = "an1"
@@ -35,6 +36,6 @@ disabled = false
 [kubernetes.context_aliases]
 # GCP GKE
 "gke_(?P<project>[\\w-]+)_(?P<region>[\\w-]+)_(?P<cluster>[\\w-]+)" = "GKE:$cluster @ $project / $region"
-# AWS EKS
-# arn:aws:eks:ap-northeast-1:731842720035:cluster/sandbox
+
+# AWS EKS (e.g, arn:aws:eks:ap-northeast-1:731842720035:cluster/sandbox)
 "arn:aws:eks:(?P<region>[\\w-]+):(?P<account>[\\w-]+):cluster/(?P<cluster>[\\w-]+)" = "EKS:$cluster @ $account / $region"
