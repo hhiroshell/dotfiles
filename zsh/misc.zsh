@@ -45,9 +45,13 @@ if [[ "$(uname -r)" == *microsoft* ]]; then
     alias pbpaste='powershell.exe -Command Get-Clipboard'
 fi
 
-# today
 today() {
     date '+%Y-%m-%d'
+}
+
+temp() {
+    mkdir -p "~/temp/$(today)"
+    cd $_
 }
 
 # history fuzzy finder
