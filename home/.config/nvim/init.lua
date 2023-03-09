@@ -126,6 +126,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
       context = { only = { 'source.organizeImports' } },
       apply = true,
     })
+    vim.lsp.buf.format({ async = false })
   end
 })
 
