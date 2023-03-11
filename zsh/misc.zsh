@@ -50,7 +50,7 @@ today() {
 }
 
 temp() {
-    mkdir -p "~/temp/$(today)"
+    mkdir -p "${HOME}/temp/$(today)"
     cd $_
 }
 
