@@ -97,6 +97,8 @@ require('telescope').setup({
     mappings = {
       i = {
         ['<esc>'] = require('telescope.actions').close,
+        ['<C-s>'] = require('telescope.actions').select_vertical,
+        ['<C-h>'] = require('telescope.actions').select_horizontal,
       },
     },
   },
@@ -167,6 +169,7 @@ local cmp = require("cmp")
 cmp.setup({
   sources = {
     { name = "nvim_lsp" },
+    { name = "emoji" },
   },
   mapping = cmp.mapping.preset.insert({
     ["<C-p>"] = cmp.mapping.select_prev_item(),
