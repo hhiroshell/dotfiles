@@ -108,6 +108,10 @@ require('telescope').setup({
         ['<PageDown>'] = require('telescope.actions').preview_scrolling_down,
       },
     },
+    layout_config = {
+      horizontal = { preview_width = 0.6 },
+      vertical = { preview_height = 0.6 },
+    },
     layout_strategy = "flex",
   },
 })
