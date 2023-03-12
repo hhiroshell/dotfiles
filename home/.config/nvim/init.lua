@@ -103,6 +103,9 @@ require('telescope').setup({
         ['<esc>'] = require('telescope.actions').close,
         --- to avoid confilicts between pasting and vertical window splitting
         ['<C-d>'] = require('telescope.actions').select_vertical,
+        ['<C-s>'] = require('telescope.actions').select_horizontal,
+        ['<PageUp>'] = require('telescope.actions').preview_scrolling_up,
+        ['<PageDown>'] = require('telescope.actions').preview_scrolling_down,
       },
     },
   },
