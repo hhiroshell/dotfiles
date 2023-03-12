@@ -65,6 +65,12 @@ local map = vim.api.nvim_set_keymap
 map('n', '<Space>', '', {})
 vim.g.mapleader = ' '
 
+--- to avoid confilicts between pasting and vertical window splitting
+map('n', '<C-w>s', ':vsplit<CR>', { noremap = false })
+map('n', '<C-w><C-s>', ':vsplit<CR>', { noremap = false })
+map('n', '<C-w>h', ':split<CR>', { noremap = false })
+map('n', '<C-w><C-h>', ':split<CR>', { noremap = false })
+
 -- ===============
 -- plugin settings
 -- ===============
@@ -97,6 +103,7 @@ require('telescope').setup({
     mappings = {
       i = {
         ['<esc>'] = require('telescope.actions').close,
+        --- to avoid confilicts between pasting and vertical window splitting
         ['<C-s>'] = require('telescope.actions').select_vertical,
         ['<C-h>'] = require('telescope.actions').select_horizontal,
       },
