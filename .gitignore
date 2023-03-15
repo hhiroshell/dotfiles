@@ -11,6 +11,7 @@
 !/home/.config/starship.toml
 !/home/.gitconfig
 !/home/.gitignore_global
+!/home/.ssh/config
 !/home/.zshrc
 !/home/.zimrc
 !/zsh/*.zsh
