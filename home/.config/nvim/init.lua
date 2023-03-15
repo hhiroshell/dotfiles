@@ -36,9 +36,14 @@ vim.api.nvim_create_autocmd({"BufWritePre"}, {
 --- set shell environment for calling system commands
 o.shell = '/usr/bin/zsh --login'
 
+local function is_wsl()
+  local uname = io.popen("uname -r"):read("*l")
+  return uname:match("microsoft") ~= nil or uname:match("WSL") ~= nil
+end
+
 --- disable windows IME when exiting from insert mode.
 --- zenhan.exe must be installed on PATH.
-if string.find(os.execute('uname -a'), "microsoft") ~= nil then
+if is_wsl() then
   vim.api.nvim_create_autocmd({"InsertLeave", "CmdlineLeave"}, {
     group = 'my-augroup',
     pattern = {"*"},
@@ -47,7 +52,7 @@ if string.find(os.execute('uname -a'), "microsoft") ~= nil then
 end
 
 --- clipboard integration
-if string.find(os.execute('uname -a'), "microsoft") ~= nil then
+f is_wsl() then
   vim.api.nvim_create_autocmd({"TextYankPost"}, {
     group = 'my-augroup',
     pattern = {"*"},
