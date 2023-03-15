@@ -52,7 +52,7 @@ if is_wsl() then
 end
 
 --- clipboard integration
-f is_wsl() then
+if is_wsl() then
   vim.api.nvim_create_autocmd({"TextYankPost"}, {
     group = 'my-augroup',
     pattern = {"*"},
