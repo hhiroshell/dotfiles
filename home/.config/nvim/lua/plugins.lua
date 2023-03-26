@@ -58,13 +58,16 @@ return require('packer').startup(function(use)
   }
 
   use {
+	"windwp/nvim-autopairs",
+  }
+
+  use {
     "hrsh7th/nvim-cmp",
     requires = {
         { "hrsh7th/cmp-nvim-lsp" },
         { "hrsh7th/cmp-emoji" },
     },
   }
-  -- use "hrsh7th/vim-vsnip"
 
   -- Automatically set up this configuration after cloning packer.nvim
   if packer_bootstrap then

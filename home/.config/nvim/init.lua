@@ -183,8 +183,12 @@ require('lspconfig').gopls.setup{
   on_attach = on_attach,
 }
 
+-- windwp/nvim-autopairs (auto pair characters completion)
+require("nvim-autopairs").setup()
+
 -- hrsh7/th/nvim-cmp (code completion)
 local cmp = require("cmp")
+
 cmp.setup({
   sources = {
     { name = "nvim_lsp" },
@@ -201,3 +205,10 @@ cmp.setup({
     ghost_text = true,
   },
 })
+
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+
+cmp.event:on(
+  'confirm_done',
+  cmp_autopairs.on_confirm_done()
+)
