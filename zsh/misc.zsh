@@ -18,6 +18,9 @@ export BAT_THEME="Monokai Extended Light"
 # nvim
 alias vim='nvim'
 
+# qmk
+# cf. https://docs.qmk.fm/#/newbs_getting_started?id=set-up-qmk
+PATH="$HOME/.local/bin:$PATH"
 
 # ==========
 # Utilities
