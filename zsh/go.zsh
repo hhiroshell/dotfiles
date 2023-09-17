@@ -2,7 +2,7 @@ list-go-archives() {
     local current=$(go version | cut -d" " -f 3) 2>/dev/null
 
     for a in $(curl -s https://go.dev/dl/ | pup 'a[class="download"] text{}' | grep "linux-amd64" | grep -e "1.19" -e "1.20"); do
-        if [[ "${a}" =~ "${current}" ]]; then
+        if [[ "${a}" =~ ${current} ]]; then
 	    echo "${a} (<- installed)"
 	else
 	    echo "${a}"
@@ -43,5 +43,7 @@ install-go() {
     echo ""
     echo "Done."
 }
+
+alias goimports-reviser='goimports-reviser -rm-unused -recursive'
 
 export PATH="$PATH:/usr/local/go/bin"
