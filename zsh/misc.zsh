@@ -54,17 +54,6 @@ temp() {
 }
 
 # history
-# cf. https://mogulla3.tech/articles/2021-09-06-search-command-history-with-incremental-search/
-export HISTFILE=$HOME/.zsh_history
-export HISTSIZE=100000
-export SAVEHIST=100000
-
-setopt hist_expire_dups_first
-setopt hist_ignore_all_dups
-setopt hist_ignore_dups
-setopt hist_save_no_dups
-setopt share_history
-
 function search-history() {
     BUFFER=$(history -n -r 1 | fzf --exact --no-sort --prompt="History > ")
     CURSOR=${#BUFFER}
