@@ -14,12 +14,11 @@ _ghq-idea() {
             "/Applications/IntelliJ IDEA.app/Contents/MacOS/idea" "$@" > /dev/null 2>&1 &
         fi
     else
-		local repo
-		repo=$(ghq list | fzf)
-		if [ $? -ne 0 ]
-		then
-			return 1
-		fi
+        local repo
+        repo=$(ghq list | fzf)
+        if [ $? -ne 0 ]; then
+            return 1
+        fi
 
         if [[ "$(uname -r)" == *microsoft* ]]; then
             _slow-yes | cmd.exe /c idea.bat $(wslpath -aw "$(ghq root)/${repo}") > /dev/null 2>&1 &
