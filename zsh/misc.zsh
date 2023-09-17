@@ -3,6 +3,11 @@
 # ================
 
 # fzf
+if [[ "$(uname)" == "Linux" ]]; then
+    source /usr/share/doc/fzf/examples/key-bindings.zsh
+    source /usr/share/doc/fzf/examples/completion.zsh
+fi
+
 export FZF_DEFAULT_OPTS=" \
     --height 30% \
     --layout=reverse \
@@ -52,11 +57,3 @@ temp() {
     mkdir -p "${HOME}/temp/$(today)"
     cd $_
 }
-
-# history
-function search-history() {
-    BUFFER=$(history -n -r 1 | fzf --exact --no-sort --prompt="History > ")
-    CURSOR=${#BUFFER}
-}
-zle -N search-history
-bindkey '^h' search-history
