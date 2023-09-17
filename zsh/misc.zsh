@@ -11,10 +11,6 @@ export FZF_DEFAULT_OPTS=" \
     --color=bg+:#E9E4E2 \
     --color=pointer:red,marker:red,gutter:#F0EDEC"
 
-# bat
-alias bat='batcat'
-export BAT_THEME="Monokai Extended Light"
-
 # nvim
 alias vim='nvim'
 
@@ -35,7 +31,7 @@ if [[ "$(uname -r)" == *microsoft* ]]; then
         else
             if [ -e $1 ]; then
                 cmd.exe /c start "$(wslpath -w $1)" 2> /dev/null
-        elif [[ "$1" =~ "^http://" ]] || [[ "$1" =~ "^https://" ]] ; then
+            elif [[ "$1" =~ "^http://" ]] || [[ "$1" =~ "^https://" ]]; then
                 cmd.exe /c start "$1" 2> /dev/null
             else
                 echo "open: $1 : No such file or directory"
