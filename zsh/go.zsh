@@ -1,12 +1,19 @@
 list-go-archives() {
     local current=$(go version | cut -d" " -f 3) 2>/dev/null
 
-    for a in $(curl -s https://go.dev/dl/ | pup 'a[class="download"] text{}' | grep "linux-amd64" | grep -e "1.19" -e "1.20"); do
-        if [[ "${a}" =~ ${current} ]]; then
-	    echo "${a} (<- installed)"
-	else
-	    echo "${a}"
-	fi
+    local candidates=$(curl -s https://go.dev/dl/ \
+        | pup 'a[class="download"] text{}' \
+        | grep "linux-amd64" \
+        | sort --version-sort -r \
+        | grep -e "1.19" -e "1.20" -e "1.21" -e "1.22" \
+    )
+
+    echo ${candidates} | while read archive; do
+        if [[ "${archive}" =~ ${current} ]]; then
+            echo "${archive} (<- installed)"
+        else
+            echo "${archive}"
+        fi
     done
 }
 
@@ -19,7 +26,7 @@ install-go() {
 
     if [[ "${archive}" =~ "installed" ]]; then
         echo "You are already using the specified version."
-	return 1
+        return 1
     fi
 
     tmpdir="$(mktemp -d)"
@@ -31,12 +38,12 @@ install-go() {
     echo "Installing..."
     sudo rm -rf /usr/local/go
     if [ $? -ne 0 ]; then
-	echo "failed to remove old installation"
+        echo "failed to remove old installation"
         return 1
     fi
     sudo tar -x -f "${tmpdir}/${archive}" -C /usr/local
     if [ $? -ne 0 ]; then
-	echo "failed to extract the go archive"
+        echo "failed to extract the go archive"
         return 1
     fi
 
