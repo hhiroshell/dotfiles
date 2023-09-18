@@ -4,8 +4,11 @@
 
 # fzf
 if [[ "$(uname)" == "Linux" ]]; then
-    source /usr/share/doc/fzf/examples/key-bindings.zsh
-    source /usr/share/doc/fzf/examples/completion.zsh
+    source "/usr/share/doc/fzf/examples/completion.zsh"
+    source "/usr/share/doc/fzf/examples/key-bindings.zsh"
+elif [[ "$(uname)" == "Darwin" ]]; then
+    source "/opt/homebrew/opt/fzf/shell/completion.zsh"
+    source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
 fi
 
 export FZF_DEFAULT_OPTS=" \
