@@ -2,7 +2,7 @@ _slow-yes() {
     while :
     do
         echo "y"
-        sleep 5
+        sleep 1
     done
 }
 
