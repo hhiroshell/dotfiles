@@ -19,7 +19,6 @@ for target in "${targets[@]}"; do
         mkdir -p "${dest_dir}"
     fi
 
-#     ln -s "${src}" "${dest}"
-    echo "ln -s ${src} ${dest}"
+    ln -s "${src}" "${dest}"
     echo "Created symlink for ${target}"
 done
