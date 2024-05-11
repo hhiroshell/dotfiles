@@ -49,26 +49,6 @@ return require('packer').startup(function(use)
     end
   }
 
-  use {
-    'williamboman/mason.nvim',
-  }
-
-  use {
-    'neovim/nvim-lspconfig',
-  }
-
-  use {
-	"windwp/nvim-autopairs",
-  }
-
-  use {
-    "hrsh7th/nvim-cmp",
-    requires = {
-        { "hrsh7th/cmp-nvim-lsp" },
-        { "hrsh7th/cmp-emoji" },
-    },
-  }
-
   -- Automatically set up this configuration after cloning packer.nvim
   if packer_bootstrap then
     require('packer').sync()
