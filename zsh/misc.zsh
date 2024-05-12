@@ -22,6 +22,10 @@ export FZF_DEFAULT_OPTS=" \
 # nvim
 alias vim='nvim'
 
+# history
+setopt extended_history
+alias history='history -t "%F %T"'
+
 # goimports-reviser
 alias goimports-reviser='goimports-reviser -rm-unused -recursive'
 
