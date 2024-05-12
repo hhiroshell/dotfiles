@@ -26,14 +26,6 @@ source ${ZIM_HOME}/init.zsh
 eval "$(starship init zsh)"
 
 
-# =====
-# PATH
-# =====
-
-# binaries installed via "go install"
-export PATH="$PATH:$HOME/go/bin"
-
-
 # =========================
 # load external zsh scripts
 # =========================

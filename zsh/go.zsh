@@ -1,3 +1,7 @@
+# ======================
+# Installation utilities
+# ======================
+
 list-go-archives() {
     local current=$(go version | cut -d" " -f 3) 2>/dev/null
 
@@ -51,6 +55,10 @@ install-go() {
     echo "Done."
 }
 
-alias goimports-reviser='goimports-reviser -rm-unused -recursive'
 
-export PATH="$PATH:/usr/local/go/bin"
+# =====
+# PATH
+# =====
+
+# "$HOME/go/bin" is for binaries installed via "go install"
+export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"

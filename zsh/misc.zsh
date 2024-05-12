@@ -22,6 +22,9 @@ export FZF_DEFAULT_OPTS=" \
 # nvim
 alias vim='nvim'
 
+# goimports-reviser
+alias goimports-reviser='goimports-reviser -rm-unused -recursive'
+
 # qmk
 # cf. https://docs.qmk.fm/#/newbs_getting_started?id=set-up-qmk
 PATH="$HOME/.local/bin:$PATH"
