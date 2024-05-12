@@ -31,7 +31,7 @@ eval "$(starship init zsh)"
 # =========================
 
 # load zsh scripts from multiple dotfiles repositories
-for repo in $(ghq list --full-path --exact dotfiles); do
+for repo in $(eval "~/go/bin/ghq list --full-path --exact dotfiles"); do
     for file in $(ls $repo/zsh/*.zsh); do
         source $file
     done
