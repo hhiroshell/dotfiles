@@ -3,6 +3,7 @@
     email = hhiroshell@gmail.com
 
 [core]
+    editor = nvim
     excludesfile = /home/hhiroshell/.gitignore_global
 
 [ghq]
