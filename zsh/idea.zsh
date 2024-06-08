@@ -1,42 +1,16 @@
-_slow-yes() {
-    while :
-    do
-        echo "y"
-        sleep 1
-    done
+if [[ "$(uname)" == "Linux" ]]; then
+    IDEA_HOME="/usr/local/idea-IU"
+elif [[ "$(uname)" == "Darwin" ]]; then
+    IDEA_HOME="/Applications/IntelliJ IDEA.app/Contents"
+fi
+
+_idea-version() {
+    # TODO: darwin
+    cat "${IDEA_HOME}/product-info.json" | jq -r '.version'
 }
 
-_ghq-idea() {
-    if [ -n "$*" ]; then
-        if [[ "$(uname -r)" == *microsoft* ]]; then
-            _slow-yes | cmd.exe /c idea.bat $(wslpath -aw "$@") > /dev/null 2>&1 &
-        elif [[ "$(uname)" == "Darwin" ]]; then
-            "/Applications/IntelliJ IDEA.app/Contents/MacOS/idea" "$@" > /dev/null 2>&1 &
-        fi
-    else
-        local repo
-        repo=$(ghq list | fzf)
-        if [ $? -ne 0 ]; then
-            return 1
-        fi
-
-        if [[ "$(uname -r)" == *microsoft* ]]; then
-            _slow-yes | cmd.exe /c idea.bat $(wslpath -aw "$(ghq root)/${repo}") > /dev/null 2>&1 &
-        elif [[ "$(uname)" == "Darwin" ]]; then
-            "/Applications/IntelliJ IDEA.app/Contents/MacOS/idea" "$(ghq root)/${repo}" > /dev/null 2>&1 &
-        fi
-    fi
-}
-
-alias idea='_ghq-idea'
-
-# ======================
-# Installation utilities
-# ======================
-
-list-idea-archives() {
-    local current=$(cat /usr/local/idea-IU/product-info.json | jq -r '.version')
-
+_idea-archives() {
+    # TODO: darwin
     local candidates=$(curl -s "https://data.services.jetbrains.com/products?code=IIU&release.type=release" \
         | jq -r '.[].releases[].downloads.linux.link' \
         | grep -v "null" \
@@ -45,7 +19,7 @@ list-idea-archives() {
     )
 
     echo ${candidates} | while read archive; do
-        if [[ "${archive}" =~ ${current} ]]; then
+        if [[ "${archive}" =~ $(_idea-version) ]]; then
             echo "${archive} (<- installed)"
         else
             echo "${archive}"
@@ -53,9 +27,10 @@ list-idea-archives() {
     done
 }
 
-install-idea() {
+_idea-install() {
+    # TODO: darwin
     local archive
-    archive=$(list-idea-archives | fzf)
+    archive=$(_idea-archives | fzf)
     if [ $? -ne 0 ]; then
         return 1
     fi
@@ -65,42 +40,89 @@ install-idea() {
         return 1
     fi
 
+    local tmpdir
     tmpdir="$(mktemp -d)"
 
-    echo "Downloading ${archive} ..."
+    echo "📦 Downloading ${archive} ..."
     url=$(curl -s "https://data.services.jetbrains.com/products?code=IIU&release.type=release" \
         | jq -r '.[].releases[].downloads.linux.link' \
         | grep -e "${archive}" \
     )
     curl -L "${url}" --output "${tmpdir}/${archive}"
 
-
+    echo ""
     echo "Extracting ${archive} ..."
     tar -x -f "${tmpdir}/${archive}" -C ${tmpdir}
-    base="$(tar -t -f ${tmpdir}/${archive} | grep '/$' | head -n 1 | sed 's/\/$//')"
-    mv "${tmpdir}/${base}" "${tmpdir}/idea-IU"
 
-    echo "Removing old installation..."
-    sudo rm -rf /usr/local/idea-IU
+    echo ""
+    echo "Installing..."
+    sudo rm -rf "${IDEA_HOME}"
     if [ $? -ne 0 ]; then
         echo "failed to remove old installation"
         return 1
     fi
-
-    echo "Installing..."
-    sudo mv "${tmpdir}/idea-IU" /usr/local
+    local base
+    base="$(tar -t -f ${tmpdir}/${archive} | grep '/$' | head -n 1 | sed 's/\/$//')"
+    sudo mv "${tmpdir}/${base}" "${IDEA_HOME}"
     if [ $? -ne 0 ]; then
         echo "failed to extract the idea archive"
         return 1
     fi
 
+    echo ""
     echo "Done."
 }
 
-# =====
-# PATH
-# =====
+_idea-run() {
+    local target
+    if [ "$#" -lt 1 ]; then
+        local repo
+        repo=$(ghq list | fzf)
+        if [ $? -ne 0 ]; then
+            return 1
+        fi
 
-# "$HOME/go/bin" is for binaries installed via "go install"
-export PATH="$PATH:/usr/local/idea-IU/bin"
+        target="$(ghq root)/${repo}"
+    else
+        target="$1"
+    fi
 
+    if [[ "$(uname)" == "Linux" ]]; then
+        "${IDEA_HOME}/bin/idea.sh" "${target}" > /dev/null 2>&1 &
+    elif [[ "$(uname)" == "Darwin" ]]; then
+        "/Applications/IntelliJ IDEA.app/Contents/MacOS/idea" "${target}" > /dev/null 2>&1 &
+    fi
+}
+
+_idea-usage() {
+    echo "TODO: print usages"
+}
+
+__idea() {
+    if [ "$#" -lt 1 ]; then
+        _idea-usage
+        return 1
+    fi
+
+    subcommand="$1"
+    shift
+
+    case $subcommand in
+        version)
+            _idea-version
+            ;;
+        archives)
+            _idea-archives
+            ;;
+        install)
+            _idea-install
+            ;;
+        run)
+            _idea-run "$@"
+            ;;
+        *)
+            _idea-usage
+            return 1
+            ;;
+    esac
+}
