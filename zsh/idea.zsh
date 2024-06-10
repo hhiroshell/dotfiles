@@ -5,14 +5,27 @@ elif [[ "$(uname)" == "Darwin" ]]; then
 fi
 
 _idea-version() {
-    # TODO: darwin
-    cat "${IDEA_HOME}/product-info.json" | jq -r '.version'
+    if [[ "$(uname)" == "Linux" ]]; then
+        < "${IDEA_HOME}/product-info.json" jq -r '.version'
+    elif [[ "$(uname)" == "Darwin" ]]; then
+        < "${IDEA_HOME}/Resources/product-info.json" jq -r '.version'
+    fi
 }
 
 _idea-archives() {
-    # TODO: darwin
+    local platform
+    if [[ "$(uname)" == "Linux" ]]; then
+        platform="linux"
+    elif [[ "$(uname)" == "Darwin" ]]; then
+        if [[ "$(uname -m)" == "arm64" ]]; then
+            platform="macM1"
+        else
+            platform="mac"
+        fi
+    fi
+
     local candidates=$(curl -s "https://data.services.jetbrains.com/products?code=IIU&release.type=release" \
-        | jq -r '.[].releases[].downloads.linux.link' \
+        | jq -r ".[].releases[].downloads.${platform}.link" \
         | grep -v "null" \
         | head \
         | while read url; do basename "$url"; done
@@ -28,7 +41,14 @@ _idea-archives() {
 }
 
 _idea-install() {
-    # TODO: darwin
+    if [[ "$(uname)" == "Darwin" ]]; then
+        echo "Please use Homebrew to install it on Darwin (macOS)."
+        echo ""
+        echo "$ brew [install|upgrade] --cask intellij-idea"
+        return 1
+    fi
+
+    # From here, the installation steps are confirmed to work only on Linux.
     local archive
     archive=$(_idea-archives | fzf)
     if [ $? -ne 0 ]; then
@@ -55,7 +75,7 @@ _idea-install() {
     tar -x -f "${tmpdir}/${archive}" -C ${tmpdir}
 
     echo ""
-    echo "⚙️  Installing... ⚙️"
+    echo "⚙️ Installing... ⚙️"
     sudo rm -rf "${IDEA_HOME}"
     if [ $? -ne 0 ]; then
         echo "failed to remove old installation"
@@ -90,7 +110,7 @@ _idea-run() {
     if [[ "$(uname)" == "Linux" ]]; then
         "${IDEA_HOME}/bin/idea.sh" "${target}" > /dev/null 2>&1 &
     elif [[ "$(uname)" == "Darwin" ]]; then
-        "/Applications/IntelliJ IDEA.app/Contents/MacOS/idea" "${target}" > /dev/null 2>&1 &
+        "${IDEA_HOME}/MacOS/idea" "${target}" > /dev/null 2>&1 &
     fi
 }
 
@@ -106,7 +126,6 @@ idea() {
 
     subcommand="$1"
     shift
-
     case $subcommand in
         version)
             _idea-version
