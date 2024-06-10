@@ -54,11 +54,3 @@ install-go() {
     echo ""
     echo "Done."
 }
-
-
-# =====
-# PATH
-# =====
-
-# "$HOME/go/bin" is for binaries installed via "go install"
-export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"

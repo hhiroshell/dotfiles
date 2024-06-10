@@ -30,6 +30,10 @@ eval "$(starship init zsh)"
 # load external zsh scripts
 # =========================
 
+# "$HOME/go/bin" is for binaries installed via "go install"
+# It requires ghq (installed in "$HOME/bo/bin") to load zsh scripts
+export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
+
 # load zsh scripts from multiple dotfiles repositories
 for repo in $(eval "~/go/bin/ghq list --full-path --exact dotfiles"); do
     for file in $(ls $repo/zsh/*.zsh); do
