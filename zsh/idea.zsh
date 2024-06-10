@@ -43,7 +43,7 @@ _idea-install() {
     local tmpdir
     tmpdir="$(mktemp -d)"
 
-    echo "📦 Downloading ${archive} ..."
+    echo "🔄 Downloading ${archive} ... 🔄"
     url=$(curl -s "https://data.services.jetbrains.com/products?code=IIU&release.type=release" \
         | jq -r '.[].releases[].downloads.linux.link' \
         | grep -e "${archive}" \
@@ -51,11 +51,11 @@ _idea-install() {
     curl -L "${url}" --output "${tmpdir}/${archive}"
 
     echo ""
-    echo "Extracting ${archive} ..."
+    echo "📦 Extracting ${archive} ... 📦"
     tar -x -f "${tmpdir}/${archive}" -C ${tmpdir}
 
     echo ""
-    echo "Installing..."
+    echo "⚙️  Installing... ⚙️"
     sudo rm -rf "${IDEA_HOME}"
     if [ $? -ne 0 ]; then
         echo "failed to remove old installation"
@@ -70,7 +70,7 @@ _idea-install() {
     fi
 
     echo ""
-    echo "Done."
+    echo "Done. 👍"
 }
 
 _idea-run() {
@@ -98,7 +98,7 @@ _idea-usage() {
     echo "TODO: print usages"
 }
 
-__idea() {
+idea() {
     if [ "$#" -lt 1 ]; then
         _idea-usage
         return 1
