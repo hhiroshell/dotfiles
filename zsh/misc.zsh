@@ -39,7 +39,7 @@ PATH="$HOME/.local/bin:$PATH"
 # ==========
 
 # WSL utilities for compatibility with masOS X
-if [[ "$(uname -r)" == "*-WSL2$" ]]; then
+if [[ "$(uname -r)" == *-WSL2 ]]; then
     # cf. https://zenn.dev/kaityo256/articles/open_command_on_wsl
     function open() {
         if [ $# != 1 ]; then
