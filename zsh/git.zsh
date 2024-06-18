@@ -36,7 +36,7 @@ ghq-gh-open() {
     fi
 }
 
-alias gh='ghq-gh-open'
+alias gho='ghq-gh-open'
 
 git-checkout() {
     if [ -n "$*" ]; then
