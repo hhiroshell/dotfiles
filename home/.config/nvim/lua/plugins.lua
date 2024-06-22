@@ -49,6 +49,10 @@ return require('packer').startup(function(use)
     end
   }
 
+  use {
+    'unblevable/quick-scope',
+  }
+
   -- Automatically set up this configuration after cloning packer.nvim
   if packer_bootstrap then
     require('packer').sync()
