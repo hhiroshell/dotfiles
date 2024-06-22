@@ -5,6 +5,7 @@ declare -a targets=(
     ".config"
     ".gitconfig"
     ".gitignore_global"
+    ".ideavimrc"
     ".ssh/config"
     ".zimrc"
     ".zshrc"
