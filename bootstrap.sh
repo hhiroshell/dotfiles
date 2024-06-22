@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-base_path="/home/hhiroshell/src/github.com/hhiroshell/dotfiles/home"
+base_path="$(cd $(dirname $0); pwd)/home"
+
 declare -a targets=(
     ".config"
     ".gitconfig"
@@ -13,7 +14,16 @@ declare -a targets=(
 
 for target in "${targets[@]}"; do
     src="${base_path}/${target}"
-    dest="$HOME/${target}"
+    dest="${HOME}/${target}"
+
+    if [ -f "${dest}" ]; then
+        echo "The file or symlink \"${dest}\" already exists."
+        continue
+    fi
+    if [ -d "${dest}" ]; then
+        echo "The directory \"${dest}\" already exists."
+        continue
+    fi
 
     dest_dir=$(dirname "${dest}")
     if [ ! -d "${dest_dir}" ]; then
