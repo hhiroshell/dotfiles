@@ -108,7 +108,7 @@ require('telescope').setup({
     mappings = {
       i = {
         ['<esc>'] = require('telescope.actions').close,
-        --- to avoid confilicts between pasting and vertical window splitting
+        --- to avoid conflicts between pasting and vertical window splitting
         ['<C-d>'] = require('telescope.actions').select_vertical,
         ['<C-s>'] = require('telescope.actions').select_horizontal,
         ['<PageUp>'] = require('telescope.actions').preview_scrolling_up,
@@ -138,10 +138,5 @@ require('Comment').setup()
 
 -- quickscope
 vim.g.qs_highlight_on_keys = {'f', 'F', 't', 'T'}
-vim.cmd [[
-  augroup qs_colors
-    autocmd!
-    autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
-    autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
-  augroup END
-]]
+vim.api.nvim_set_hl(0, 'QuickScopePrimary', {fg='#a8334c', bold=true, underline=true})
+vim.api.nvim_set_hl(0, 'QuickScopeSecondary', {fg='#3b8992', bold=true, underline=true})
