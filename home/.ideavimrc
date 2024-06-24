@@ -17,8 +17,6 @@ map Q gq
 
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
 
-" Highlight copied text
-Plug 'machakann/vim-highlightedyank'
 " Commentary plugin
 Plug 'tpope/vim-commentary'
 
