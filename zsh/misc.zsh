@@ -16,7 +16,7 @@ export FZF_DEFAULT_OPTS=" \
     --layout=reverse \
     --border \
     --color=light \
-    --color=bg+:#E9E4E2 \
+    --color=bg+:#E3E1E0 \
     --color=pointer:red,marker:red,gutter:#F0EDEC"
 
 # nvim
