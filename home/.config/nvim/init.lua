@@ -138,5 +138,5 @@ require('Comment').setup()
 
 -- quickscope
 vim.g.qs_highlight_on_keys = {'f', 'F', 't', 'T'}
-vim.api.nvim_set_hl(0, 'QuickScopePrimary', {fg='#A8334C', bold=true, underline=true})
+vim.api.nvim_set_hl(0, 'QuickScopePrimary', {fg='#94253E', bold=true, underline=true})
 vim.api.nvim_set_hl(0, 'QuickScopeSecondary', {fg='#A8334C', bold=false, underline=true})
