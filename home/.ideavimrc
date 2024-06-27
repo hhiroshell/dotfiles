@@ -17,7 +17,11 @@ map Q gq
 
 " --- Enable IdeaVim plugins https://jb.gg/ideavim-plugins
 
-" Commentary plugin
+" Highlight yanked text
+Plug 'machakann/vim-highlightedyank'
+let g:highlightedyank_highlight_color = "rgba(212, 226, 253, 155)"
+
+" Comment / uncomment with typing [gcc].
 Plug 'tpope/vim-commentary'
 
 " Use IdeaVim-QuickScope: https://plugins.jetbrains.com/plugin/19417-ideavim-quickscope
@@ -40,4 +44,13 @@ let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 set visualbell
 set noerrorbells
 
-set clipboard+=unnamed
+" OSのクリップボードをレジスタ指定無しで Yank, Put 出来るように
+set clipboard+=unnamed,unnamedplus
+
+"x キー削除でデフォルトレジスタに入れない
+nnoremap x "_x
+vnoremap x "_x
+
+"検索対象をハイライト
+"ハイライトを消す場合は:noh[l]
+set hlsearch
