@@ -114,6 +114,18 @@ _idea-run() {
     fi
 }
 
+_idea-clean() {
+    if [[ "$(uname)" == "Darwin" ]]; then
+        echo "'idea clean' is supported only on Linux."
+        return 1
+    fi
+
+    local pid
+    if pid=$(pgrep -f "${IDEA_HOME}/bin/idea"); then
+        kill "${pid}"
+    fi
+}
+
 _idea-usage() {
     echo "TODO: print usages"
 }
@@ -138,6 +150,9 @@ idea() {
             ;;
         run)
             _idea-run "$@"
+            ;;
+        clean)
+            _idea-clean
             ;;
         *)
             _idea-usage
