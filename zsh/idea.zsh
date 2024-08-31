@@ -127,7 +127,17 @@ _idea-clean() {
 }
 
 _idea-usage() {
-    echo "TODO: print usages"
+cat << EOF
+Usage: idea [subcommand]
+
+Subcommands:
+  archives  List installable IDEA archives
+  clean     Kill the running IDEA process
+  install   Install the selected version of Intellij IDEA
+  run       Start Intellij IDEA in the selected directory
+  usage     Print this message
+  version   Show the version of IntelliJ IDEA
+EOF
 }
 
 idea() {
@@ -153,6 +163,9 @@ idea() {
             ;;
         clean)
             _idea-clean
+            ;;
+        usage)
+            _idea-usage
             ;;
         *)
             _idea-usage
