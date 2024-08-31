@@ -72,7 +72,7 @@ _idea-install() {
 
     echo ""
     echo "📦 Extracting ${archive} ... 📦"
-    tar -x -f "${tmpdir}/${archive}" -C ${tmpdir}
+    tar -x -f "${tmpdir}/${archive}" -C "${tmpdir}"
 
     echo ""
     echo "⚙️ Installing... ⚙️"
@@ -108,7 +108,7 @@ _idea-run() {
     fi
 
     if [[ "$(uname)" == "Linux" ]]; then
-        "${IDEA_HOME}/bin/idea.sh" "${target}" > /dev/null 2>&1 &
+        "${IDEA_HOME}/bin/idea" "${target}" > /dev/null 2>&1 &
     elif [[ "$(uname)" == "Darwin" ]]; then
         "${IDEA_HOME}/MacOS/idea" "${target}" > /dev/null 2>&1 &
     fi
