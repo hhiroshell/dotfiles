@@ -2,14 +2,14 @@
 # Installation utilities
 # ======================
 
-list-go-archives() {
+_go-tool-list-archives() {
     local current=$(go version | cut -d" " -f 3) 2>/dev/null
 
     local candidates=$(curl -s https://go.dev/dl/ \
         | pup 'a[class="download"] text{}' \
         | grep "linux-amd64" \
         | sort --version-sort -r \
-        | grep -e "1.19" -e "1.20" -e "1.21" -e "1.22" \
+        | grep -e "1.22" -e "1.23" -e "1.24" -e "1.25" \
     )
 
     echo ${candidates} | while read archive; do
@@ -21,7 +21,7 @@ list-go-archives() {
     done
 }
 
-install-go() {
+_go-tool-install() {
     local archive
     archive=$(list-go-archives | fzf)
     if [ $? -ne 0 ]; then
@@ -53,4 +53,40 @@ install-go() {
 
     echo ""
     echo "Done."
+}
+
+_go-tool-usage() {
+cat << EOF
+Usage: go-tool [subcommand]
+
+Subcommands:
+  archives  List Go archives
+  install   Install the selected version of Go
+  usage     Print this message
+EOF
+}
+
+go-tool() {
+    if [ "$#" -lt 1 ]; then
+        _go-tool-usage
+        return 1
+    fi
+
+    subcommand="$1"
+    shift
+    case $subcommand in
+        archives)
+            _go-tool-list-archives
+            ;;
+        install)
+            _go-tool-install
+            ;;
+        usage)
+            _go-tool-usage
+            ;;
+        *)
+            _go-tool-usage
+            return 1
+            ;;
+    esac
 }
