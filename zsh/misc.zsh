@@ -62,14 +62,6 @@ if [[ "$(uname -r)" == *-WSL2 ]]; then
     alias pbpaste='powershell.exe -Command Get-Clipboard'
 fi
 
-# Line count utility
-# cf. https://qiita.com/UedaTakeyuki/items/c025b334fe18a391c421
-cloc-git() {
-    tempdir="$(mktemp -d)"
-    git clone --depth 1 "$1" "${tempdir}"
-    cloc "${tempdir}"
-}
-
 today() {
     date '+%Y-%m-%d'
 }
@@ -80,4 +72,12 @@ temp() {
 
     TEMPDIR="$(pwd)" && export TEMPDIR
     echo "environment valuable \"TEMPDIR\" is set to \"$(pwd)\" ."
+}
+
+# Line count utility
+# cf. https://qiita.com/UedaTakeyuki/items/c025b334fe18a391c421
+cloc-git() {
+    tempdir="$(mktemp -d)"
+    git clone --depth 1 "$1" "${tempdir}"
+    cloc "${tempdir}"
 }
