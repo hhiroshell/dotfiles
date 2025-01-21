@@ -44,9 +44,11 @@ if [[ "$(uname -r)" == *-WSL2 ]]; then
     function open() {
         if [ $# != 1 ]; then
             explorer.exe .
+        elif [ "$1" = "." ]; then
+            explorer.exe .
         else
-            if [ -e $1 ]; then
-                cmd.exe /c start "$(wslpath -w $1)" 2> /dev/null
+            if [ -e "$1" ]; then
+                cmd.exe /c start "$(wslpath -w "$1")" 2> /dev/null
             elif [[ "$1" =~ "^http://" ]] || [[ "$1" =~ "^https://" ]]; then
                 cmd.exe /c start "$1" 2> /dev/null
             else
@@ -75,4 +77,7 @@ today() {
 temp() {
     mkdir -p "${HOME}/temp/$(today)"
     cd $_
+
+    TEMPDIR="$(pwd)" && export TEMPDIR
+    echo "environment valuable \"TEMPDIR\" is set to \"$(pwd)\" ."
 }
