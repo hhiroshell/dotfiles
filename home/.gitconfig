@@ -1,3 +1,7 @@
+[credential]
+    helper =
+    helper = /usr/local/share/gcm-core/git-credential-manager
+
 [user]
     name = "Hiroshi Hayakawa"
     email = hhiroshell@gmail.com
@@ -13,4 +17,4 @@
 # github.com
 # -----------
 [github]
-	user = hhiroshell
+    user = hhiroshell
