@@ -3,13 +3,8 @@
 # ================
 
 # fzf
-if [[ "$(uname)" == "Linux" ]]; then
-    source "/usr/share/doc/fzf/examples/completion.zsh"
-    source "/usr/share/doc/fzf/examples/key-bindings.zsh"
-elif [[ "$(uname)" == "Darwin" ]]; then
-    source "/opt/homebrew/opt/fzf/shell/completion.zsh"
-    source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
-fi
+# set up fzf key bindings and fuzzy completion
+source <(fzf --zsh)
 
 export FZF_DEFAULT_OPTS=" \
     --height 30% \
