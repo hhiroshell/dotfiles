@@ -3,7 +3,8 @@
 base_path="$(cd $(dirname $0); pwd)/home"
 
 declare -a targets=(
-    ".config"
+    ".config/nvim"
+    ".config/starship.toml"
     ".gitconfig"
     ".gitignore_global"
     ".ideavimrc"
