@@ -19,6 +19,16 @@ fi
 source ${ZIM_HOME}/init.zsh
 
 
+# =====
+# aqua
+# =====
+
+export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH"
+
+# Ensure that the required CLI tools are installed when needed.
+aqua install -l
+
+
 # ===============
 # starship promt
 # ===============
@@ -26,25 +36,21 @@ source ${ZIM_HOME}/init.zsh
 eval "$(starship init zsh)"
 
 
-# ==================================
+# ===================================
 # synchronize time at startup on WSL
-# ==================================
+# ===================================
 
 if [[ "$(uname -r)" == *-WSL2 ]]; then
     wsl.exe -u root date --set @$(pwsh.exe -Command 'Get-Date -UFormat %s')
 fi
 
 
-# =========================
+# ==========================
 # load external zsh scripts
-# =========================
-
-# "$HOME/go/bin" is for binaries installed via "go install"
-# It requires ghq (installed in "$HOME/bo/bin") to load zsh scripts
-export PATH="$PATH:/usr/local/go/bin:$HOME/go/bin"
+# ==========================
 
 # load zsh scripts from multiple dotfiles repositories
-for repo in $(eval "~/go/bin/ghq list --full-path --exact dotfiles"); do
+for repo in $(eval "ghq list --full-path --exact dotfiles"); do
     for file in $(ls $repo/zsh/*.zsh); do
         source $file
     done

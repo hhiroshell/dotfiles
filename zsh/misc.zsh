@@ -16,7 +16,6 @@ export FZF_DEFAULT_OPTS=" \
 
 # nvim
 alias vim='nvim'
-PATH="/usr/local/nvim/bin:$PATH"
 
 # history
 setopt extended_history
