@@ -6,6 +6,7 @@
 !*/
 
 # include inidividual files
+!/home/.aqua/aqua.yaml
 !/home/.config/nvim/init.lua
 !/home/.config/nvim/lua/*
 !/home/.config/starship.toml
