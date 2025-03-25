@@ -24,6 +24,13 @@ source ${ZIM_HOME}/init.zsh
 # =====
 
 export PATH="${AQUA_ROOT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aquaproj-aqua}/bin:$PATH"
+export AQUA_PROGRESS_BAR=true
+
+# Set a GitHub Access token to avoid GitHub API rete limiting.
+# c.f. https://aquaproj.github.io/docs/products/aqua-registry/contributing/#-set-a-github-access-token-to-avoid-github-api-rate-limiting
+if [[ "$(uname)" == "Darwin" ]]; then
+    export AQUA_GITHUB_TOKEN=$(security find-generic-password -s "aqua-github-token" -w)
+fi
 
 # Ensure that the required CLI tools are installed when needed.
 aqua install -l
