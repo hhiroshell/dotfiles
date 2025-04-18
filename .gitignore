@@ -11,8 +11,6 @@
 !/home/.config/nvim/lua/*
 !/home/.config/starship.toml
 !/home/.gitconfig
-!/home/.gitconfig.linux
-!/home/.gitconfig.macos
 !/home/.gitignore_global
 !/home/.ideavimrc
 !/home/.ssh/config

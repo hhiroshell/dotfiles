@@ -1,8 +1,6 @@
-[includeIf "os:macos"]
-    path = ~/.gitconfig.macos
-
-[includeIf "os:linux"]
-    path = ~/.gitconfig.linux
+[credential]
+	helper = /usr/local/bin/git-credential-manager
+	credentialStore = gpg
 
 [user]
     name = "Hiroshi Hayakawa"
