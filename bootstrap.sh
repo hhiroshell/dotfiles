@@ -7,6 +7,8 @@ declare -a targets=(
     ".config/nvim"
     ".config/starship.toml"
     ".gitconfig"
+    ".gitconfig.linux"
+    ".gitconfig.macos"
     ".gitignore_global"
     ".ideavimrc"
     ".ssh/config"

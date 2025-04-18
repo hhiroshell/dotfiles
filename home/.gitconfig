@@ -1,6 +1,8 @@
-[credential]
-    helper =
-    helper = /usr/local/share/gcm-core/git-credential-manager
+[includeIf "os:macos"]
+    path = ~/.gitconfig.macos
+
+[includeIf "os:linux"]
+    path = ~/.gitconfig.linux
 
 [user]
     name = "Hiroshi Hayakawa"
