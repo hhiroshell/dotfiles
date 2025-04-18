@@ -1,0 +1,3 @@
+# for zsh installed with apt on Ubuntu.
+# c.f. https://github.com/zimfw/zimfw/wiki/Troubleshooting#completion-is-not-working
+skip_global_compinit=1

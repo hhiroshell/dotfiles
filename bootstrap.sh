@@ -11,6 +11,7 @@ declare -a targets=(
     ".ideavimrc"
     ".ssh/config"
     ".zimrc"
+    ".zshenv"
     ".zshrc"
 )
 

@@ -14,6 +14,7 @@
 !/home/.gitignore_global
 !/home/.ideavimrc
 !/home/.ssh/config
+!/home/.zshenv
 !/home/.zshrc
 !/home/.zimrc
 !/zsh/*.zsh
