@@ -1,0 +1,16 @@
+theme = "zenbones"
+
+[editor]
+cursorline = true
+bufferline = "always"
+color-modes = true
+text-width = 120
+
+# File formatting options to maintain clean code style
+insert-final-newline = true
+trim-final-newlines = true
+trim-trailing-whitespace = true
+
+[editor.soft-wrap]
+enable = true
+wrap-at-text-width = true
