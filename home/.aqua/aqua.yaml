@@ -13,6 +13,7 @@ registries:
 packages:
 - name: ahmetb/kubectl-tree@v0.4.3
 - name: aristocratos/btop@v1.4.1
+- name: gitui-org/gitui@v0.27.0
 - name: go-delve/delve@v1.25.2
 - name: gohugoio/hugo@v0.149.1
 - name: golang/go@go1.25.1
