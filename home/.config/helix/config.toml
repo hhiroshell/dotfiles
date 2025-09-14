@@ -2,7 +2,7 @@ theme = "zenbones"
 
 [editor]
 cursorline = true
-bufferline = "always"
+bufferline = "never"
 color-modes = true
 text-width = 120
 
