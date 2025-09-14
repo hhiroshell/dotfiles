@@ -12,6 +12,7 @@
 !/home/.config/nvim/init.lua
 !/home/.config/nvim/lua/*
 !/home/.config/starship.toml
+!/home/.config/tmux/tmux.conf
 !/home/.gitconfig
 !/home/.gitignore_global
 !/home/.ideavimrc
