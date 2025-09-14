@@ -7,7 +7,7 @@ declare -a targets=(
     ".config/helix"
     ".config/nvim"
     ".config/starship.toml"
-    ".config/tmux/tmux.conf"
+    ".config/tmux"
     ".gitconfig"
     ".gitignore_global"
     ".ideavimrc"
