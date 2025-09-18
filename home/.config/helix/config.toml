@@ -42,3 +42,6 @@ wrap-at-text-width = true
 [editor.inline-diagnostics]
 cursor-line = "hint"
 other-lines = "hint"
+
+[editor.file-picker]
+hidden = false
