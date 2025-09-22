@@ -62,9 +62,3 @@ for repo in $(eval "ghq list --full-path --exact dotfiles"); do
         source $file
     done
 done
-
-# ============================
-# show the system information
-# ============================
-
-echo && fastfetch
