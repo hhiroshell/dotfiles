@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git:*)
+allowed-tools: Bash(git commit:*), Bash(git push:*)
 description: "Commits staged changes and pushes to the remote of the current branch"
 ---
 
