@@ -29,7 +29,7 @@ alias goimports-reviser='goimports-reviser -rm-unused -recursive'
 PATH="$HOME/.local/bin:$PATH"
 
 # exit
-alias e='exit'
+alias q='exit'
 
 # ==========
 # Utilities
