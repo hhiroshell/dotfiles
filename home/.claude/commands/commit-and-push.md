@@ -8,6 +8,7 @@ description: "Commits staged changes and pushes to the remote of the current bra
 - Current staged changes: !`git diff --cached`
 - Current branch: !`git branch --show-current`
 - Recent commits: !`git log --oneline -10`
+- You should do things only described in the Behavior specification. For example, you do not need to try to add unstaged changes.
 
 ## Behavior specification (follow in order)
 
