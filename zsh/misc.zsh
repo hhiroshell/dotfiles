@@ -53,10 +53,19 @@ if [[ "$(uname -r)" == *-WSL2 ]]; then
             fi
         fi
     }
+fi
 
+# Clipboard utilities for compatibility with macOS
+if [[ "$(uname -r)" == *-WSL2 ]]; then
     # cf. https://zenn.dev/kondounagi/scraps/184c884b5804a4
     alias pbcopy='clip.exe'
     alias pbpaste='powershell.exe -Command Get-Clipboard'
+elif [[ "$(uname)" == "Linux" ]]; then
+    # Ubuntu/Linux clipboard utilities for compatibility with macOS
+    if command -v xclip &> /dev/null; then
+        alias pbcopy='xclip -selection clipboard'
+        alias pbpaste='xclip -selection clipboard -o'
+    fi
 fi
 
 today() {
