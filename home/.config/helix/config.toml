@@ -45,3 +45,10 @@ other-lines = "hint"
 
 [editor.file-picker]
 hidden = false
+
+[keys.normal.c]
+p = "paste_clipboard_after"
+S-p = "paste_clipboard_before"
+
+[keys.select.c]
+y = "yank_to_clipboard"
