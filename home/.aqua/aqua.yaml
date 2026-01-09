@@ -15,10 +15,11 @@ packages:
 - name: aristocratos/btop@v1.4.1
 - name: astral-sh/uv@0.8.17
 - name: docker/cli@v28.5.1
+- name: dominikh/go-tools/staticcheck@2025.1.1
 - name: gitui-org/gitui@v0.27.0
 - name: go-delve/delve@v1.25.2
 - name: gohugoio/hugo@v0.149.1
-- name: golang/go@go1.25.1
+- name: golang/go@go1.25.5
 - name: golang.org/x/tools/gopls@v0.20.0
 - name: golangci/golangci-lint@v2.4.0
 - name: helix-editor/helix@25.07.1
@@ -27,6 +28,7 @@ packages:
 - name: junegunn/fzf@v0.65.2
 - name: k1LoW/deck@v1.21.5
 - name: kubernetes-sigs/kind@v0.30.0
+- name: kubernetes-sigs/kustomize@kustomize/v5.8.0
 - name: kubernetes/kubectl@v1.34.0
 - name: lima-vm/lima@v1.2.1
 - name: mikefarah/yq@v4.47.1
