@@ -32,13 +32,23 @@ if [[ "$(uname)" == "Darwin" ]]; then
     export AQUA_GITHUB_TOKEN=$(security find-generic-password -s "aqua-github-token" -w)
 fi
 
-# Set platform-specific configurations for aqua
 if [[ "$(uname)" == "Linux" ]]; then
-    # Exclude macOS-specific packages on Linux
-    export AQUA_EXCLUDE_TAGS="macos-only"
+    aqua() {
+        if [[ "$1" == "cp" ]]; then
+            shift
+            command aqua cp --exclude-tags exclude-on-linux "$@"
+        elif [[ "$1" == "i" || "$1" == "install" ]]; then
+            shift
+            command aqua install --exclude-tags exclude-on-linux "$@"
+        elif [[ "$1" == "up" || "$1" == "update" ]]; then
+            shift
+            command aqua update --exclude-tags exclude-on-linux "$@"
+        else
+            command aqua "$@"
+        fi
+    }
 fi
 
-# Ensure that the required CLI tools are installed when needed.
 aqua install -l
 
 
