@@ -35,5 +35,6 @@ packages:
 - name: nametake/golangci-lint-langserver@v0.0.11
 - name: neovim/neovim@v0.11.4
 - name: nodejs/node@v24.7.0
+- name: rust-lang/rustup@1.28.2
 - name: sharkdp/fd@v10.3.0
 - name: x-motemen/ghq@v1.8.0
