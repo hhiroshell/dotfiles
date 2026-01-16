@@ -1,6 +1,16 @@
 [terminal]
 shell = { program = "/bin/zsh", args = ["-l", "-c", "[ -z \"$TMUX\" ] && tmux new-session -A -s main || zsh"] }
 
+[font]
+size = 10
+
+[font.normal]
+family = "HackGen Console NF"
+
+[font.offset]
+x = 0  # letter spacing
+y = 1  # line spacing
+
 # zenbones theme (light)
 # based on home/.config/helix/themes/zenbones.toml palette
 [colors.primary]
