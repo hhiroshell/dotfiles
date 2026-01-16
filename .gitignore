@@ -8,6 +8,7 @@
 # include inidividual files
 !/home/.aqua/aqua.yaml
 !/home/.claude/commands/*
+!/home/.config/alacritty/*
 !/home/.config/helix/*
 !/home/.config/helix/themes/*
 !/home/.config/nvim/init.lua

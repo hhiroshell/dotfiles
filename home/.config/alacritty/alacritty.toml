@@ -1,0 +1,32 @@
+[terminal]
+shell = { program = "/bin/zsh", args = ["-l", "-c", "[ -z \"$TMUX\" ] && tmux new-session -A -s main || zsh"] }
+
+# zenbones theme (light)
+# based on home/.config/helix/themes/zenbones.toml palette
+[colors.primary]
+background = "#f0edec"  # default
+foreground = "#2c363c"  # black
+
+[colors.cursor]
+cursor = "#2c363c"  # black
+text = "#f0edec"    # default
+
+[colors.normal]
+white = "#f0edec"   # default
+red = "#94253e"     # red
+green = "#3f5a22"   # green
+yellow = "#803d1c"  # yellow
+blue = "#1d5573"    # blue
+magenta = "#7b3b70" # magenta
+cyan = "#2b747c"    # cyan
+black = "#2c363c"   # black
+
+[colors.bright]
+white = "#d5d3d2"   # light-gray
+red = "#a8334c"     # light-red
+green = "#4f6c31"   # light-green
+yellow = "#944927"  # light-yellow
+blue = "#286486"    # light-blue
+magenta = "#88507d" # light-magenta
+cyan = "#3b8992"    # light-cyan
+black = "#767676"   # gray
