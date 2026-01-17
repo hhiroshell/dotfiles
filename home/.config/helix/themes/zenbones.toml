@@ -2,7 +2,7 @@
 # A theme variation with explicitly defined color names
 
 # Base UI components
-"ui.background" = { bg = "default" }
+"ui.background" = { fg = "gray", bg = "default" }
 "ui.background.error" = { bg = "light-red" }
 "ui.cursor" = { fg = "default", bg = "black" }
 "ui.cursor.match" = { fg = "default", bg = "light-blue" }
