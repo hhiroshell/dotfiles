@@ -62,12 +62,12 @@ $ make install
 
 ```
 .
-├── home/           # Dotfiles (symlinked to $HOME)
-│   ├── .aqua/      # aqua configuration
-│   ├── .config/    # XDG config (helix, kitty, nvim, tmux, starship)
-│   ├── .gitconfig
-│   ├── .ssh/
-│   └── .zshrc
+├── home/           # Dotfiles (symlinked to $HOME with dot prefix)
+│   ├── aqua/       # -> ~/.aqua
+│   ├── config/     # -> ~/.config (helix, kitty, nvim, tmux, starship)
+│   ├── gitconfig   # -> ~/.gitconfig
+│   ├── ssh/        # -> ~/.ssh
+│   └── zshrc       # -> ~/.zshrc
 ├── zsh/            # Modular zsh configurations
 │   ├── git.zsh
 │   ├── kubernetes.zsh
