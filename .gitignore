@@ -27,5 +27,6 @@
 !/.gitignore
 !.gitkeep
 !bootstrap.sh
+!Makefile
 !LICENSE
 !README.md
