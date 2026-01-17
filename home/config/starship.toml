@@ -30,7 +30,7 @@ format = '[$symbol$account @ $project / $region]($style) '
 "asia-northeast1" = "an1"
 
 [kubernetes]
-format = '[🛳️  $context \($namespace\)](black) '
+format = '[🚢 $context \($namespace\)](black) '
 disabled = false
 
 [kubernetes.context_aliases]
