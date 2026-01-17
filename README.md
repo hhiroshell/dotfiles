@@ -49,8 +49,8 @@ $ make install
 - **Kitty** - GPU-accelerated terminal emulator
 - **tmux** - Terminal multiplexer
 
-### Development Tools (via aqua)
-- Languages: Go, Node.js, Rust
+### Development Tools (mostly via aqua)
+- Languages: Java, Go, Node.js, Rust
 - Editors: helix, neovim
 - Kubernetes: kubectl, kind, krew, kustomize
 - Utilities: fzf, jq, yq, ghq, fd

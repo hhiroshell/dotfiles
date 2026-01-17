@@ -1,13 +1,15 @@
-# =======
-# sdkman
-# =======
+# ==============
+# Java (sdkman)
+# ==============
 export SDKMAN_DIR="$HOME/.sdkman"
 
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+if [[ -d "$HOME/.sdkman" ]]; then
+    [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+fi
 
 
 # ===
-# go
+# Go
 # ===
 export GOPATH="$HOME/.go"
 
@@ -15,9 +17,9 @@ export GOPATH="$HOME/.go"
 export PATH="$PATH:$GOPATH/bin"
 
 
-# =====
-# node
-# =====
+# ========
+# Node.js
+# ========
 
 # settings for npm installed with aqua
 # c.f. https://zenn.dev/shunsuke_suzuki/articles/aqua-nodejs-support
@@ -26,8 +28,10 @@ export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
 
 
 # =====
-# rust
+# Rust
 # =====
+export PATH="$HOME/.cargo/bin:$PATH"
+
 if rustup which rustc &> /dev/null; then
     toolchain_bin="$(dirname "$(rustup which rustc)")"
     # Only create symlink if it doesn't exist or is broken
@@ -36,5 +40,3 @@ if rustup which rustc &> /dev/null; then
         ln -sf "$toolchain_bin" ~/.cargo/bin
     fi
 fi
-
-export PATH="$HOME/.cargo/bin:$PATH"
