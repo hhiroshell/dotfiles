@@ -5,7 +5,6 @@ base_path="$(cd $(dirname $0); pwd)/home"
 declare -a targets=(
     ".aqua/aqua.yaml"
     ".claude/commands"
-    ".config/alacritty"
     ".config/helix"
     ".config/nvim"
     ".config/starship.toml"
