@@ -13,21 +13,17 @@ Personal dotfiles managed through symbolic links.
 ### Clone this repository
 
 ```console
-$ ghq get git@github.com:hhiroshell/dotfiles.git
+$ mkdir -p ~/src/github.com/hhiroshell
 
-$ cd $(ghq list --full-path --exact hhiroshell/dotfiles)
+$ git clone git@github.com:hhiroshell/dotfiles.git ~/src/github.com/hhiroshell/dotfiles
+
+$ cd ~/src/github.com/hhiroshell/dotfiles
 ```
 
 ### Create symlinks
 
 ```console
 $ make install
-```
-
-### Install development tools
-
-```console
-$ aqua install
 ```
 
 ## Commands
