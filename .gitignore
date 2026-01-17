@@ -4,7 +4,7 @@
 #
 # This repository uses a "whitelist" approach:
 #   1. Ignore everything by default
-#   2. Explicitly allow only the files/directories we want to track
+#   2. Explicitly allow only the files we want to track
 #
 # Why this approach?
 #   The home/ directory mirrors $HOME structure, which could accidentally
@@ -13,9 +13,7 @@
 #   intentionally selected configuration files are committed.
 #
 # How to add new files:
-#   - For files in an already-whitelisted directory: just add the file
-#   - For a new directory: add `!/home/newdir/**`
-#   - For a new individual file: add `!/home/newfile`
+#   - Add `!/path/to/newfile` to whitelist a new file
 #
 # =============================================================================
 
@@ -25,20 +23,24 @@
 # Allow directory traversal (required for nested whitelist patterns to work)
 !*/
 
-# Whitelist directories (all contents tracked)
-!/home/aqua/**
-!/home/claude/**
-!/home/config/**
-!/home/ssh/**
-!/zsh/**
-
-# Whitelist individual files in home/
+# Whitelist individual files
+!/home/aqua/aqua.yaml
+!/home/claude/commands/*
+!/home/config/helix/*
+!/home/config/helix/themes/*
+!/home/config/kitty/*
+!/home/config/nvim/init.lua
+!/home/config/nvim/lua/*
+!/home/config/starship.toml
+!/home/config/tmux/*
 !/home/gitconfig
 !/home/gitignore_global
 !/home/ideavimrc
+!/home/ssh/config
 !/home/zshenv
 !/home/zshrc
 !/home/zimrc
+!/zsh/*.zsh
 
 # Whitelist root files
 !/.gitignore
