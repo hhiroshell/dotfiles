@@ -6,6 +6,7 @@ declare -a targets=(
     ".aqua/aqua.yaml"
     ".claude/commands"
     ".config/helix"
+    ".config/kitty"
     ".config/nvim"
     ".config/starship.toml"
     ".config/tmux"

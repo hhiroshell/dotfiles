@@ -10,6 +10,7 @@
 !/home/.claude/commands/*
 !/home/.config/helix/*
 !/home/.config/helix/themes/*
+!/home/.config/kitty/*
 !/home/.config/nvim/init.lua
 !/home/.config/nvim/lua/*
 !/home/.config/starship.toml
