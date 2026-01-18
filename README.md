@@ -42,7 +42,6 @@ $ make install
 
 ### Editors
 - **Helix** - Modal text editor with zenbones theme
-- **Neovim** - Vim-based editor
 - **IdeaVim** - Vim emulation for IntelliJ IDEs
 
 ### Terminal
@@ -51,7 +50,7 @@ $ make install
 
 ### Development Tools (mostly via aqua)
 - Languages: Java, Go, Node.js, Rust
-- Editors: helix, neovim
+- Editors: helix
 - Kubernetes: kubectl, kind, krew, kustomize
 - Utilities: fzf, jq, yq, ghq, fd
 
@@ -64,7 +63,7 @@ $ make install
 .
 ├── home/           # Dotfiles (symlinked to $HOME with dot prefix)
 │   ├── aqua/       # -> ~/.aqua
-│   ├── config/     # -> ~/.config (helix, kitty, nvim, tmux, starship)
+│   ├── config/     # -> ~/.config (helix, kitty, tmux, starship)
 │   ├── gitconfig   # -> ~/.gitconfig
 │   ├── ssh/        # -> ~/.ssh
 │   └── zshrc       # -> ~/.zshrc

@@ -7,7 +7,7 @@
     email = hhiroshell@gmail.com
 
 [core]
-    editor = nvim
+    editor = hx
     excludesfile = /home/hhiroshell/.gitignore_global
 
 [ghq]

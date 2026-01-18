@@ -14,9 +14,6 @@ export FZF_DEFAULT_OPTS=" \
     --color=bg+:#E3E1E0 \
     --color=pointer:red,marker:red,gutter:#F0EDEC"
 
-# nvim
-alias vim='nvim'
-
 # history
 setopt extended_history
 alias history='history -t "%F %T"'

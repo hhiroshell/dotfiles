@@ -6,7 +6,6 @@ MAPPINGS := \
 	claude/commands:.claude/commands \
 	config/helix:.config/helix \
 	config/kitty:.config/kitty \
-	config/nvim:.config/nvim \
 	config/starship.toml:.config/starship.toml \
 	config/tmux:.config/tmux \
 	gitconfig:.gitconfig \
