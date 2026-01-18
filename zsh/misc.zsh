@@ -35,33 +35,8 @@ alias q='exit'
 # Utilities
 # ==========
 
-# WSL utilities for compatibility with masOS X
-if [[ "$(uname -r)" == *-WSL2 ]]; then
-    # cf. https://zenn.dev/kaityo256/articles/open_command_on_wsl
-    function open() {
-        if [ $# != 1 ]; then
-            explorer.exe .
-        elif [ "$1" = "." ]; then
-            explorer.exe .
-        else
-            if [ -e "$1" ]; then
-                cmd.exe /c start "$(wslpath -w "$1")" 2> /dev/null
-            elif [[ "$1" =~ "^http://" ]] || [[ "$1" =~ "^https://" ]]; then
-                cmd.exe /c start "$1" 2> /dev/null
-            else
-                echo "open: $1 : No such file or directory"
-            fi
-        fi
-    }
-fi
-
 # Clipboard utilities for compatibility with macOS
-if [[ "$(uname -r)" == *-WSL2 ]]; then
-    # cf. https://zenn.dev/kondounagi/scraps/184c884b5804a4
-    alias pbcopy='clip.exe'
-    alias pbpaste='powershell.exe -Command Get-Clipboard'
-elif [[ "$(uname)" == "Linux" ]]; then
-    # Ubuntu/Linux clipboard utilities for compatibility with macOS
+if [[ "$(uname)" == "Linux" ]]; then
     if command -v xclip &> /dev/null; then
         alias pbcopy='xclip -selection clipboard'
         alias pbpaste='xclip -selection clipboard -o'

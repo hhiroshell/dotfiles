@@ -42,15 +42,6 @@ aqua install -l
 eval "$(starship init zsh)"
 
 
-# ===================================
-# synchronize time at startup on WSL
-# ===================================
-
-if [[ "$(uname -r)" == *-WSL2 ]]; then
-    wsl.exe -u root date --set @$(pwsh.exe -Command 'Get-Date -UFormat %s')
-fi
-
-
 # ==========================
 # load external zsh scripts
 # ==========================
