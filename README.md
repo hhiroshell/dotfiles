@@ -42,7 +42,6 @@ $ make install
 
 ### Editors
 - **Helix** - Modal text editor with zenbones theme
-- **IdeaVim** - Vim emulation for IntelliJ IDEs
 
 ### Terminal
 - **Kitty** - GPU-accelerated terminal emulator

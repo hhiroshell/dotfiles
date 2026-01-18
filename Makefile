@@ -10,7 +10,6 @@ MAPPINGS := \
 	config/tmux:.config/tmux \
 	gitconfig:.gitconfig \
 	gitignore_global:.gitignore_global \
-	ideavimrc:.ideavimrc \
 	ssh/config:.ssh/config \
 	zimrc:.zimrc \
 	zshenv:.zshenv \
