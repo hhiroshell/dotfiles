@@ -15,7 +15,6 @@ packages:
 - name: astral-sh/uv@0.9.26
 - name: docker/cli@v29.1.5
 - name: dominikh/go-tools/staticcheck@2025.1.1
-- name: gitui-org/gitui@v0.28.0
 - name: go-delve/delve@v1.26.0
 - name: gohugoio/hugo@v0.154.5
 - name: golang/go@go1.25.6
