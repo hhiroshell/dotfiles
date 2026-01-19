@@ -1,0 +1,53 @@
+# Platform-specific settings (symlinked as 'platform' based on OS)
+config-file = ?platform
+
+# Shell
+command = /bin/zsh -l -c "[ -z \"$TMUX\" ] && tmux new-session -A -s main || zsh"
+
+# Scrollback
+scrollback-limit = 20000
+
+# Key mappings
+keybind = shift+enter=text:\n
+
+# Font
+font-family = HackGen Console NF
+
+# Font spacing
+adjust-cell-height = 2
+
+# Window padding (top, right, bottom, left in Ghostty)
+window-padding-x = 2
+window-padding-y = 2
+
+# Color theme
+
+## Primary colors
+background = f0edec
+foreground = 2c363c
+
+## Selection colors
+selection-background = cbd9e3
+selection-foreground = 2c363c
+
+## Cursor
+cursor-color = 2c363c
+cursor-text = f0edec
+
+## Palette (normal and bright colors)
+palette = 0=#2c363c
+palette = 1=#94253e
+palette = 2=#3f5a22
+palette = 3=#803d1c
+palette = 4=#1d5573
+palette = 5=#7b3b70
+palette = 6=#2b747c
+palette = 7=#f0edec
+palette = 8=#767676
+palette = 9=#a8334c
+palette = 10=#4f6c31
+palette = 11=#944927
+palette = 12=#286486
+palette = 13=#88507d
+palette = 14=#3b8992
+palette = 15=#d5d3d2

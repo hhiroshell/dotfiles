@@ -1,10 +1,12 @@
 DOTFILES := $(CURDIR)/home
+UNAME := $(shell uname)
 
 # source (in home/) -> target (in $HOME)
 MAPPINGS := \
 	aqua/aqua.yaml:.aqua/aqua.yaml \
 	claude/commands:.claude/commands \
 	config/helix:.config/helix \
+	config/ghostty/config:.config/ghostty/config \
 	config/kitty:.config/kitty \
 	config/starship.toml:.config/starship.toml \
 	config/tmux:.config/tmux \
@@ -14,6 +16,14 @@ MAPPINGS := \
 	zimrc:.zimrc \
 	zshenv:.zshenv \
 	zshrc:.zshrc
+
+# Platform-specific mappings (different source, same target)
+ifeq ($(UNAME),Darwin)
+MAPPINGS += config/ghostty/macos:.config/ghostty/platform
+endif
+ifeq ($(UNAME),Linux)
+MAPPINGS += config/ghostty/linux:.config/ghostty/platform
+endif
 
 .PHONY: install uninstall list
 
@@ -40,7 +50,9 @@ uninstall:
 	done
 
 list:
-	@echo "Targets:"
+	@echo "Mappings (source -> target):"
 	@for mapping in $(MAPPINGS); do \
-		echo "  $${mapping##*:}"; \
+		src="$${mapping%%:*}"; \
+		target="$${mapping##*:}"; \
+		printf "  %-30s -> %s\n" "$$src" "$$target"; \
 	done
