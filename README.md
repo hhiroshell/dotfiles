@@ -32,7 +32,7 @@ $ make install
 |------------------|------------------------------------------|
 | `make install`   | Create symlinks from `home/` to `$HOME`  |
 | `make uninstall` | Remove symlinks created by `make install`|
-| `make list`      | Show all managed dotfile targets         |
+| `make list`      | Show all managed dotfile mappings        |
 
 ## What's Included
 
@@ -44,6 +44,7 @@ $ make install
 - **Helix** - Modal text editor with zenbones theme
 
 ### Terminal
+- **Ghostty** - Fast, cross-platform terminal emulator
 - **Kitty** - GPU-accelerated terminal emulator
 - **tmux** - Terminal multiplexer
 
@@ -62,7 +63,7 @@ $ make install
 .
 ├── home/           # Dotfiles (symlinked to $HOME with dot prefix)
 │   ├── aqua/       # -> ~/.aqua
-│   ├── config/     # -> ~/.config (helix, kitty, tmux, starship)
+│   ├── config/     # -> ~/.config (ghostty, helix, kitty, tmux, starship)
 │   ├── gitconfig   # -> ~/.gitconfig
 │   ├── ssh/        # -> ~/.ssh
 │   └── zshrc       # -> ~/.zshrc
