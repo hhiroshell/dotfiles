@@ -52,7 +52,7 @@ $ make install
 - Languages: Java, Go, Node.js, Rust
 - Editors: helix
 - Kubernetes: kubectl, kind, krew, kustomize
-- Utilities: fzf, jq, yq, ghq, fd
+- Utilities: fzf, jq, yq, ghq, fd, lazygit
 
 ### Git
 - Global gitconfig and gitignore
@@ -63,7 +63,7 @@ $ make install
 .
 ├── home/           # Dotfiles (symlinked to $HOME with dot prefix)
 │   ├── aqua/       # -> ~/.aqua
-│   ├── config/     # -> ~/.config (ghostty, helix, kitty, tmux, starship)
+│   ├── config/     # -> ~/.config (ghostty, helix, kitty, lazygit, tmux, starship)
 │   ├── gitconfig   # -> ~/.gitconfig
 │   ├── ssh/        # -> ~/.ssh
 │   └── zshrc       # -> ~/.zshrc

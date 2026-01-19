@@ -29,6 +29,7 @@
 !/home/config/helix/*
 !/home/config/helix/themes/*
 !/home/config/kitty/*
+!/home/config/lazygit/*
 !/home/config/ghostty/*
 !/home/config/starship.toml
 !/home/config/tmux/*

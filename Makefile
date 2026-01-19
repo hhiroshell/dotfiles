@@ -8,6 +8,7 @@ MAPPINGS := \
 	config/helix:.config/helix \
 	config/ghostty/config:.config/ghostty/config \
 	config/kitty:.config/kitty \
+	config/lazygit:.config/lazygit \
 	config/starship.toml:.config/starship.toml \
 	config/tmux:.config/tmux \
 	gitconfig:.gitconfig \

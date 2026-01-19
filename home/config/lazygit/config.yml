@@ -1,0 +1,13 @@
+# Lazygit configuration
+# https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
+
+gui:
+  theme:
+    # Zenbones light theme colors
+    selectedLineBgColor:
+      - "#d5d3d2"
+    activeBorderColor:
+      - "#2c363c"
+      - bold
+    inactiveBorderColor:
+      - "#767676"

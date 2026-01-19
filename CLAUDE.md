@@ -19,7 +19,7 @@ The repository uses [aqua](https://aquaproj.github.io/) as a declarative CLI ver
 - Editors: helix
 - Languages: go, node.js, rust
 - Kubernetes tools: kubectl, kind, krew, kustomize
-- Development utilities: fzf, jq, yq, ghq, fd
+- Development utilities: fzf, jq, yq, ghq, fd, lazygit
 
 ## Architecture
 
@@ -34,6 +34,7 @@ The Makefile manages these key configurations (source -> symlink):
 - `config/ghostty/` -> `~/.config/ghostty/` - Ghostty terminal (with OS-specific config)
 - `config/helix/` -> `~/.config/helix/` - Helix editor configuration
 - `config/kitty/` -> `~/.config/kitty/` - Kitty terminal configuration
+- `config/lazygit/` -> `~/.config/lazygit/` - Lazygit configuration
 - `config/tmux/` -> `~/.config/tmux/` - tmux configuration
 - `config/starship.toml` -> `~/.config/starship.toml` - Shell prompt configuration
 - `gitconfig` and `gitignore_global` -> `~/.gitconfig`, `~/.gitignore_global` - Git configuration
