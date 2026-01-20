@@ -18,3 +18,5 @@
 # -----------
 [github]
     user = hhiroshell
+[credential "https://ghe.corp.yahoo.co.jp"]
+	provider = github
