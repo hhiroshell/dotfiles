@@ -27,7 +27,7 @@ ifeq ($(UNAME),Linux)
 MAPPINGS += config/ghostty/linux:.config/ghostty/platform
 endif
 
-.PHONY: install uninstall list brew-install
+.PHONY: install uninstall list brew-install apt-install
 
 install:
 	@for mapping in $(MAPPINGS); do \
@@ -70,3 +70,15 @@ brew-install:
 	fi
 	@echo "Installing packages from Brewfile..."
 	@brew bundle install --file=$(DOTFILES)/Brewfile
+
+apt-install:
+	@if [ "$(UNAME)" != "Linux" ]; then \
+		echo "Error: apt commands are only supported on Linux"; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(DOTFILES)/apt-packages.txt" ]; then \
+		echo "Error: $(DOTFILES)/apt-packages.txt not found"; \
+		exit 1; \
+	fi
+	@echo "Installing packages from apt-packages.txt..."
+	@grep -v '^#' $(DOTFILES)/apt-packages.txt | grep -v '^$$' | xargs sudo apt install -y

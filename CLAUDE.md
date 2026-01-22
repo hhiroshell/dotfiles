@@ -14,8 +14,9 @@ This is a personal dotfiles repository that manages configuration files and deve
 - `make list` - Shows all managed dotfile mappings (source -> target)
 - `aqua install` - Install all development tools defined in `home/aqua/aqua.yaml`
 
-### Homebrew Package Management (macOS only)
-- `make brew-install` - Install Homebrew packages from Brewfile
+### Platform-Specific Package Management
+- `make brew-install` - Install Homebrew packages from Brewfile (macOS only)
+- `make apt-install` - Install apt packages from apt-packages.txt (Ubuntu/Debian only)
 
 ### Development Tools
 The repository uses [aqua](https://aquaproj.github.io/) as a declarative CLI version manager. All development tools are defined in `home/aqua/aqua.yaml` including:
@@ -26,7 +27,7 @@ The repository uses [aqua](https://aquaproj.github.io/) as a declarative CLI ver
 
 ### Package Management Policy
 
-The repository uses two complementary package managers with clear separation of concerns:
+The repository uses complementary package managers with clear separation of concerns:
 
 **Homebrew** (macOS only):
 - Manages GUI applications and system-level tools
@@ -35,13 +36,20 @@ The repository uses two complementary package managers with clear separation of 
 - Defined in `home/Brewfile`
 - Install with: `make brew-install` or `brew bundle install --file=~/.Brewfile`
 
+**apt** (Ubuntu/Debian only):
+- Manages system packages and build dependencies
+- Primary use: Build dependencies for pyenv (libssl-dev, zlib1g-dev, etc.)
+- System utilities: curl, wget, git
+- Defined in `home/apt-packages.txt`
+- Install with: `make apt-install` or `grep -v '^#' ~/.apt-packages.txt | xargs sudo apt install -y`
+
 **aqua** (cross-platform):
 - Manages development tools and programming language toolchains
 - Examples: go, node, rust, kubectl, helix, lazygit, fzf, jq
 - Defined in `home/aqua/aqua.yaml`
 - Install with: `aqua install`
 
-**Why separate?** Homebrew's ecosystem excels at managing GUI applications with complex dependencies and system integrations. aqua's declarative approach and cross-platform support makes it ideal for reproducible development tool versioning across different machines and operating systems.
+**Why separate?** Platform-specific package managers (Homebrew/apt) handle GUI applications, system integrations, and native build dependencies. aqua's declarative approach provides reproducible development tool versioning across different platforms and operating systems.
 
 ## Architecture
 
@@ -53,6 +61,7 @@ The repository uses two complementary package managers with clear separation of 
 ### Configuration Management
 The Makefile manages these key configurations (source -> symlink):
 - `aqua/aqua.yaml` -> `~/.aqua/aqua.yaml` - Development tool versions
+- `apt-packages.txt` -> Not symlinked (used by `make apt-install` on Ubuntu/Debian)
 - `Brewfile` -> `~/.Brewfile` - Homebrew packages (macOS only)
 - `config/ghostty/` -> `~/.config/ghostty/` - Ghostty terminal (with OS-specific config)
 - `config/helix/` -> `~/.config/helix/` - Helix editor configuration
@@ -87,6 +96,9 @@ When modifying configurations:
 4. For Homebrew changes (macOS only):
    - Edit `home/Brewfile` to add/remove packages
    - Run `make brew-install` or `brew bundle install --file=~/.Brewfile` to apply changes
-5. Test changes by opening a new shell session
+5. For apt changes (Ubuntu/Debian only):
+   - Edit `home/apt-packages.txt` to add/remove packages
+   - Run `make apt-install` to apply changes
+6. Test changes by opening a new shell session
 
 The symlink approach ensures configuration changes are version-controlled while maintaining the expected file locations for applications.

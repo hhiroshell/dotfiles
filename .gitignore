@@ -39,6 +39,7 @@
 !/home/zshenv
 !/home/zshrc
 !/home/zimrc
+!/home/apt-packages.txt
 !/home/Brewfile
 !/zsh/*.zsh
 
