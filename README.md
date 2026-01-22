@@ -63,7 +63,7 @@ $ make install
 
 **macOS (via Homebrew)**:
 - GUI Apps: Ghostty, Google Chrome, Raycast, KeePassXC, Git Credential Manager, Gitify
-- System utilities: tmux, starship, gh, python, colordiff
+- System utilities: tmux, starship, gh, colordiff
 - Package management: Declarative Brewfile for reproducible setup
 
 **Ubuntu/Debian (via apt)**:

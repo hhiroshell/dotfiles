@@ -32,7 +32,7 @@ The repository uses complementary package managers with clear separation of conc
 **Homebrew** (macOS only):
 - Manages GUI applications and system-level tools
 - Examples: Ghostty, Google Chrome, Raycast, KeePassXC, git-credential-manager, gitify
-- System utilities: tmux, starship, gh, python, colordiff
+- System utilities: tmux, starship, gh, colordiff
 - Defined in `home/Brewfile`
 - Install with: `make brew-install` or `brew bundle install --file=~/.Brewfile`
 

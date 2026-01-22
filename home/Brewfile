@@ -8,7 +8,6 @@ brew "aqua"
 # System utilities
 brew "colordiff"
 brew "gh"
-brew "python@3.13"
 brew "starship"
 brew "tmux"
 
