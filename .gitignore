@@ -39,6 +39,7 @@
 !/home/zshenv
 !/home/zshrc
 !/home/zimrc
+!/home/Brewfile
 !/zsh/*.zsh
 
 # Whitelist root files

@@ -21,12 +21,13 @@ MAPPINGS := \
 # Platform-specific mappings (different source, same target)
 ifeq ($(UNAME),Darwin)
 MAPPINGS += config/ghostty/macos:.config/ghostty/platform
+MAPPINGS += Brewfile:.Brewfile
 endif
 ifeq ($(UNAME),Linux)
 MAPPINGS += config/ghostty/linux:.config/ghostty/platform
 endif
 
-.PHONY: install uninstall list
+.PHONY: install uninstall list brew-install
 
 install:
 	@for mapping in $(MAPPINGS); do \
@@ -57,3 +58,15 @@ list:
 		target="$${mapping##*:}"; \
 		printf "  %-30s -> %s\n" "$$src" "$$target"; \
 	done
+
+brew-install:
+	@if [ "$(UNAME)" != "Darwin" ]; then \
+		echo "Error: Homebrew commands are only supported on macOS"; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(DOTFILES)/Brewfile" ]; then \
+		echo "Error: $(DOTFILES)/Brewfile not found"; \
+		exit 1; \
+	fi
+	@echo "Installing packages from Brewfile..."
+	@brew bundle install --file=$(DOTFILES)/Brewfile

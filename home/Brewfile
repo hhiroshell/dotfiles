@@ -1,0 +1,30 @@
+# =============================================================================
+# System Tools & Utilities
+# =============================================================================
+
+# Package management
+brew "aqua"
+
+# System utilities
+brew "colordiff"
+brew "gh"
+brew "python@3.13"
+brew "starship"
+brew "tmux"
+
+# =============================================================================
+# GUI Applications
+# =============================================================================
+
+cask "alt-tab"
+cask "font-hackgen-nerd"
+cask "ghostty"
+cask "git-credential-manager"
+cask "gitify"
+cask "google-chrome"
+cask "google-drive"
+cask "google-japanese-ime"
+cask "keepassxc"
+cask "mac-mouse-fix"
+cask "meetingbar"
+cask "raycast"

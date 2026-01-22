@@ -5,6 +5,7 @@ Personal dotfiles managed through symbolic links.
 ## Prerequisites
 
 - [aqua](https://aquaproj.github.io/) - Declarative CLI version manager
+- [Homebrew](https://brew.sh/) (macOS only) - Package manager for GUI apps and system tools
 - [zsh](https://www.zsh.org/) with [zimfw](https://zimfw.sh/)
 - [starship](https://starship.rs/) - Shell prompt
 
@@ -28,11 +29,12 @@ $ make install
 
 ## Commands
 
-| Command          | Description                              |
-|------------------|------------------------------------------|
-| `make install`   | Create symlinks from `home/` to `$HOME`  |
-| `make uninstall` | Remove symlinks created by `make install`|
-| `make list`      | Show all managed dotfile mappings        |
+| Command            | Description                                              |
+|--------------------|----------------------------------------------------------|
+| `make install`     | Create symlinks from `home/` to `$HOME`                  |
+| `make uninstall`   | Remove symlinks created by `make install`                |
+| `make list`        | Show all managed dotfile mappings                        |
+| `make brew-install`| Install packages from Brewfile (macOS)                   |
 
 ## What's Included
 
@@ -48,11 +50,16 @@ $ make install
 - **Kitty** - GPU-accelerated terminal emulator
 - **tmux** - Terminal multiplexer
 
-### Development Tools (mostly via aqua)
+### Development Tools (via aqua)
 - Languages: Java, Go, Node.js, Rust
 - Editors: helix
 - Kubernetes: kubectl, kind, krew, kustomize
 - Utilities: fzf, jq, yq, ghq, fd, lazygit
+
+### System Tools & Applications (macOS via Homebrew)
+- GUI Apps: Ghostty, Google Chrome, Raycast, KeePassXC, Git Credential Manager, Gitify
+- System utilities: tmux, starship, gh, python, colordiff
+- Package management: Declarative Brewfile for reproducible setup
 
 ### Git
 - Global gitconfig and gitignore
@@ -62,7 +69,8 @@ $ make install
 ```
 .
 ├── home/           # Dotfiles (symlinked to $HOME with dot prefix)
-│   ├── aqua/       # -> ~/.aqua
+│   ├── aqua/       # -> ~/.aqua (development tools)
+│   ├── Brewfile    # -> ~/.Brewfile (macOS GUI apps & system tools)
 │   ├── config/     # -> ~/.config (ghostty, helix, kitty, lazygit, tmux, starship)
 │   ├── gitconfig   # -> ~/.gitconfig
 │   ├── ssh/        # -> ~/.ssh

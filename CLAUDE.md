@@ -14,12 +14,34 @@ This is a personal dotfiles repository that manages configuration files and deve
 - `make list` - Shows all managed dotfile mappings (source -> target)
 - `aqua install` - Install all development tools defined in `home/aqua/aqua.yaml`
 
+### Homebrew Package Management (macOS only)
+- `make brew-install` - Install Homebrew packages from Brewfile
+
 ### Development Tools
 The repository uses [aqua](https://aquaproj.github.io/) as a declarative CLI version manager. All development tools are defined in `home/aqua/aqua.yaml` including:
 - Editors: helix
 - Languages: go, node.js, rust
 - Kubernetes tools: kubectl, kind, krew, kustomize
 - Development utilities: fzf, jq, yq, ghq, fd, lazygit
+
+### Package Management Policy
+
+The repository uses two complementary package managers with clear separation of concerns:
+
+**Homebrew** (macOS only):
+- Manages GUI applications and system-level tools
+- Examples: Ghostty, Google Chrome, Raycast, KeePassXC, git-credential-manager, gitify
+- System utilities: tmux, starship, gh, python, colordiff
+- Defined in `home/Brewfile`
+- Install with: `make brew-install` or `brew bundle install --file=~/.Brewfile`
+
+**aqua** (cross-platform):
+- Manages development tools and programming language toolchains
+- Examples: go, node, rust, kubectl, helix, lazygit, fzf, jq
+- Defined in `home/aqua/aqua.yaml`
+- Install with: `aqua install`
+
+**Why separate?** Homebrew's ecosystem excels at managing GUI applications with complex dependencies and system integrations. aqua's declarative approach and cross-platform support makes it ideal for reproducible development tool versioning across different machines and operating systems.
 
 ## Architecture
 
@@ -31,6 +53,7 @@ The repository uses [aqua](https://aquaproj.github.io/) as a declarative CLI ver
 ### Configuration Management
 The Makefile manages these key configurations (source -> symlink):
 - `aqua/aqua.yaml` -> `~/.aqua/aqua.yaml` - Development tool versions
+- `Brewfile` -> `~/.Brewfile` - Homebrew packages (macOS only)
 - `config/ghostty/` -> `~/.config/ghostty/` - Ghostty terminal (with OS-specific config)
 - `config/helix/` -> `~/.config/helix/` - Helix editor configuration
 - `config/kitty/` -> `~/.config/kitty/` - Kitty terminal configuration
@@ -61,6 +84,9 @@ When modifying configurations:
 1. Edit files in `home/` directory (not in actual home directory)
 2. Run `make install` to update symlinks if adding new files
 3. Run `aqua install` after updating `home/aqua/aqua.yaml`
-4. Test changes by opening a new shell session
+4. For Homebrew changes (macOS only):
+   - Edit `home/Brewfile` to add/remove packages
+   - Run `make brew-install` or `brew bundle install --file=~/.Brewfile` to apply changes
+5. Test changes by opening a new shell session
 
 The symlink approach ensures configuration changes are version-controlled while maintaining the expected file locations for applications.
