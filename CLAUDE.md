@@ -22,6 +22,7 @@ This is a personal dotfiles repository that manages configuration files and deve
 The repository uses [aqua](https://aquaproj.github.io/) as a declarative CLI version manager. All development tools are defined in `home/aqua/aqua.yaml` including:
 - Editors: helix
 - Languages: go, node.js, rust
+- Python: uv (manages Python versions, packages, and virtual environments)
 - Kubernetes tools: kubectl, kind, krew, kustomize
 - Development utilities: fzf, jq, yq, ghq, fd, lazygit
 
@@ -37,15 +38,14 @@ The repository uses complementary package managers with clear separation of conc
 - Install with: `make brew-install` or `brew bundle install --file=~/.Brewfile`
 
 **apt** (Ubuntu/Debian only):
-- Manages system packages and build dependencies
-- Primary use: Build dependencies for pyenv (libssl-dev, zlib1g-dev, etc.)
+- Manages basic system packages and utilities
 - System utilities: curl, wget, git
 - Defined in `home/apt-packages.txt`
 - Install with: `make apt-install` or `grep -v '^#' ~/.apt-packages.txt | xargs sudo apt install -y`
 
 **aqua** (cross-platform):
 - Manages development tools and programming language toolchains
-- Examples: go, node, rust, kubectl, helix, lazygit, fzf, jq
+- Examples: go, node, rust, uv (Python), kubectl, helix, lazygit, fzf, jq
 - Defined in `home/aqua/aqua.yaml`
 - Install with: `aqua install`
 

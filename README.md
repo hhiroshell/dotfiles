@@ -54,7 +54,8 @@ $ make install
 - **tmux** - Terminal multiplexer
 
 ### Development Tools (via aqua)
-- Languages: Java, Go, Node.js, Rust
+- Languages: Go, Node.js, Rust
+- Python: uv (manages Python versions, packages, and virtual environments)
 - Editors: helix
 - Kubernetes: kubectl, kind, krew, kustomize
 - Utilities: fzf, jq, yq, ghq, fd, lazygit
@@ -67,7 +68,6 @@ $ make install
 - Package management: Declarative Brewfile for reproducible setup
 
 **Ubuntu/Debian (via apt)**:
-- Build dependencies for pyenv (libssl-dev, zlib1g-dev, etc.)
 - System utilities: curl, wget, git
 - Package management: Declarative apt-packages.txt for reproducible setup
 
