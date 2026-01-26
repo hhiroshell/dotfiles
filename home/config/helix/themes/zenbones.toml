@@ -34,7 +34,7 @@
 "ui.virtual.indent-guide" = { fg = "gray" }
 "ui.virtual.inlay-hint" = { fg = "gray" }
 "ui.virtual.ruler" = { bg = "gray" }
-"ui.window" = { bg = "default" }
+"ui.window" = { fg = "#b0aeac", bg = "default" }
 "ui.widgets" = { fg = "black", bg = "gray" }
 "ui.widgets.inactive" = { fg = "gray", bg = "light-gray" }
 "warning" = { fg = "yellow" }
