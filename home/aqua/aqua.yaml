@@ -27,7 +27,7 @@ packages:
 - name: jqlang/jq@jq-1.8.1
 - name: junegunn/fzf@v0.67.0
 - name: k1LoW/deck@v1.22.1
-- name: kubernetes-sigs/controller-runtime/setup-envtest@v0.23.0
+- name: kubernetes-sigs/controller-runtime/setup-envtest@v0.23.1
 - name: kubernetes-sigs/kind@v0.31.0
 - name: kubernetes-sigs/krew@v0.4.5
 - name: kubernetes-sigs/kustomize@kustomize/v5.8.0
