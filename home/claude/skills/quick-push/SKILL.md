@@ -1,5 +1,5 @@
 ---
-allowed-tools: Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(git remote:*), AskUserQuestion
+allowed-tools: Bash(git ls-files:*), Bash(git status:*), Bash(git diff:*), Bash(git add:*), Bash(git commit:*), Bash(git push:*), Bash(git remote:*), AskUserQuestion
 description: "Analyzes changes, plans commits, and pushes to remote after user confirmation"
 ---
 
