@@ -4,7 +4,7 @@ UNAME := $(shell uname)
 # source (in home/) -> target (in $HOME)
 MAPPINGS := \
 	aqua/aqua.yaml:.aqua/aqua.yaml \
-	claude/commands:.claude/commands \
+	claude/skills:.claude/skills \
 	config/helix:.config/helix \
 	config/ghostty/config:.config/ghostty/config \
 	config/kitty:.config/kitty \
