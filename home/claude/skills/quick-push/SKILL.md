@@ -29,20 +29,34 @@ Review all staged and unstaged changes and identify:
    - Determine if changes should be organized into multiple commits
    - Group related changes together (e.g., feature code + tests, refactoring separate from features)
 
-### Step 2: Present Plan and Request Confirmation
+### Step 2: Present Plan
 
-Present the following information to the user using AskUserQuestion:
+Present the commit plan to the user using the following template:
 
-1. **Target repository and branch** (where commits will be pushed)
-2. **Warnings** about any problematic changes found (if any)
-3. **Commit plan:**
-   - For each planned commit: list files to include and proposed commit message
-   - If changes are already staged and appropriate for a single commit, show that plan
-4. **Ask for confirmation** to proceed with the plan
-   - Provide options: "Proceed", "Abort"
-   - If problematic changes were found, suggest excluding them
+```
+## Commit Plan
 
-### Step 3: Execute Plan (only if confirmed)
+**Target:** {remote_name}/{branch_name} ({remote_url})
+
+### Warnings
+{warnings_if_any_or_"None"}
+
+### Commits
+{for_each_commit}
+**Commit {n}:** {commit_message}
+- {file_1}
+- {file_2}
+- ...
+{end_for_each}
+```
+
+### Step 3: Request Confirmation
+
+After presenting the plan, use AskUserQuestion to ask for confirmation:
+- Provide options: "Proceed", "Abort"
+- If problematic changes were found in Step 1, include an option to exclude them
+
+### Step 4: Execute Plan (only if confirmed)
 
 If the user confirms:
 
