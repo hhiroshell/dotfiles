@@ -27,7 +27,7 @@ ifeq ($(UNAME),Linux)
 MAPPINGS += config/ghostty/linux:.config/ghostty/platform
 endif
 
-.PHONY: install uninstall list brew-install apt-install
+.PHONY: install uninstall list brew-install apt-install aqua-install
 
 install:
 	@for mapping in $(MAPPINGS); do \
@@ -94,3 +94,15 @@ apt-install:
 	fi
 	@echo "Installing packages from apt-packages.txt..."
 	@grep -v '^#' $(DOTFILES)/apt-packages.txt | grep -v '^$$' | xargs sudo apt install -y
+
+aqua-install:
+	@if ! command -v aqua >/dev/null 2>&1; then \
+		echo "Error: aqua is not installed"; \
+		exit 1; \
+	fi
+	@if [ ! -f "$(DOTFILES)/aqua/aqua.yaml" ]; then \
+		echo "Error: $(DOTFILES)/aqua/aqua.yaml not found"; \
+		exit 1; \
+	fi
+	@echo "Installing packages from aqua.yaml..."
+	@aqua install
