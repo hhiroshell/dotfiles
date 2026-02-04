@@ -121,29 +121,29 @@ _pkg_show_notifications() {
 
     # Dotfiles sync notifications (yellow)
     if [[ -f "$_pkg_cache_dir/aqua-sync" ]]; then
-        echo "\033[1;33m[aqua] Updates available. Run 'aqua-update' to apply.\033[0m"
+        echo "\033[1;33m[aqua] Updates available. Run 'aqua-pull' to apply.\033[0m"
     fi
 
     if [[ -f "$_pkg_cache_dir/brew-sync" ]]; then
-        echo "\033[1;33m[brew] Brewfile changed. Run 'brew-update' to apply.\033[0m"
+        echo "\033[1;33m[brew] Brewfile changed. Run 'brew-pull' or 'brew-sync' to apply.\033[0m"
     fi
 
     if [[ -f "$_pkg_cache_dir/apt-sync" ]]; then
-        echo "\033[1;33m[apt] Package list changed. Run 'apt-update' to apply.\033[0m"
+        echo "\033[1;33m[apt] Package list changed. Run 'apt-pull' or 'apt-sync' to apply.\033[0m"
     fi
 
     # Upstream update notifications (cyan)
     if [[ -f "$_pkg_cache_dir/brew-outdated-count" ]]; then
         local count=$(cat "$_pkg_cache_dir/brew-outdated-count")
         if (( count > 0 )); then
-            echo "\033[1;36m[brew] $count package(s) outdated. Run 'brew-upgrade' to update.\033[0m"
+            echo "\033[1;36m[brew] $count package(s) outdated. Run 'brew-upgrade' or 'brew-sync' to update.\033[0m"
         fi
     fi
 
     if [[ -f "$_pkg_cache_dir/apt-upgradable-count" ]]; then
         local count=$(cat "$_pkg_cache_dir/apt-upgradable-count")
         if (( count > 0 )); then
-            echo "\033[1;36m[apt] $count package(s) upgradable. Run 'apt-upgrade' to update.\033[0m"
+            echo "\033[1;36m[apt] $count package(s) upgradable. Run 'apt-upgrade' or 'apt-sync' to update.\033[0m"
         fi
     fi
 
@@ -156,11 +156,11 @@ _pkg_precmd_hook() {
 }
 
 # ================================
-# Update commands
+# Pull commands (dotfiles sync)
 # ================================
 
-# aqua update
-aqua-update() {
+# aqua pull (sync from dotfiles)
+aqua-pull() {
     local dotfiles_dir
     dotfiles_dir=$(_pkg_dotfiles_dir)
 
@@ -199,13 +199,13 @@ aqua-update() {
             rm -f "$_pkg_cache_dir/aqua-sync"
             ;;
         *)
-            echo "Skipped aqua update"
+            echo "Skipped"
             ;;
     esac
 }
 
-# brew update (sync from dotfiles)
-brew-update() {
+# brew pull (sync from dotfiles)
+brew-pull() {
     local dotfiles_dir
     dotfiles_dir=$(_pkg_dotfiles_dir)
 
@@ -244,13 +244,13 @@ brew-update() {
             rm -f "$_pkg_cache_dir/brew-sync"
             ;;
         *)
-            echo "Skipped brew update"
+            echo "Skipped"
             ;;
     esac
 }
 
-# apt update (sync from dotfiles)
-apt-update() {
+# apt pull (sync from dotfiles)
+apt-pull() {
     local dotfiles_dir
     dotfiles_dir=$(_pkg_dotfiles_dir)
 
@@ -289,12 +289,44 @@ apt-update() {
             rm -f "$_pkg_cache_dir/apt-sync"
             ;;
         *)
-            echo "Skipped apt update"
+            echo "Skipped"
             ;;
     esac
 }
 
-# Show detailed outdated packages
+# ================================
+# Upgrade commands
+# ================================
+
+# brew upgrade (clears cache after upgrade)
+brew-upgrade() {
+    brew upgrade "$@" && rm -f "$_pkg_cache_dir/brew-outdated" "$_pkg_cache_dir/brew-outdated-count"
+}
+
+# apt upgrade (clears cache after upgrade)
+apt-upgrade() {
+    sudo apt upgrade "$@" && rm -f "$_pkg_cache_dir/apt-upgradable" "$_pkg_cache_dir/apt-upgradable-count"
+}
+
+# ================================
+# Sync commands (pull + upgrade)
+# ================================
+
+# brew sync (pull dotfiles + upgrade packages)
+brew-sync() {
+    brew-pull && brew-upgrade
+}
+
+# apt sync (pull dotfiles + upgrade packages)
+apt-sync() {
+    apt-pull && apt-upgrade
+}
+
+# ================================
+# Status commands
+# ================================
+
+# Show cached outdated brew packages
 brew-outdated() {
     if [[ -f "$_pkg_cache_dir/brew-outdated" ]]; then
         echo "Outdated brew packages (cached):"
@@ -305,6 +337,7 @@ brew-outdated() {
     fi
 }
 
+# Show cached upgradable apt packages
 apt-upgradable() {
     if [[ -f "$_pkg_cache_dir/apt-upgradable" ]]; then
         echo "Upgradable apt packages (cached):"
@@ -313,20 +346,6 @@ apt-upgradable() {
         echo "No cached data. Running apt list --upgradable..."
         apt list --upgradable 2>/dev/null
     fi
-}
-
-# ================================
-# Upgrade commands (wrappers)
-# ================================
-
-# brew upgrade wrapper (clears cache after upgrade)
-brew-upgrade() {
-    brew upgrade "$@" && rm -f "$_pkg_cache_dir/brew-outdated" "$_pkg_cache_dir/brew-outdated-count"
-}
-
-# apt upgrade wrapper (clears cache after upgrade)
-apt-upgrade() {
-    sudo apt upgrade "$@" && rm -f "$_pkg_cache_dir/apt-upgradable" "$_pkg_cache_dir/apt-upgradable-count"
 }
 
 # ================================
