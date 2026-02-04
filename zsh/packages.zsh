@@ -13,57 +13,11 @@ _pkg_dotfiles_dir() {
 }
 
 # ================================
-# Dotfiles sync checks (fast)
+# Background checks
 # ================================
 
-# Check if a file has changed on remote
-_pkg_check_remote_diff() {
-    local file="$1"
-    local dotfiles_dir
-    dotfiles_dir=$(_pkg_dotfiles_dir)
-
-    [[ -z "$dotfiles_dir" ]] && return 1
-
-    (
-        cd "$dotfiles_dir" || exit 1
-        git fetch origin --quiet 2>/dev/null || exit 1
-
-        local local_rev remote_rev
-        local_rev=$(git rev-parse HEAD:"$file" 2>/dev/null)
-        remote_rev=$(git rev-parse origin/main:"$file" 2>/dev/null)
-
-        [[ -n "$local_rev" ]] && [[ -n "$remote_rev" ]] && [[ "$local_rev" != "$remote_rev" ]]
-    )
-}
-
-# Check dotfiles sync for all package managers
-_pkg_check_dotfiles_sync() {
-    # aqua
-    if _pkg_check_remote_diff "home/aqua/aqua.yaml"; then
-        echo "\033[1;33m[aqua] Updates available. Run 'aqua-update' to apply.\033[0m"
-    fi
-
-    # brew (macOS only)
-    if [[ "$(uname)" == "Darwin" ]]; then
-        if _pkg_check_remote_diff "home/Brewfile"; then
-            echo "\033[1;33m[brew] Brewfile changed. Run 'brew-update' to apply.\033[0m"
-        fi
-    fi
-
-    # apt (Linux only)
-    if [[ "$(uname)" == "Linux" ]] && command -v apt &>/dev/null; then
-        if _pkg_check_remote_diff "home/apt-packages.txt"; then
-            echo "\033[1;33m[apt] Package list changed. Run 'apt-update' to apply.\033[0m"
-        fi
-    fi
-}
-
-# ================================
-# Background upstream checks
-# ================================
-
-# Run upstream update checks in background
-_pkg_check_upstream_background() {
+# Run all update checks in background
+_pkg_check_background() {
     mkdir -p "$_pkg_cache_dir"
 
     # Try to acquire lock (non-blocking)
@@ -71,6 +25,47 @@ _pkg_check_upstream_background() {
     flock -n 9 || return 0
 
     (
+        local dotfiles_dir
+        dotfiles_dir=$(_pkg_dotfiles_dir)
+
+        # Dotfiles sync check (single git fetch for all)
+        if [[ -n "$dotfiles_dir" ]]; then
+            cd "$dotfiles_dir" || exit 1
+            git fetch origin --quiet 2>/dev/null
+
+            # aqua
+            local local_rev remote_rev
+            local_rev=$(git rev-parse HEAD:home/aqua/aqua.yaml 2>/dev/null)
+            remote_rev=$(git rev-parse origin/main:home/aqua/aqua.yaml 2>/dev/null)
+            if [[ -n "$local_rev" ]] && [[ -n "$remote_rev" ]] && [[ "$local_rev" != "$remote_rev" ]]; then
+                echo "1" > "$_pkg_cache_dir/aqua-sync"
+            else
+                rm -f "$_pkg_cache_dir/aqua-sync"
+            fi
+
+            # brew (macOS only)
+            if [[ "$(uname)" == "Darwin" ]]; then
+                local_rev=$(git rev-parse HEAD:home/Brewfile 2>/dev/null)
+                remote_rev=$(git rev-parse origin/main:home/Brewfile 2>/dev/null)
+                if [[ -n "$local_rev" ]] && [[ -n "$remote_rev" ]] && [[ "$local_rev" != "$remote_rev" ]]; then
+                    echo "1" > "$_pkg_cache_dir/brew-sync"
+                else
+                    rm -f "$_pkg_cache_dir/brew-sync"
+                fi
+            fi
+
+            # apt (Linux only)
+            if [[ "$(uname)" == "Linux" ]]; then
+                local_rev=$(git rev-parse HEAD:home/apt-packages.txt 2>/dev/null)
+                remote_rev=$(git rev-parse origin/main:home/apt-packages.txt 2>/dev/null)
+                if [[ -n "$local_rev" ]] && [[ -n "$remote_rev" ]] && [[ "$local_rev" != "$remote_rev" ]]; then
+                    echo "1" > "$_pkg_cache_dir/apt-sync"
+                else
+                    rm -f "$_pkg_cache_dir/apt-sync"
+                fi
+            fi
+        fi
+
         # brew outdated (macOS only)
         if [[ "$(uname)" == "Darwin" ]] && command -v brew &>/dev/null; then
             local brew_outdated
@@ -117,30 +112,38 @@ _pkg_cache_expired() {
 typeset -g _pkg_notifications_shown=0
 
 # Show notifications from background check results (called via precmd)
-_pkg_show_upstream_notifications() {
+_pkg_show_notifications() {
     # Only show once per session
     (( _pkg_notifications_shown )) && return 0
 
     # Check if results are ready
     [[ ! -f "$_pkg_cache_dir/last-check" ]] && return 0
 
-    local has_notifications=0
+    # Dotfiles sync notifications (yellow)
+    if [[ -f "$_pkg_cache_dir/aqua-sync" ]]; then
+        echo "\033[1;33m[aqua] Updates available. Run 'aqua-update' to apply.\033[0m"
+    fi
 
-    # brew
+    if [[ -f "$_pkg_cache_dir/brew-sync" ]]; then
+        echo "\033[1;33m[brew] Brewfile changed. Run 'brew-update' to apply.\033[0m"
+    fi
+
+    if [[ -f "$_pkg_cache_dir/apt-sync" ]]; then
+        echo "\033[1;33m[apt] Package list changed. Run 'apt-update' to apply.\033[0m"
+    fi
+
+    # Upstream update notifications (cyan)
     if [[ -f "$_pkg_cache_dir/brew-outdated-count" ]]; then
         local count=$(cat "$_pkg_cache_dir/brew-outdated-count")
         if (( count > 0 )); then
-            echo "\033[1;36m[brew] $count package(s) outdated. Run 'brew upgrade' to update.\033[0m"
-            has_notifications=1
+            echo "\033[1;36m[brew] $count package(s) outdated. Run 'brew-upgrade' to update.\033[0m"
         fi
     fi
 
-    # apt
     if [[ -f "$_pkg_cache_dir/apt-upgradable-count" ]]; then
         local count=$(cat "$_pkg_cache_dir/apt-upgradable-count")
         if (( count > 0 )); then
-            echo "\033[1;36m[apt] $count package(s) upgradable. Run 'sudo apt upgrade' to update.\033[0m"
-            has_notifications=1
+            echo "\033[1;36m[apt] $count package(s) upgradable. Run 'apt-upgrade' to update.\033[0m"
         fi
     fi
 
@@ -149,7 +152,7 @@ _pkg_show_upstream_notifications() {
 
 # precmd hook to show notifications
 _pkg_precmd_hook() {
-    _pkg_show_upstream_notifications
+    _pkg_show_notifications
 }
 
 # ================================
@@ -192,7 +195,8 @@ aqua-update() {
         [Yy]*)
             git pull origin main --quiet && \
             echo "Running aqua install..." && \
-            aqua install
+            aqua install && \
+            rm -f "$_pkg_cache_dir/aqua-sync"
             ;;
         *)
             echo "Skipped aqua update"
@@ -236,7 +240,8 @@ brew-update() {
         [Yy]*)
             git pull origin main --quiet && \
             echo "Running brew bundle install..." && \
-            brew bundle install --file="$dotfiles_dir/home/Brewfile"
+            brew bundle install --file="$dotfiles_dir/home/Brewfile" && \
+            rm -f "$_pkg_cache_dir/brew-sync"
             ;;
         *)
             echo "Skipped brew update"
@@ -280,7 +285,8 @@ apt-update() {
         [Yy]*)
             git pull origin main --quiet && \
             echo "Running apt install..." && \
-            grep -v '^#' "$dotfiles_dir/home/apt-packages.txt" | grep -v '^$' | xargs sudo apt install -y
+            grep -v '^#' "$dotfiles_dir/home/apt-packages.txt" | grep -v '^$' | xargs sudo apt install -y && \
+            rm -f "$_pkg_cache_dir/apt-sync"
             ;;
         *)
             echo "Skipped apt update"
@@ -310,16 +316,27 @@ apt-upgradable() {
 }
 
 # ================================
+# Upgrade commands (wrappers)
+# ================================
+
+# brew upgrade wrapper (clears cache after upgrade)
+brew-upgrade() {
+    brew upgrade "$@" && rm -f "$_pkg_cache_dir/brew-outdated" "$_pkg_cache_dir/brew-outdated-count"
+}
+
+# apt upgrade wrapper (clears cache after upgrade)
+apt-upgrade() {
+    sudo apt upgrade "$@" && rm -f "$_pkg_cache_dir/apt-upgradable" "$_pkg_cache_dir/apt-upgradable-count"
+}
+
+# ================================
 # Shell startup
 # ================================
 
 if [[ -o interactive ]]; then
-    # Fast dotfiles sync check (immediate)
-    _pkg_check_dotfiles_sync
-
-    # Start background upstream check if cache expired
+    # Start background check if cache expired
     if _pkg_cache_expired; then
-        _pkg_check_upstream_background
+        _pkg_check_background
     fi
 
     # Add precmd hook for showing background results
