@@ -33,10 +33,22 @@ install:
 	@for mapping in $(MAPPINGS); do \
 		src="$(DOTFILES)/$${mapping%%:*}"; \
 		target="$(HOME)/$${mapping##*:}"; \
-		mkdir -p "$$(dirname "$$target")"; \
 		if [ -e "$$target" ] && [ ! -L "$$target" ]; then \
 			echo "Skipped: $$target already exists (not a symlink)"; \
+		elif [ -L "$$target" ]; then \
+			printf "Overwrite symlink: $$target -> $$src? [y/N] "; \
+			read answer; \
+			case "$$answer" in \
+				[Yy]*) \
+					ln -snf "$$src" "$$target"; \
+					echo "Updated symlink: $$target"; \
+					;; \
+				*) \
+					echo "Skipped: $$target"; \
+					;; \
+			esac; \
 		else \
+			mkdir -p "$$(dirname "$$target")"; \
 			ln -snf "$$src" "$$target"; \
 			echo "Created symlink: $$target"; \
 		fi; \
