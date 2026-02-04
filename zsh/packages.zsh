@@ -20,11 +20,9 @@ _pkg_dotfiles_dir() {
 _pkg_check_background() {
     mkdir -p "$_pkg_cache_dir"
 
-    # Try to acquire lock (non-blocking)
-    exec 9>"$_pkg_lock_file"
-    flock -n 9 || return 0
-
     (
+        # Try to acquire lock (non-blocking)
+        flock -n 9 || exit 0
         local dotfiles_dir
         dotfiles_dir=$(_pkg_dotfiles_dir)
 
@@ -80,9 +78,10 @@ _pkg_check_background() {
         fi
 
         # apt upgradable (Linux only)
-        if [[ "$(uname)" == "Linux" ]] && command -v apt &>/dev/null; then
+        # Use apt-get -s upgrade to exclude phased packages
+        if [[ "$(uname)" == "Linux" ]] && command -v apt-get &>/dev/null; then
             local apt_upgradable
-            apt_upgradable=$(apt list --upgradable 2>/dev/null | grep -v "^Listing")
+            apt_upgradable=$(apt-get -s upgrade 2>/dev/null | grep "^Inst " | sed 's/^Inst //')
             if [[ -n "$apt_upgradable" ]]; then
                 local count=$(echo "$apt_upgradable" | wc -l | tr -d ' ')
                 echo "$apt_upgradable" > "$_pkg_cache_dir/apt-upgradable"
@@ -94,7 +93,7 @@ _pkg_check_background() {
 
         # Mark check as complete with timestamp
         date +%s > "$_pkg_cache_dir/last-check"
-    ) &>/dev/null &
+    ) 9>|"$_pkg_lock_file" &>/dev/null &
     disown
 }
 
@@ -343,8 +342,8 @@ apt-upgradable() {
         echo "Upgradable apt packages (cached):"
         cat "$_pkg_cache_dir/apt-upgradable"
     else
-        echo "No cached data. Running apt list --upgradable..."
-        apt list --upgradable 2>/dev/null
+        echo "No cached data. Running apt-get -s upgrade..."
+        apt-get -s upgrade 2>/dev/null | grep "^Inst " | sed 's/^Inst //'
     fi
 }
 
