@@ -21,10 +21,12 @@ MAPPINGS := \
 # Platform-specific mappings (different source, same target)
 ifeq ($(UNAME),Darwin)
 MAPPINGS += config/ghostty/macos:.config/ghostty/platform
+MAPPINGS += claude/settings.macos.json:.claude/settings.json
 MAPPINGS += Brewfile:.Brewfile
 endif
 ifeq ($(UNAME),Linux)
 MAPPINGS += config/ghostty/linux:.config/ghostty/platform
+MAPPINGS += claude/settings.linux.json:.claude/settings.json
 endif
 
 .PHONY: install uninstall list brew-install apt-install aqua-install

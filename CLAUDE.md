@@ -63,6 +63,8 @@ The Makefile manages these key configurations (source -> symlink):
 - `aqua/aqua.yaml` -> `~/.aqua/aqua.yaml` - Development tool versions
 - `apt-packages.txt` -> Not symlinked (used by `make apt-install` on Ubuntu/Debian)
 - `Brewfile` -> `~/.Brewfile` - Homebrew packages (macOS only)
+- `claude/settings.{macos,linux}.json` -> `~/.claude/settings.json` - Claude Code settings (OS-specific)
+- `claude/skills/` -> `~/.claude/skills/` - Claude Code custom skills
 - `config/ghostty/` -> `~/.config/ghostty/` - Ghostty terminal (with OS-specific config)
 - `config/helix/` -> `~/.config/helix/` - Helix editor configuration
 - `config/kitty/` -> `~/.config/kitty/` - Kitty terminal configuration
@@ -77,8 +79,10 @@ The Makefile manages these key configurations (source -> symlink):
 The Makefile detects the OS (`uname`) and creates platform-specific symlinks:
 - On macOS: `config/ghostty/macos` -> `~/.config/ghostty/platform`
 - On Linux: `config/ghostty/linux` -> `~/.config/ghostty/platform`
+- On macOS: `claude/settings.macos.json` -> `~/.claude/settings.json`
+- On Linux: `claude/settings.linux.json` -> `~/.claude/settings.json`
 
-The main config file uses `config-file = ?platform` to optionally include the platform-specific settings.
+The Ghostty main config file uses `config-file = ?platform` to optionally include the platform-specific settings. Claude Code uses separate settings files per platform to handle OS-specific hooks (e.g., `notify-send` on Linux vs `osascript` on macOS).
 
 ### Zsh Module System
 The `.zshrc` sources modular configuration files from `zsh/`:

@@ -1,0 +1,32 @@
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send -a 'Claude Code' -i dialog-question -u normal \"$(basename \"$PWD\")\" 'Waiting for your input'"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send -a 'Claude Code' -i emblem-default -u normal \"$(basename \"$PWD\")\" 'Finished my work'"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "code-review@claude-plugins-official": true,
+    "commit-commands@claude-plugins-official": true,
+    "github-devflow@gh-devflow-plugins": true,
+    "gopls-lsp@claude-plugins-official": true
+  }
+}

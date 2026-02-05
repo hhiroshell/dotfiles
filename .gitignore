@@ -26,6 +26,8 @@
 # Whitelist individual files
 !/home/aqua/aqua.yaml
 !/home/claude/skills/**
+!/home/claude/settings.linux.json
+!/home/claude/settings.macos.json
 !/home/config/helix/*
 !/home/config/helix/themes/*
 !/home/config/kitty/*
