@@ -10,6 +10,9 @@ scrollback-limit = 20000
 # Key mappings
 keybind = shift+enter=text:\n
 
+# Notifications
+desktop-notifications = true
+
 # Font
 font-family = HackGen Console NF
 
