@@ -15,7 +15,7 @@ handler_apt_status() {
 
     if _apt_is_installed "$install_entry"; then
         local version
-        version=$(handler_apt_current_version "$app_name" "$install_entry")
+        version=$(handler_apt_current_version "$app_name" "$install_entry" "$app_json")
         log_ok "$app_name: installed ($version)"
         return 0
     else
@@ -93,6 +93,7 @@ handler_apt_uninstall() {
 handler_apt_current_version() {
     local app_name="$1"
     local install_entry="$2"
+    local app_json="$3"
 
     local pkg
     pkg=$(echo "$install_entry" | jq -r '.package')

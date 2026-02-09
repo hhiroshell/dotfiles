@@ -1,4 +1,5 @@
 name: claude-code
+command: claude
 
 version:
   policy: latest

@@ -1,4 +1,5 @@
 name: krew
+command: kubectl-krew
 
 version:
   policy: latest

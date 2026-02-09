@@ -28,6 +28,7 @@ _custom_get_version_cmd() {
 _custom_is_installed() {
     local app_name="$1"
     local install_entry="$2"
+    local app_json="$3"
 
     local check_cmd
     check_cmd=$(_custom_get_check_cmd "$install_entry")
@@ -35,8 +36,10 @@ _custom_is_installed() {
     if [[ -n "$check_cmd" ]]; then
         eval "$check_cmd" &>/dev/null
     else
-        # Default: check if app_name command exists
-        command_exists "$app_name"
+        # Default: check if command exists
+        local cmd
+        cmd=$(get_command "$app_json" "$app_name")
+        command_exists "$cmd"
     fi
 }
 
@@ -45,9 +48,9 @@ handler_custom_status() {
     local install_entry="$2"
     local app_json="$3"
 
-    if _custom_is_installed "$app_name" "$install_entry"; then
+    if _custom_is_installed "$app_name" "$install_entry" "$app_json"; then
         local version
-        version=$(handler_custom_current_version "$app_name" "$install_entry")
+        version=$(handler_custom_current_version "$app_name" "$install_entry" "$app_json")
         log_ok "$app_name: installed ($version)"
         return 0
     else
@@ -61,7 +64,7 @@ handler_custom_install() {
     local install_entry="$2"
     local app_json="$3"
 
-    if _custom_is_installed "$app_name" "$install_entry"; then
+    if _custom_is_installed "$app_name" "$install_entry" "$app_json"; then
         log_ok "$app_name: already installed"
         return 0
     fi
@@ -111,7 +114,7 @@ handler_custom_uninstall() {
     local install_entry="$2"
     local app_json="$3"
 
-    if ! _custom_is_installed "$app_name" "$install_entry"; then
+    if ! _custom_is_installed "$app_name" "$install_entry" "$app_json"; then
         log_skip "$app_name: not installed"
         return 0
     fi
@@ -136,6 +139,7 @@ handler_custom_uninstall() {
 handler_custom_current_version() {
     local app_name="$1"
     local install_entry="$2"
+    local app_json="$3"
 
     # Check for custom version command first
     local version_cmd
@@ -144,14 +148,18 @@ handler_custom_current_version() {
     if [[ -n "$version_cmd" ]]; then
         local ver
         ver=$(eval "$version_cmd" 2>/dev/null)
-        echo "${ver:-installed}"
+        echo "${ver:-installed, version unknown}"
         return
     fi
 
-    # Fallback: try common version flags (avoid -v as it means --verbose for some tools)
-    if command_exists "$app_name"; then
-        "$app_name" --version 2>/dev/null | head -1 || \
-        "$app_name" version 2>/dev/null | head -1 || \
-        echo "installed"
+    # Fallback: try common version flags with command name
+    local cmd
+    cmd=$(get_command "$app_json" "$app_name")
+    if command_exists "$cmd"; then
+        "$cmd" --version 2>/dev/null | head -1 || \
+        "$cmd" version 2>/dev/null | head -1 || \
+        echo "installed, version unknown"
+    else
+        echo "installed, version unknown"
     fi
 }

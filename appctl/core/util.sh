@@ -41,6 +41,15 @@ command_exists() {
     command -v "$1" &>/dev/null
 }
 
+# Get command name (binary name) from app_json, defaults to app_name
+get_command() {
+    local app_json="$1"
+    local app_name="$2"
+    local cmd
+    cmd=$(echo "$app_json" | jq -r '.command // empty')
+    echo "${cmd:-$app_name}"
+}
+
 # Get the directory where appctl is installed
 get_appctl_dir() {
     local script_path

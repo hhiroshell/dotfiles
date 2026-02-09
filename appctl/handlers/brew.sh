@@ -37,7 +37,7 @@ handler_brew_status() {
 
     if _brew_is_installed "$install_entry"; then
         local version
-        version=$(handler_brew_current_version "$app_name" "$install_entry")
+        version=$(handler_brew_current_version "$app_name" "$install_entry" "$app_json")
         log_ok "$app_name: installed ($version)"
         return 0
     else
@@ -141,6 +141,7 @@ handler_brew_uninstall() {
 handler_brew_current_version() {
     local app_name="$1"
     local install_entry="$2"
+    local app_json="$3"
 
     local pkg
     pkg=$(_brew_get_package "$install_entry")
