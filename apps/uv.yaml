@@ -11,5 +11,11 @@ install:
   - type: custom
     os: linux
     check: command -v uv
+    version_cmd: uv version 2>/dev/null | awk '{print $2}'
     script: |
       curl -LsSf https://astral.sh/uv/install.sh | sh
+    uninstall: |
+      uv cache clean
+      rm -r "$(uv python dir)" 2>/dev/null
+      rm -r "$(uv tool dir)" 2>/dev/null
+      rm -f ~/.local/bin/uv ~/.local/bin/uvx
