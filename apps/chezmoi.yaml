@@ -3,6 +3,7 @@ name: chezmoi
 version:
   policy: latest
 
+# cf. https://www.chezmoi.io/install/
 install:
   - type: brew
     package: chezmoi
@@ -12,6 +13,6 @@ install:
     os: linux
     check: command -v chezmoi
     script: |
-      sh -c "$(curl -fsLS get.chezmoi.io)"
+      sudo sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
     uninstall: |
-      rm -f ~/bin/chezmoi
+      sudo rm -f /usr/local/bin/chezmoi
