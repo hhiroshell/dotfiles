@@ -12,8 +12,9 @@ install:
     os: linux
     check: command -v hx
     script: |
-      sudo add-apt-repository -y ppa:maveonair/helix-editor
-      sudo apt-get update
-      sudo apt-get install -y helix
+      HELIX_VERSION=$(curl -s "https://api.github.com/repos/helix-editor/helix/releases/latest" | grep -Po '"tag_name": "\K[^"]*')
+      curl -Lo /tmp/helix.AppImage "https://github.com/helix-editor/helix/releases/download/${HELIX_VERSION}/helix-${HELIX_VERSION}-x86_64.AppImage"
+      sudo install /tmp/helix.AppImage /usr/local/bin/hx
+      rm /tmp/helix.AppImage
     uninstall: |
-      sudo apt-get remove -y helix
+      sudo rm -f /usr/local/bin/hx
