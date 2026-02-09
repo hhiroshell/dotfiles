@@ -1,6 +1,3 @@
-# Platform-specific overrides (loaded based on KITTY_OS: linux or macos)
-include ${KITTY_OS}.conf
-
 # Shell
 shell /bin/zsh -l -c "[ -z \"$TMUX\" ] && tmux new-session -A -s main || zsh"
 
@@ -12,10 +9,18 @@ map shift+enter send_text all \n
 
 # Font
 font_family HackGen Console NF
+{{ if eq .chezmoi.os "darwin" }}
+font_size 13
+{{ else }}
+font_size 10
+{{ end }}
 
 # Font spacing
 adjust_line_height 2
 adjust_column_width 0
+
+# Window padding
+window_padding_width 0 2 2 2
 
 # zenbones theme (light)
 

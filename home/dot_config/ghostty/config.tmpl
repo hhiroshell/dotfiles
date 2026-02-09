@@ -1,6 +1,3 @@
-# Platform-specific settings (symlinked as 'platform' based on OS)
-config-file = ?platform
-
 # Shell
 command = /bin/zsh -l -c "[ -z \"$TMUX\" ] && tmux new-session -A -s main || zsh"
 
@@ -15,6 +12,11 @@ desktop-notifications = true
 
 # Font
 font-family = HackGen Console NF
+{{ if eq .chezmoi.os "darwin" }}
+font-size = 13
+{{ else }}
+font-size = 10
+{{ end }}
 
 # Font spacing
 adjust-cell-height = 2

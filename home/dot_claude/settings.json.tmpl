@@ -1,5 +1,6 @@
 {
   "hooks": {
+{{ if eq .chezmoi.os "linux" }}
     "Notification": [
       {
         "matcher": "",
@@ -22,6 +23,7 @@
         ]
       }
     ]
+{{ end }}
   },
   "enabledPlugins": {
     "code-review@claude-plugins-official": true,

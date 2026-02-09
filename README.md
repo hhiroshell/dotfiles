@@ -1,10 +1,10 @@
 # dotfiles
 
-Personal dotfiles managed through symbolic links.
+Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 
 ## Prerequisites
 
-- [aqua](https://aquaproj.github.io/) - Declarative CLI version manager
+- [aqua](https://aquaproj.github.io/) - Declarative CLI version manager (provides chezmoi)
 - Platform-specific package managers:
   - [Homebrew](https://brew.sh/) (macOS) - For GUI apps and system tools
   - apt (Ubuntu/Debian) - For system packages and build dependencies
@@ -23,19 +23,27 @@ $ git clone git@github.com:hhiroshell/dotfiles.git ~/src/github.com/hhiroshell/d
 $ cd ~/src/github.com/hhiroshell/dotfiles
 ```
 
-### Create symlinks
+### Install development tools
+
+```console
+$ aqua install
+```
+
+### Apply dotfiles
 
 ```console
 $ make install
+# or
+$ chezmoi init --source=. --apply
 ```
 
 ## Commands
 
 | Command            | Description                                              |
 |--------------------|----------------------------------------------------------|
-| `make install`     | Create symlinks from `home/` to `$HOME`                  |
-| `make uninstall`   | Remove symlinks created by `make install`                |
-| `make list`        | Show all managed dotfile mappings                        |
+| `make install`     | Apply dotfiles using chezmoi                             |
+| `make uninstall`   | Remove chezmoi-managed files                             |
+| `make list`        | Show all managed files                                   |
 | `make brew-install`| Install packages from Brewfile (macOS)                   |
 | `make apt-install` | Install packages from apt-packages.txt (Ubuntu/Debian)   |
 
@@ -58,7 +66,7 @@ $ make install
 - Python: uv (manages Python versions, packages, and virtual environments)
 - Editors: helix
 - Kubernetes: kubectl, kind, krew, kustomize
-- Utilities: fzf, jq, yq, ghq, fd, lazygit
+- Utilities: fzf, jq, yq, ghq, fd, lazygit, chezmoi
 
 ### System Tools & Applications
 
@@ -78,17 +86,27 @@ $ make install
 
 ```
 .
-├── home/               # Dotfiles (symlinked to $HOME with dot prefix)
-│   ├── aqua/           # -> ~/.aqua (development tools)
-│   ├── apt-packages.txt # Ubuntu/Debian system packages
-│   ├── Brewfile        # -> ~/.Brewfile (macOS GUI apps & system tools)
-│   ├── config/         # -> ~/.config (ghostty, helix, kitty, lazygit, tmux, starship)
-│   ├── gitconfig       # -> ~/.gitconfig
-│   ├── ssh/            # -> ~/.ssh
-│   └── zshrc           # -> ~/.zshrc
-├── zsh/                # Modular zsh configurations
+├── home/                   # chezmoi source directory
+│   ├── .chezmoi.toml.tmpl  # chezmoi config template
+│   ├── .chezmoiignore      # files to ignore
+│   ├── dot_aqua/           # -> ~/.aqua (development tools)
+│   ├── dot_claude/         # -> ~/.claude (settings, skills)
+│   ├── dot_config/         # -> ~/.config (ghostty, helix, kitty, lazygit, tmux, starship)
+│   ├── dot_gitconfig       # -> ~/.gitconfig
+│   ├── dot_zshrc           # -> ~/.zshrc
+│   └── private_dot_ssh/    # -> ~/.ssh (mode 0600)
+├── zsh/                    # Modular zsh configurations (sourced via ghq)
 │   ├── git.zsh
 │   ├── kubernetes.zsh
 │   └── ...
+├── Brewfile                # Homebrew packages (macOS)
+├── apt-packages.txt        # apt packages (Linux)
+├── .chezmoiroot            # Points chezmoi to home/
 └── Makefile
 ```
+
+## Platform-Specific Settings
+
+chezmoi templates handle OS-specific configurations:
+- **Font sizes**: macOS uses larger fonts (13pt) than Linux (10pt) for Ghostty and Kitty
+- **Notifications**: Linux uses `notify-send` for Claude Code hooks; macOS relies on native notifications
