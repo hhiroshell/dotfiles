@@ -8,6 +8,15 @@ install:
     package: go
     os: macos
 
-  - type: apt
-    package: golang
+  - type: custom
     os: linux
+    check: command -v go
+    version_cmd: go version 2>/dev/null | awk '{print $3}' | sed 's/^go//'
+    script: |
+      GO_VERSION=$(curl -s "https://go.dev/dl/?mode=json" | jq -r '.[0].version' | sed 's/^go//')
+      curl -Lo /tmp/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz"
+      sudo rm -rf /usr/local/go
+      sudo tar -C /usr/local -xzf /tmp/go.tar.gz
+      rm /tmp/go.tar.gz
+    uninstall: |
+      sudo rm -rf /usr/local/go

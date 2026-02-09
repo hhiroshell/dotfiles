@@ -18,6 +18,8 @@ PATH="$HOME/.local/bin:$PATH"
 export PATH="$PATH:${KREW_ROOT:-$HOME/.krew}/bin"
 
 # Go
+# cf. https://go.dev/doc/install
+export PATH="$PATH:/usr/local/go/bin"
 export GOPATH="$HOME/.go"
 export PATH="$PATH:$GOPATH/bin"
 
