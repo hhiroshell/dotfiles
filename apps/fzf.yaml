@@ -8,6 +8,15 @@ install:
     package: fzf
     os: macos
 
-  - type: apt
-    package: fzf
+  - type: custom
     os: linux
+    check: command -v fzf
+    version_cmd: fzf --version 2>/dev/null | awk '{print $1}'
+    script: |
+      FZF_VERSION=$(curl -s "https://api.github.com/repos/junegunn/fzf/releases/latest" | grep -Po '"tag_name": "v?\K[^"]*')
+      curl -Lo /tmp/fzf.tar.gz "https://github.com/junegunn/fzf/releases/latest/download/fzf-${FZF_VERSION}-linux_amd64.tar.gz"
+      tar xf /tmp/fzf.tar.gz -C /tmp fzf
+      sudo install /tmp/fzf /usr/local/bin
+      rm /tmp/fzf.tar.gz /tmp/fzf
+    uninstall: |
+      sudo rm -f /usr/local/bin/fzf
