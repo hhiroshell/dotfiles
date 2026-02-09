@@ -1,68 +1,48 @@
 # =============================================================================
-# Whitelist-based .gitignore for dotfiles repository
-# =============================================================================
-#
-# This repository uses a "whitelist" approach:
-#   1. Ignore everything by default
-#   2. Explicitly allow only the files we want to track
-#
-# Why this approach?
-#   The home/ directory mirrors $HOME structure, which could accidentally
-#   pick up sensitive files (credentials, keys), application caches, or
-#   other unwanted data. By ignoring everything first, we ensure only
-#   intentionally selected configuration files are committed.
-#
-# How to add new files:
-#   - Add `!/path/to/newfile` to whitelist a new file
-#
+# .gitignore for dotfiles repository
 # =============================================================================
 
-# Ignore everything
-*
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
 
-# Allow directory traversal (required for nested whitelist patterns to work)
-!*/
+# Editor/IDE files
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.sublime-workspace
 
-# Whitelist chezmoi config files
-!/.chezmoiroot
-!/home/.chezmoi.toml.tmpl
-!/home/.chezmoiignore
+# Sensitive files (should never be committed)
+.env
+.env.local
+*.pem
+*.key
+*.crt
+id_rsa
+id_ed25519
+*.gpg
 
-# Whitelist dotfiles (chezmoi naming convention)
-!/home/dot_aqua/aqua.yaml
-!/home/dot_claude/settings.json.tmpl
-!/home/dot_claude/skills/**
-!/home/dot_config/helix/*
-!/home/dot_config/helix/themes/*
-!/home/dot_config/kitty/*
-!/home/dot_config/lazygit/*
-!/home/dot_config/ghostty/*
-!/home/dot_config/starship.toml
-!/home/dot_config/tmux/*
-!/home/dot_gitconfig
-!/home/dot_gitignore_global
-!/home/private_dot_ssh/config
-!/home/dot_zshenv
-!/home/dot_zshrc
-!/home/dot_zimrc
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.bak
 
-# Whitelist zsh modules (kept in repo root, not managed by chezmoi)
-!/zsh/*.zsh
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
 
-# Whitelist package files (kept for migration reference)
-!/apt-packages.txt
-!/Brewfile
+# Node.js
+node_modules/
 
-# Whitelist appctl and app definitions
-!/appctl/**
-!/apps/**
-
-# Whitelist root files
-!/.gitignore
-!/.gitkeep
-!/bootstrap.sh
-!/CLAUDE.md
-!/Makefile
-!/LICENSE
-!/README.md
-!/renovate.json
+# Go
+vendor/
