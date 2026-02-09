@@ -31,16 +31,6 @@ _pkg_check_background() {
             cd "$dotfiles_dir" || exit 1
             git fetch origin --quiet 2>/dev/null
 
-            # aqua
-            local local_rev remote_rev
-            local_rev=$(git rev-parse HEAD:home/aqua/aqua.yaml 2>/dev/null)
-            remote_rev=$(git rev-parse origin/main:home/aqua/aqua.yaml 2>/dev/null)
-            if [[ -n "$local_rev" ]] && [[ -n "$remote_rev" ]] && [[ "$local_rev" != "$remote_rev" ]]; then
-                echo "1" > "$_pkg_cache_dir/aqua-sync"
-            else
-                rm -f "$_pkg_cache_dir/aqua-sync"
-            fi
-
             # brew (macOS only)
             if [[ "$(uname)" == "Darwin" ]]; then
                 local_rev=$(git rev-parse HEAD:home/Brewfile 2>/dev/null)
@@ -119,10 +109,6 @@ _pkg_show_notifications() {
     [[ ! -f "$_pkg_cache_dir/last-check" ]] && return 0
 
     # Dotfiles sync notifications (yellow)
-    if [[ -f "$_pkg_cache_dir/aqua-sync" ]]; then
-        echo "\033[1;33m[aqua] Updates available. Run 'aqua-pull' to apply.\033[0m"
-    fi
-
     if [[ -f "$_pkg_cache_dir/brew-sync" ]]; then
         echo "\033[1;33m[brew] Brewfile changed. Run 'brew-pull' or 'brew-sync' to apply.\033[0m"
     fi
@@ -157,51 +143,6 @@ _pkg_precmd_hook() {
 # ================================
 # Pull commands (dotfiles sync)
 # ================================
-
-# aqua pull (sync from dotfiles)
-aqua-pull() {
-    local dotfiles_dir
-    dotfiles_dir=$(_pkg_dotfiles_dir)
-
-    if [[ -z "$dotfiles_dir" ]]; then
-        echo "Error: dotfiles directory not found"
-        return 1
-    fi
-
-    cd "$dotfiles_dir" || return 1
-
-    git fetch origin --quiet 2>/dev/null || {
-        echo "Failed to fetch from remote"
-        return 1
-    }
-
-    local local_rev remote_rev
-    local_rev=$(git rev-parse HEAD:home/aqua/aqua.yaml 2>/dev/null)
-    remote_rev=$(git rev-parse origin/main:home/aqua/aqua.yaml 2>/dev/null)
-
-    if [[ "$local_rev" == "$remote_rev" ]]; then
-        echo "aqua.yaml is already up to date"
-        return 0
-    fi
-
-    echo "Changes in aqua.yaml:"
-    git diff HEAD..origin/main -- home/aqua/aqua.yaml | head -50
-    echo ""
-
-    printf "Pull changes and run 'aqua install'? [y/N] "
-    read -r answer
-    case "$answer" in
-        [Yy]*)
-            git pull origin main --quiet && \
-            echo "Running aqua install..." && \
-            aqua install && \
-            rm -f "$_pkg_cache_dir/aqua-sync"
-            ;;
-        *)
-            echo "Skipped"
-            ;;
-    esac
-}
 
 # brew pull (sync from dotfiles)
 brew-pull() {

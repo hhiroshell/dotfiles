@@ -2,9 +2,6 @@
 # System Tools & Utilities
 # =============================================================================
 
-# Package management
-brew "aqua"
-
 # System utilities
 brew "colordiff"
 brew "gh"

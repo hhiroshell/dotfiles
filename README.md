@@ -4,7 +4,7 @@ Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 
 ## Prerequisites
 
-- [aqua](https://aquaproj.github.io/) - Declarative CLI version manager (provides chezmoi)
+- [appctl](appctl/) - Declarative package management tool (included in this repo)
 - Platform-specific package managers:
   - [Homebrew](https://brew.sh/) (macOS) - For GUI apps and system tools
   - apt (Ubuntu/Debian) - For system packages and build dependencies
@@ -23,10 +23,10 @@ $ git clone git@github.com:hhiroshell/dotfiles.git ~/src/github.com/hhiroshell/d
 $ cd ~/src/github.com/hhiroshell/dotfiles
 ```
 
-### Install development tools
+### Install apps
 
 ```console
-$ aqua install
+$ ./appctl/appctl install
 ```
 
 ### Apply dotfiles
@@ -61,7 +61,7 @@ $ chezmoi init --source=. --apply
 - **Kitty** - GPU-accelerated terminal emulator
 - **tmux** - Terminal multiplexer
 
-### Development Tools (via aqua)
+### Development Tools (via appctl)
 - Languages: Go, Node.js, Rust
 - Python: uv (manages Python versions, packages, and virtual environments)
 - Editors: helix
@@ -89,7 +89,6 @@ $ chezmoi init --source=. --apply
 ├── home/                   # chezmoi source directory
 │   ├── .chezmoi.toml.tmpl  # chezmoi config template
 │   ├── .chezmoiignore      # files to ignore
-│   ├── dot_aqua/           # -> ~/.aqua (development tools)
 │   ├── dot_claude/         # -> ~/.claude (settings, skills)
 │   ├── dot_config/         # -> ~/.config (ghostty, helix, kitty, lazygit, tmux, starship)
 │   ├── dot_gitconfig       # -> ~/.gitconfig
