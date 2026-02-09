@@ -8,27 +8,9 @@ if [[ -d "$HOME/.sdkman" ]]; then
 fi
 
 
-# ===
-# Go
-# ===
-export GOPATH="$HOME/.go"
-
-# "$GOPATH/bin" is for binaries installed via "go install"
-export PATH="$PATH:$GOPATH/bin"
-
-
-# ========
-# Node.js
-# ========
-
-export NPM_CONFIG_PREFIX=${XDG_DATA_HOME:-$HOME/.local/share}/npm-global
-export PATH=$NPM_CONFIG_PREFIX/bin:$PATH
-
-
 # =====
 # Rust
 # =====
-export PATH="$HOME/.cargo/bin:$PATH"
 
 if rustup which rustc &> /dev/null; then
     toolchain_bin="$(dirname "$(rustup which rustc)")"

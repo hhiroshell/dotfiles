@@ -1,6 +1,25 @@
 # for zsh installed with apt on Ubuntu.
-# c.f. https://github.com/zimfw/zimfw/wiki/Troubleshooting#completion-is-not-working
+# cf. https://github.com/zimfw/zimfw/wiki/Troubleshooting#completion-is-not-working
 skip_global_compinit=1
 
 # XDG Base Directory Specification
 export XDG_CONFIG_HOME="${HOME}/.config"
+
+
+# =====
+# PATH
+# =====
+
+# some applications (e.g., qmk, Claude Code) will be placed here
+# cf. https://docs.qmk.fm/#/newbs_getting_started?id=set-up-qmk
+PATH="$HOME/.local/bin:$PATH"
+
+# krew
+export PATH="$PATH:${KREW_ROOT:-$HOME/.krew}/bin"
+
+# Go
+export GOPATH="$HOME/.go"
+export PATH="$PATH:$GOPATH/bin"
+
+# Rust
+export PATH="$HOME/.cargo/bin:$PATH"

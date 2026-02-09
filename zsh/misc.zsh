@@ -21,10 +21,6 @@ alias history='history -t "%F %T"'
 # goimports-reviser
 alias goimports-reviser='goimports-reviser -rm-unused -recursive'
 
-# qmk
-# cf. https://docs.qmk.fm/#/newbs_getting_started?id=set-up-qmk
-PATH="$HOME/.local/bin:$PATH"
-
 # exit
 alias q='exit'
 
