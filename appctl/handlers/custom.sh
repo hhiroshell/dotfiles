@@ -19,6 +19,12 @@ _custom_get_uninstall_script() {
     echo "$install_entry" | jq -r '.uninstall // empty'
 }
 
+# Get custom version command
+_custom_get_version_cmd() {
+    local install_entry="$1"
+    echo "$install_entry" | jq -r '.version_cmd // empty'
+}
+
 _custom_is_installed() {
     local app_name="$1"
     local install_entry="$2"
@@ -131,10 +137,20 @@ handler_custom_current_version() {
     local app_name="$1"
     local install_entry="$2"
 
-    # Try common version flags
+    # Check for custom version command first
+    local version_cmd
+    version_cmd=$(_custom_get_version_cmd "$install_entry")
+
+    if [[ -n "$version_cmd" ]]; then
+        local ver
+        ver=$(eval "$version_cmd" 2>/dev/null)
+        echo "${ver:-installed}"
+        return
+    fi
+
+    # Fallback: try common version flags (avoid -v as it means --verbose for some tools)
     if command_exists "$app_name"; then
         "$app_name" --version 2>/dev/null | head -1 || \
-        "$app_name" -v 2>/dev/null | head -1 || \
         "$app_name" version 2>/dev/null | head -1 || \
         echo "installed"
     fi

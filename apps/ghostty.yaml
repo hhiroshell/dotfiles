@@ -11,6 +11,7 @@ install:
   - type: custom
     os: linux
     check: command -v ghostty
+    version_cmd: ghostty +version 2>/dev/null | head -1
     script: |
       # Install from official apt repository
       sudo apt-get install -y ghostty
