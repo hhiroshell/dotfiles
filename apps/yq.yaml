@@ -11,8 +11,10 @@ install:
   - type: custom
     os: linux
     check: command -v yq
+    version_cmd: yq --version 2>/dev/null | awk '{print $NF}' | sed 's/^v//'
     script: |
-      sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
-      sudo chmod +x /usr/local/bin/yq
+      curl -Lo /tmp/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+      sudo install /tmp/yq /usr/local/bin/yq
+      rm /tmp/yq
     uninstall: |
       sudo rm -f /usr/local/bin/yq
