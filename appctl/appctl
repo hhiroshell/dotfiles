@@ -141,7 +141,7 @@ cmd_status() {
     fi
 
     for app in "${apps[@]}"; do
-        process_app status "$app"
+        process_app status "$app" || true
     done
 }
 
