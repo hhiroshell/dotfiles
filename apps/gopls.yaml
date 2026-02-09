@@ -1,0 +1,11 @@
+name: gopls
+
+version:
+  policy: latest
+
+requires:
+  - go
+
+install:
+  - type: go
+    package: golang.org/x/tools/gopls@latest

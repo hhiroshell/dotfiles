@@ -1,0 +1,18 @@
+name: kustomize
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: kustomize
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v kustomize
+    script: |
+      curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+      sudo mv kustomize /usr/local/bin/
+    uninstall: |
+      sudo rm -f /usr/local/bin/kustomize

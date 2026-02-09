@@ -1,0 +1,20 @@
+name: docker
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: docker
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v docker
+    script: |
+      # Install Docker using official script
+      curl -fsSL https://get.docker.com | sh
+      # Add current user to docker group
+      sudo usermod -aG docker "$USER"
+    uninstall: |
+      sudo apt-get remove -y docker-ce docker-ce-cli containerd.io

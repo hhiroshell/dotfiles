@@ -1,0 +1,13 @@
+name: fzf
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: fzf
+    os: macos
+
+  - type: apt
+    package: fzf
+    os: linux

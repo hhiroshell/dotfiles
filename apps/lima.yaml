@@ -1,0 +1,9 @@
+name: lima
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: lima
+    os: macos

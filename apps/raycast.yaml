@@ -1,0 +1,9 @@
+name: raycast
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: raycast
+    os: macos

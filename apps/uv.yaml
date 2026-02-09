@@ -1,0 +1,15 @@
+name: uv
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: uv
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v uv
+    script: |
+      curl -LsSf https://astral.sh/uv/install.sh | sh

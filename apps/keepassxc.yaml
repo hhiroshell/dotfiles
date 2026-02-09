@@ -1,0 +1,13 @@
+name: keepassxc
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: keepassxc
+    os: macos
+
+  - type: apt
+    package: keepassxc
+    os: linux

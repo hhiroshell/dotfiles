@@ -1,0 +1,9 @@
+name: google-drive
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: google-drive
+    os: macos

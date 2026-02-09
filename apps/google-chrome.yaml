@@ -1,0 +1,19 @@
+name: google-chrome
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: google-chrome
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v google-chrome
+    script: |
+      wget -q -O /tmp/google-chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+      sudo dpkg -i /tmp/google-chrome.deb || sudo apt-get install -f -y
+      rm /tmp/google-chrome.deb
+    uninstall: |
+      sudo apt-get remove -y google-chrome-stable

@@ -1,0 +1,15 @@
+name: claude-code
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: claude-code
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v claude
+    script: |
+      curl -fsSL https://claude.ai/install.sh | bash

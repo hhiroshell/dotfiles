@@ -1,0 +1,11 @@
+name: staticcheck
+
+version:
+  policy: latest
+
+requires:
+  - go
+
+install:
+  - type: go
+    package: honnef.co/go/tools/cmd/staticcheck@latest

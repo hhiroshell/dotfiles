@@ -1,0 +1,19 @@
+name: helix
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: helix
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v hx
+    script: |
+      sudo add-apt-repository -y ppa:maveonair/helix-editor
+      sudo apt-get update
+      sudo apt-get install -y helix
+    uninstall: |
+      sudo apt-get remove -y helix

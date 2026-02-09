@@ -1,0 +1,11 @@
+name: golangci-lint-langserver
+
+version:
+  policy: latest
+
+requires:
+  - go
+
+install:
+  - type: go
+    package: github.com/nametake/golangci-lint-langserver@latest

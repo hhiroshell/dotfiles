@@ -1,0 +1,13 @@
+name: jq
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: jq
+    os: macos
+
+  - type: apt
+    package: jq
+    os: linux

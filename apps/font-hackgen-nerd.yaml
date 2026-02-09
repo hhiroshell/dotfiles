@@ -1,0 +1,9 @@
+name: font-hackgen-nerd
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: font-hackgen-nerd
+    os: macos

@@ -1,0 +1,13 @@
+name: fd
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: fd
+    os: macos
+
+  - type: apt
+    package: fd-find
+    os: linux

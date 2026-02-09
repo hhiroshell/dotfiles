@@ -1,0 +1,13 @@
+name: ghq
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: ghq
+    os: macos
+
+  - type: go
+    package: github.com/x-motemen/ghq@latest
+    os: linux

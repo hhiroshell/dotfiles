@@ -1,0 +1,9 @@
+name: gitify
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: gitify
+    os: macos

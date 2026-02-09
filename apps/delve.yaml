@@ -1,0 +1,11 @@
+name: delve
+
+version:
+  policy: latest
+
+requires:
+  - go
+
+install:
+  - type: go
+    package: github.com/go-delve/delve/cmd/dlv@latest

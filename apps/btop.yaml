@@ -1,0 +1,13 @@
+name: btop
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: btop
+    os: macos
+
+  - type: apt
+    package: btop
+    os: linux

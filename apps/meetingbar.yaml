@@ -1,0 +1,9 @@
+name: meetingbar
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: meetingbar
+    os: macos

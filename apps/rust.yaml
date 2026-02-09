@@ -1,0 +1,15 @@
+name: rust
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: rustup
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v rustup
+    script: |
+      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y

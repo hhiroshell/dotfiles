@@ -49,9 +49,13 @@
 # Whitelist zsh modules (kept in repo root, not managed by chezmoi)
 !/zsh/*.zsh
 
-# Whitelist package files (at repo root for future appctl)
+# Whitelist package files (kept for migration reference)
 !/apt-packages.txt
 !/Brewfile
+
+# Whitelist appctl and app definitions
+!/appctl/**
+!/apps/**
 
 # Whitelist root files
 !/.gitignore

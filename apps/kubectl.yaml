@@ -1,0 +1,19 @@
+name: kubectl
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: kubernetes-cli
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v kubectl
+    script: |
+      curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+      chmod +x kubectl
+      sudo mv kubectl /usr/local/bin/
+    uninstall: |
+      sudo rm -f /usr/local/bin/kubectl

@@ -1,0 +1,258 @@
+#!/usr/bin/env bash
+# appctl - Declarative package management for dotfiles
+set -euo pipefail
+
+APPCTL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APPS_DIR="$(dirname "$APPCTL_DIR")/apps"
+
+# Source core modules
+source "$APPCTL_DIR/core/os.sh"
+source "$APPCTL_DIR/core/util.sh"
+source "$APPCTL_DIR/core/loader.sh"
+source "$APPCTL_DIR/core/selector.sh"
+source "$APPCTL_DIR/core/version.sh"
+source "$APPCTL_DIR/core/requires.sh"
+
+# Source handlers
+for handler in "$APPCTL_DIR"/handlers/*.sh; do
+    [[ -f "$handler" ]] && source "$handler"
+done
+
+# Check bootstrap dependencies
+check_bootstrap_deps() {
+    local missing=()
+    command_exists jq || missing+=("jq")
+    command_exists yq || missing+=("yq")
+
+    if [[ ${#missing[@]} -gt 0 ]]; then
+        log_error "Missing required dependencies: ${missing[*]}"
+        log_info "Install them first:"
+        if [[ "$APPCTL_OS" == "macos" ]]; then
+            log_info "  brew install ${missing[*]}"
+        else
+            log_info "  sudo apt-get install jq && sudo snap install yq"
+        fi
+        exit 1
+    fi
+}
+
+# Process a single app with a given action
+process_app() {
+    local action="$1"
+    local app_name="$2"
+
+    local app_json
+    if ! app_json=$(load_app "$app_name" "$APPS_DIR" 2>/dev/null); then
+        log_error "Failed to load app: $app_name"
+        return 1
+    fi
+
+    local install_entry
+    install_entry=$(select_install_entry "$app_json")
+
+    if [[ -z "$install_entry" ]]; then
+        log_skip "$app_name (no install entry for $APPCTL_OS)"
+        return 0
+    fi
+
+    local handler_type
+    handler_type=$(get_handler_type "$install_entry")
+
+    if [[ -z "$handler_type" ]]; then
+        log_error "$app_name: No handler type specified"
+        return 1
+    fi
+
+    # Check requires before install
+    if [[ "$action" == "install" ]]; then
+        if ! check_requires "$app_json"; then
+            return 1
+        fi
+    fi
+
+    # Call the appropriate handler function
+    local handler_func="handler_${handler_type}_${action}"
+    if ! declare -f "$handler_func" &>/dev/null; then
+        log_error "$app_name: Unknown handler: $handler_type"
+        return 1
+    fi
+
+    "$handler_func" "$app_name" "$install_entry" "$app_json"
+}
+
+# Commands
+cmd_install() {
+    local apps=("$@")
+
+    if [[ ${#apps[@]} -eq 0 ]]; then
+        mapfile -t apps < <(list_apps "$APPS_DIR")
+    fi
+
+    local failed=0
+    for app in "${apps[@]}"; do
+        if ! process_app install "$app"; then
+            ((failed++)) || true
+        fi
+    done
+
+    return $failed
+}
+
+cmd_upgrade() {
+    local apps=("$@")
+
+    if [[ ${#apps[@]} -eq 0 ]]; then
+        mapfile -t apps < <(list_apps "$APPS_DIR")
+    fi
+
+    local failed=0
+    for app in "${apps[@]}"; do
+        if ! process_app upgrade "$app"; then
+            ((failed++)) || true
+        fi
+    done
+
+    return $failed
+}
+
+cmd_uninstall() {
+    local apps=("$@")
+
+    if [[ ${#apps[@]} -eq 0 ]]; then
+        log_error "Please specify apps to uninstall"
+        return 1
+    fi
+
+    local failed=0
+    for app in "${apps[@]}"; do
+        if ! process_app uninstall "$app"; then
+            ((failed++)) || true
+        fi
+    done
+
+    return $failed
+}
+
+cmd_status() {
+    local apps=("$@")
+
+    if [[ ${#apps[@]} -eq 0 ]]; then
+        mapfile -t apps < <(list_apps "$APPS_DIR")
+    fi
+
+    for app in "${apps[@]}"; do
+        process_app status "$app"
+    done
+}
+
+cmd_list() {
+    list_apps "$APPS_DIR"
+}
+
+cmd_doctor() {
+    log_info "System: $APPCTL_OS ($APPCTL_ARCH)"
+    echo
+
+    log_info "Checking apps..."
+    local apps
+    mapfile -t apps < <(list_apps "$APPS_DIR")
+
+    local installed=0
+    local missing=0
+    local issues=()
+
+    for app in "${apps[@]}"; do
+        local app_json
+        if ! app_json=$(load_app "$app" "$APPS_DIR" 2>/dev/null); then
+            issues+=("$app: failed to load definition")
+            continue
+        fi
+
+        local install_entry
+        install_entry=$(select_install_entry "$app_json")
+
+        if [[ -z "$install_entry" ]]; then
+            continue  # Skip apps not for this OS
+        fi
+
+        local handler_type
+        handler_type=$(get_handler_type "$install_entry")
+
+        local status_func="handler_${handler_type}_status"
+        if declare -f "$status_func" &>/dev/null; then
+            if "$status_func" "$app" "$install_entry" "$app_json" &>/dev/null; then
+                ((installed++)) || true
+            else
+                ((missing++)) || true
+                issues+=("$app: not installed")
+            fi
+        fi
+
+        # Check requires
+        local requires
+        requires=$(echo "$app_json" | jq -r '.requires // [] | .[]')
+        for req in $requires; do
+            if ! command_exists "$req"; then
+                issues+=("$app: missing requirement '$req'")
+            fi
+        done
+    done
+
+    echo
+    log_info "Summary: $installed installed, $missing missing"
+
+    if [[ ${#issues[@]} -gt 0 ]]; then
+        echo
+        log_warn "Issues found:"
+        for issue in "${issues[@]}"; do
+            echo "  - $issue"
+        done
+    fi
+}
+
+usage() {
+    cat <<EOF
+Usage: appctl <command> [apps...]
+
+Commands:
+  install [app...]   Install apps (all if no args)
+  upgrade [app...]   Upgrade apps (all if no args)
+  uninstall <app...> Uninstall specified apps
+  status [app...]    Show app status (all if no args)
+  list               List all defined apps
+  doctor             Health check
+
+Examples:
+  appctl install           # Install all apps
+  appctl install git go    # Install specific apps
+  appctl status            # Show status of all apps
+  appctl doctor            # Run health check
+EOF
+}
+
+# Main
+main() {
+    check_bootstrap_deps
+
+    local cmd="${1:-}"
+    shift || true
+
+    case "$cmd" in
+        install)   cmd_install "$@" ;;
+        upgrade)   cmd_upgrade "$@" ;;
+        uninstall) cmd_uninstall "$@" ;;
+        status)    cmd_status "$@" ;;
+        list)      cmd_list ;;
+        doctor)    cmd_doctor ;;
+        -h|--help|help|"")
+            usage
+            ;;
+        *)
+            log_error "Unknown command: $cmd"
+            usage
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

@@ -1,0 +1,13 @@
+name: tmux
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: tmux
+    os: macos
+
+  - type: apt
+    package: tmux
+    os: linux

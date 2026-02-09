@@ -1,0 +1,10 @@
+name: curl
+
+version:
+  policy: latest
+
+install:
+  - type: apt
+    package: curl
+    os: linux
+  # macOS has curl preinstalled

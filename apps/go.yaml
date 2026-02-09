@@ -1,0 +1,13 @@
+name: go
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: go
+    os: macos
+
+  - type: apt
+    package: golang
+    os: linux

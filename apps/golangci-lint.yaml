@@ -1,0 +1,16 @@
+name: golangci-lint
+
+version:
+  policy: latest
+
+requires:
+  - go
+
+install:
+  - type: brew
+    package: golangci-lint
+    os: macos
+
+  - type: go
+    package: github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+    os: linux

@@ -1,0 +1,17 @@
+name: starship
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: starship
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v starship
+    script: |
+      curl -sS https://starship.rs/install.sh | sh -s -- -y
+    uninstall: |
+      sudo rm -f /usr/local/bin/starship

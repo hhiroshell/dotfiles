@@ -1,0 +1,13 @@
+name: node
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: node
+    os: macos
+
+  - type: apt
+    package: nodejs
+    os: linux

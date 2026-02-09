@@ -1,0 +1,13 @@
+name: colordiff
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: colordiff
+    os: macos
+
+  - type: apt
+    package: colordiff
+    os: linux

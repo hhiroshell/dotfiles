@@ -1,0 +1,13 @@
+name: gh
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: gh
+    os: macos
+
+  - type: apt
+    package: gh
+    os: linux

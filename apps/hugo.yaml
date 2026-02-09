@@ -1,0 +1,13 @@
+name: hugo
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: hugo
+    os: macos
+
+  - type: apt
+    package: hugo
+    os: linux

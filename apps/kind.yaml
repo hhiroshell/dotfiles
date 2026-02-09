@@ -1,0 +1,19 @@
+name: kind
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: kind
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v kind
+    script: |
+      curl -Lo /tmp/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+      chmod +x /tmp/kind
+      sudo mv /tmp/kind /usr/local/bin/kind
+    uninstall: |
+      sudo rm -f /usr/local/bin/kind

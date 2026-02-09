@@ -1,0 +1,9 @@
+name: mac-mouse-fix
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: mac-mouse-fix
+    os: macos

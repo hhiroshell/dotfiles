@@ -12,53 +12,80 @@ This is a personal dotfiles repository that manages configuration files using [c
 - `make install` - Apply dotfiles using chezmoi
 - `make uninstall` - Remove chezmoi-managed files
 - `make list` - Show all managed files
-- `aqua install` - Install all development tools defined in `home/dot_aqua/aqua.yaml`
 
-### Platform-Specific Package Management
-- `make brew-install` - Install Homebrew packages from Brewfile (macOS only)
-- `make apt-install` - Install apt packages from apt-packages.txt (Ubuntu/Debian only)
+### Package Management via appctl
+- `make apps-install` - Install all apps defined in `apps/`
+- `make apps-upgrade` - Upgrade all installed apps
+- `make apps-status` - Show status of all apps
+- `make apps-doctor` - Health check for apps
 
-### Development Tools
-The repository uses [aqua](https://aquaproj.github.io/) as a declarative CLI version manager. All development tools are defined in `home/dot_aqua/aqua.yaml` including:
-- Editors: helix
-- Languages: go, node.js, rust
-- Python: uv (manages Python versions, packages, and virtual environments)
-- Kubernetes tools: kubectl, kind, krew, kustomize
-- Development utilities: fzf, jq, yq, ghq, fd, lazygit, chezmoi
-
-### Package Management Policy
-
-The repository uses complementary package managers with clear separation of concerns:
-
-**Homebrew** (macOS only):
-- Manages GUI applications and system-level tools
-- Examples: Ghostty, Google Chrome, Raycast, KeePassXC, git-credential-manager, gitify
-- System utilities: tmux, starship, gh, colordiff
-- Defined in `Brewfile` (repo root)
-- Install with: `make brew-install`
-
-**apt** (Ubuntu/Debian only):
-- Manages basic system packages and utilities
-- System utilities: curl, wget, git
-- Defined in `apt-packages.txt` (repo root)
-- Install with: `make apt-install`
-
-**aqua** (cross-platform):
-- Manages development tools and programming language toolchains
-- Examples: go, node, rust, uv (Python), kubectl, helix, lazygit, fzf, jq
-- Defined in `home/dot_aqua/aqua.yaml`
-- Install with: `aqua install`
-
-**Why separate?** Platform-specific package managers (Homebrew/apt) handle GUI applications, system integrations, and native build dependencies. aqua's declarative approach provides reproducible development tool versioning across different platforms and operating systems.
+Or use appctl directly:
+- `./appctl/appctl install [app...]` - Install apps (all if no args)
+- `./appctl/appctl upgrade [app...]` - Upgrade apps
+- `./appctl/appctl uninstall <app...>` - Uninstall specified apps
+- `./appctl/appctl status [app...]` - Show app status
+- `./appctl/appctl list` - List all defined apps
+- `./appctl/appctl doctor` - Health check
 
 ## Architecture
 
 ### Directory Structure
 - `home/` - chezmoi source directory containing all dotfiles
+- `appctl/` - Declarative package management tool
+- `apps/` - App definitions (YAML) for appctl
 - `zsh/` - Modular zsh configuration files sourced by `.zshrc` (not managed by chezmoi)
-- `Brewfile` - Homebrew packages (macOS, kept at repo root for future appctl)
-- `apt-packages.txt` - apt packages (Linux, kept at repo root for future appctl)
 - `.chezmoiroot` - Points chezmoi to use `home/` as source directory
+
+### appctl - Declarative Package Management
+
+appctl is a unified package management tool that works across macOS (Homebrew) and Linux (apt). All software is defined declaratively in YAML files in the `apps/` directory.
+
+**Handlers:**
+- `brew` - Homebrew formulas and casks (macOS)
+- `apt` - apt packages (Linux)
+- `go` - go install (requires: go)
+- `custom` - Custom install scripts
+
+**App Definition Schema:**
+```yaml
+name: example
+
+version:
+  policy: latest  # or pinned
+  value: "1.0.0"  # only for pinned
+
+requires:
+  - go          # logical app names (checked before install)
+
+install:
+  - type: brew
+    package: example      # formula
+    os: macos
+
+  - type: brew
+    cask: example-app     # cask (GUI app)
+    os: macos
+
+  - type: apt
+    package: example
+    os: linux
+
+  - type: go
+    package: example.com/cmd/example@latest
+
+  - type: custom
+    os: linux
+    check: command -v example
+    script: |
+      curl -fsSL https://example.com/install.sh | bash
+    uninstall: |
+      rm -f /usr/local/bin/example
+```
+
+**Bootstrap Dependencies:**
+appctl requires `jq` and `yq` to parse YAML. Install them first:
+- macOS: `brew install jq yq`
+- Linux: `sudo apt-get install jq && sudo snap install yq`
 
 ### chezmoi Naming Convention
 Files in `home/` use chezmoi's naming convention:
@@ -68,7 +95,6 @@ Files in `home/` use chezmoi's naming convention:
 
 ### Configuration Management
 chezmoi manages these key configurations:
-- `dot_aqua/aqua.yaml` → `~/.aqua/aqua.yaml` - Development tool versions
 - `dot_claude/settings.json.tmpl` → `~/.claude/settings.json` - Claude Code settings (templated for OS-specific hooks)
 - `dot_claude/skills/` → `~/.claude/skills/` - Claude Code custom skills
 - `dot_config/ghostty/config.tmpl` → `~/.config/ghostty/config` - Ghostty terminal (templated for OS-specific font-size)
@@ -103,16 +129,14 @@ These modules are kept in the repo root and sourced via ghq path, not managed by
 When modifying configurations:
 1. Edit files in `home/` directory (using chezmoi naming convention)
 2. Run `make install` (or `chezmoi apply`) to apply changes
-3. Run `aqua install` after updating `home/dot_aqua/aqua.yaml`
-4. For Homebrew changes (macOS only):
-   - Edit `Brewfile` to add/remove packages
-   - Run `make brew-install` to apply changes
-5. For apt changes (Ubuntu/Debian only):
-   - Edit `apt-packages.txt` to add/remove packages
-   - Run `make apt-install` to apply changes
-6. Test changes by opening a new shell session
+3. Test changes by opening a new shell session
 
-### Adding New Files
+### Adding New Apps
+1. Create a YAML file in `apps/` directory (e.g., `apps/myapp.yaml`)
+2. Define the app with appropriate handlers for each OS
+3. Run `./appctl/appctl install myapp` to install
+
+### Adding New Dotfiles
 1. Create file in `home/` with appropriate chezmoi prefix:
    - Regular dotfile: `dot_filename`
    - Private file: `private_dot_filename`
@@ -122,9 +146,21 @@ When modifying configurations:
 
 ### Initial Setup on New Machine
 ```bash
-# Install aqua first (see aquaproj.github.io for bootstrap)
-# Then install chezmoi
-aqua install
+# Clone the repository
+git clone https://github.com/hhiroshell/dotfiles.git
+cd dotfiles
+
+# Install bootstrap dependencies (jq, yq)
+# macOS:
+brew install jq yq
+
+# Linux:
+sudo apt-get install jq
+sudo snap install yq
+
+# Install chezmoi and other apps
+./appctl/appctl install chezmoi
+./appctl/appctl install
 
 # Initialize chezmoi with this repo
 chezmoi init --source=/path/to/dotfiles --apply

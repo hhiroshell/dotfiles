@@ -1,0 +1,13 @@
+name: git
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: git
+    os: macos
+
+  - type: apt
+    package: git
+    os: linux

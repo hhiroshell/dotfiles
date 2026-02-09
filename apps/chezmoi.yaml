@@ -1,0 +1,17 @@
+name: chezmoi
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: chezmoi
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v chezmoi
+    script: |
+      sh -c "$(curl -fsLS get.chezmoi.io)"
+    uninstall: |
+      rm -f ~/bin/chezmoi

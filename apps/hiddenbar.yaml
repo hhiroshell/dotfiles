@@ -1,0 +1,9 @@
+name: hiddenbar
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: hiddenbar
+    os: macos

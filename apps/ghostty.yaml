@@ -1,0 +1,16 @@
+name: ghostty
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: ghostty
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v ghostty
+    script: |
+      # Install from official apt repository
+      sudo apt-get install -y ghostty

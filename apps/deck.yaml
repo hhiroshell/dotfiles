@@ -1,0 +1,11 @@
+name: deck
+
+version:
+  policy: latest
+
+requires:
+  - go
+
+install:
+  - type: go
+    package: github.com/k1LoW/deck@latest

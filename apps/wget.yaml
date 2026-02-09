@@ -1,0 +1,13 @@
+name: wget
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: wget
+    os: macos
+
+  - type: apt
+    package: wget
+    os: linux

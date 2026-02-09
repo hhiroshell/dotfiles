@@ -1,0 +1,18 @@
+name: yq
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    package: yq
+    os: macos
+
+  - type: custom
+    os: linux
+    check: command -v yq
+    script: |
+      sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/local/bin/yq
+      sudo chmod +x /usr/local/bin/yq
+    uninstall: |
+      sudo rm -f /usr/local/bin/yq

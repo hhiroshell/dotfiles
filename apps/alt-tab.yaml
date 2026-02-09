@@ -1,0 +1,9 @@
+name: alt-tab
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: alt-tab
+    os: macos

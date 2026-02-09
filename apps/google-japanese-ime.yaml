@@ -1,0 +1,9 @@
+name: google-japanese-ime
+
+version:
+  policy: latest
+
+install:
+  - type: brew
+    cask: google-japanese-ime
+    os: macos

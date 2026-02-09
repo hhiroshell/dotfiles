@@ -1,0 +1,11 @@
+name: goimports-reviser
+
+version:
+  policy: latest
+
+requires:
+  - go
+
+install:
+  - type: go
+    package: github.com/incu6us/goimports-reviser/v3@latest
