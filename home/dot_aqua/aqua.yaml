@@ -24,7 +24,7 @@ packages:
 - name: golangci/golangci-lint@v2.8.0
 - name: helix-editor/helix@25.07.1
 - name: incu6us/goimports-reviser@v3.11.0
-- name: jesseduffield/lazygit@v0.58.1
+- name: jesseduffield/lazygit@v0.59.0
 - name: jqlang/jq@jq-1.8.1
 - name: junegunn/fzf@v0.67.0
 - name: k1LoW/deck@v1.23.0
