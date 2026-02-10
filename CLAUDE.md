@@ -49,18 +49,12 @@ A key design property: **appctl is easy to remove.** brew/apt remain intact, che
 
 ## Key Commands
 
-### Installation and Setup
-- `make install` - Apply dotfiles using chezmoi
-- `make uninstall` - Remove chezmoi-managed files
-- `make list` - Show all managed files
+### Dotfiles Management
+- `chezmoi apply` - Apply dotfiles
+- `chezmoi managed` - Show all managed files
+- `chezmoi purge` - Remove chezmoi-managed files
 
 ### Package Management via appctl
-- `make apps-install` - Install all apps defined in `apps/`
-- `make apps-upgrade` - Upgrade all installed apps
-- `make apps-status` - Show status of all apps
-- `make apps-doctor` - Health check for apps
-
-Or use appctl directly:
 - `./appctl/appctl install [app...]` - Install apps (all if no args)
 - `./appctl/appctl upgrade [app...]` - Upgrade apps
 - `./appctl/appctl uninstall <app...>` - Uninstall specified apps
@@ -184,7 +178,7 @@ These modules are deployed by chezmoi and sourced via `$XDG_CONFIG_HOME/zsh/` at
 
 When modifying configurations:
 1. Edit files in `chezmoi/` directory (using chezmoi naming convention)
-2. Run `make install` (or `chezmoi apply`) to apply changes
+2. Run `chezmoi apply` to apply changes
 3. Test changes by opening a new shell session
 
 ### Adding New Apps
