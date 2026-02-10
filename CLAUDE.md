@@ -49,6 +49,7 @@ appctl is a unified package management tool that works across macOS (Homebrew) a
 **App Definition Schema:**
 ```yaml
 name: example
+command: example-bin  # binary name if different from app name (used for status checks)
 
 version:
   policy: latest  # or pinned
@@ -92,6 +93,7 @@ install:
       curl -fsSL https://example.com/install.sh | bash
     uninstall: |
       rm -f /usr/local/bin/example
+    version_cmd: example --version 2>/dev/null | awk '{print $2}'  # custom version detection
 ```
 
 **Bootstrap Dependencies:**

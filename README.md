@@ -39,13 +39,26 @@ $ chezmoi init --source=. --apply
 
 ## Commands
 
-| Command            | Description                                              |
-|--------------------|----------------------------------------------------------|
-| `make install`     | Apply dotfiles using chezmoi                             |
-| `make uninstall`   | Remove chezmoi-managed files                             |
-| `make list`        | Show all managed files                                   |
-| `make brew-install`| Install packages from Brewfile (macOS)                   |
-| `make apt-install` | Install packages from apt-packages.txt (Ubuntu/Debian)   |
+| Command                | Description                              |
+|------------------------|------------------------------------------|
+| `make install`         | Apply dotfiles using chezmoi             |
+| `make uninstall`       | Remove chezmoi-managed files             |
+| `make list`            | Show all managed files                   |
+| `make apps-install`    | Install all apps defined in `apps/`      |
+| `make apps-upgrade`    | Upgrade all installed apps               |
+| `make apps-status`     | Show status of all apps                  |
+| `make apps-doctor`     | Health check for apps                    |
+
+Use appctl directly for per-app operations:
+
+| Command                              | Description                     |
+|--------------------------------------|---------------------------------|
+| `./appctl/appctl install [app...]`   | Install apps (all if no args)   |
+| `./appctl/appctl upgrade [app...]`   | Upgrade apps                    |
+| `./appctl/appctl uninstall <app...>` | Uninstall specified apps        |
+| `./appctl/appctl status [app...]`    | Show app status                 |
+| `./appctl/appctl list`               | List all defined apps           |
+| `./appctl/appctl doctor`             | Health check                    |
 
 ## What's Included
 
@@ -62,46 +75,45 @@ $ chezmoi init --source=. --apply
 - **tmux** - Terminal multiplexer
 
 ### Development Tools (via appctl)
-- Languages: Go, Node.js, Rust
-- Python: uv (manages Python versions, packages, and virtual environments)
-- Editors: helix
-- Kubernetes: kubectl, kind, krew, kustomize
-- Utilities: fzf, jq, yq, ghq, fd, lazygit, chezmoi
+- **Languages & Runtimes**: Go, Node.js, Rust, uv
+- **Editors**: Helix
+- **Version Control**: Git, gh, Lazygit, Git Credential Manager
+- **Containers & Kubernetes**: Docker CLI, Lima, kubectl, kind, krew, kustomize
+- **Go Tools**: gopls, golangci-lint, staticcheck, delve, goimports-reviser, setup-envtest, golangci-lint-langserver
+- **CLI Utilities**: fzf, fd, jq, yq, ghq, btop, colordiff, curl, wget, hugo, deck, chezmoi, starship
+- **AI**: Claude Code
 
-### System Tools & Applications
-
-**macOS (via Homebrew)**:
-- GUI Apps: Ghostty, Google Chrome, Raycast, KeePassXC, Git Credential Manager, Gitify
-- System utilities: tmux, starship, gh, colordiff
-- Package management: Declarative Brewfile for reproducible setup
-
-**Ubuntu/Debian (via apt)**:
-- System utilities: curl, wget, git
-- Package management: Declarative apt-packages.txt for reproducible setup
+### macOS GUI Apps (via Homebrew Cask)
+- Alt-Tab, Ghostty, Git Credential Manager, Gitify, Google Chrome, Google Drive, Google Japanese IME, HiddenBar, KeePassXC, Mac Mouse Fix, MeetingBar, Raycast
+- **Fonts**: HackGen Nerd
 
 ### Git
 - Global gitconfig and gitignore
+
+### SSH
+- SSH client configuration (private)
+
+### Claude Code
+- Settings and custom skills
 
 ## Directory Structure
 
 ```
 .
+├── appctl/                 # Declarative package management tool
+├── apps/                   # App definitions (YAML) for appctl
 ├── chezmoi/                # chezmoi source directory
-│   ├── .chezmoi.toml.tmpl  # chezmoi config template
-│   ├── .chezmoiignore      # files to ignore
 │   ├── dot_claude/         # -> ~/.claude (settings, skills)
-│   ├── dot_config/         # -> ~/.config (ghostty, helix, kitty, lazygit, tmux, starship)
+│   ├── dot_config/         # -> ~/.config (ghostty, helix, kitty, lazygit, tmux, zsh, starship)
 │   ├── dot_gitconfig       # -> ~/.gitconfig
+│   ├── dot_gitignore_global # -> ~/.gitignore_global
+│   ├── dot_zimrc           # -> ~/.zimrc
+│   ├── dot_zshenv          # -> ~/.zshenv
 │   ├── dot_zshrc           # -> ~/.zshrc
 │   └── private_dot_ssh/    # -> ~/.ssh (mode 0600)
-├── zsh/                    # Modular zsh configurations (sourced via ghq)
-│   ├── git.zsh
-│   ├── kubernetes.zsh
-│   └── ...
-├── Brewfile                # Homebrew packages (macOS)
-├── apt-packages.txt        # apt packages (Linux)
 ├── .chezmoiroot            # Points chezmoi to chezmoi/
-└── Makefile
+├── Makefile
+└── renovate.json           # Dependency update configuration
 ```
 
 ## Platform-Specific Settings
