@@ -3,6 +3,7 @@ name: hugo
 version:
   policy: latest
 
+# cf. https://gohugo.io/installation/
 install:
   - type: brew
     package: hugo

@@ -6,6 +6,7 @@ version:
 requires:
   - go
 
+# cf. https://golangci-lint.run/welcome/install/
 install:
   - type: brew
     package: golangci-lint

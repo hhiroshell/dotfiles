@@ -6,6 +6,7 @@ version:
 requires:
   - go
 
+# cf. https://github.com/golang/tools/tree/master/gopls#installation
 install:
   - type: go
     package: golang.org/x/tools/gopls@latest

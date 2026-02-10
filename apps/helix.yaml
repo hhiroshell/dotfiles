@@ -5,6 +5,7 @@ command: hx
 version:
   policy: latest
 
+# cf. https://docs.helix-editor.com/install.html
 install:
   - type: brew
     package: helix

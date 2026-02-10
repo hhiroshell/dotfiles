@@ -3,6 +3,7 @@ name: node
 version:
   policy: latest
 
+# cf. https://nodejs.org/en/download/
 install:
   - type: brew
     package: node

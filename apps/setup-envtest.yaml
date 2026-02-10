@@ -6,6 +6,7 @@ version:
 requires:
   - go
 
+# cf. https://github.com/kubernetes-sigs/controller-runtime/tree/main/tools/setup-envtest
 install:
   - type: go
     package: sigs.k8s.io/controller-runtime/tools/setup-envtest@latest

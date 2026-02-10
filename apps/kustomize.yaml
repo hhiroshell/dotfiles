@@ -3,6 +3,7 @@ name: kustomize
 version:
   policy: latest
 
+# cf. https://kubectl.docs.kubernetes.io/installation/kustomize/
 install:
   - type: brew
     package: kustomize

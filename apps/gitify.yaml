@@ -3,6 +3,7 @@ name: gitify
 version:
   policy: latest
 
+# cf. https://www.gitify.io/
 install:
   - type: brew
     cask: gitify

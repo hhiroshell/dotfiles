@@ -3,6 +3,7 @@ name: google-chrome
 version:
   policy: latest
 
+# cf. https://www.google.com/chrome/
 install:
   - type: brew
     cask: google-chrome

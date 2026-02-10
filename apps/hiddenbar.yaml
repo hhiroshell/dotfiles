@@ -3,6 +3,7 @@ name: hiddenbar
 version:
   policy: latest
 
+# cf. https://github.com/dwarvesf/hidden
 install:
   - type: brew
     cask: hiddenbar

@@ -3,6 +3,7 @@ name: jq
 version:
   policy: latest
 
+# cf. https://jqlang.github.io/jq/download/
 install:
   - type: brew
     package: jq

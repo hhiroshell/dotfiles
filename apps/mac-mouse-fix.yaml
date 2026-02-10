@@ -3,6 +3,7 @@ name: mac-mouse-fix
 version:
   policy: latest
 
+# cf. https://macmousefix.com/
 install:
   - type: brew
     cask: mac-mouse-fix

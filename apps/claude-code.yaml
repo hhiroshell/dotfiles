@@ -5,6 +5,7 @@ command: claude
 version:
   policy: latest
 
+# cf. https://docs.anthropic.com/en/docs/claude-code/getting-started
 install:
   - type: brew
     cask: claude-code

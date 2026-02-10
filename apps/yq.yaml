@@ -3,6 +3,7 @@ name: yq
 version:
   policy: latest
 
+# cf. https://github.com/mikefarah/yq#install
 install:
   - type: brew
     package: yq

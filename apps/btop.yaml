@@ -3,6 +3,7 @@ name: btop
 version:
   policy: latest
 
+# cf. https://github.com/aristocratos/btop#installation
 install:
   - type: brew
     package: btop

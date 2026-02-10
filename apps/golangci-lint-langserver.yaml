@@ -6,6 +6,7 @@ version:
 requires:
   - go
 
+# cf. https://github.com/nametake/golangci-lint-langserver
 install:
   - type: go
     package: github.com/nametake/golangci-lint-langserver@latest

@@ -3,6 +3,7 @@ name: curl
 version:
   policy: latest
 
+# cf. https://curl.se/download.html
 install:
   - type: apt
     package: curl

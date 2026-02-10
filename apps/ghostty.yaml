@@ -3,6 +3,7 @@ name: ghostty
 version:
   policy: latest
 
+# cf. https://ghostty.org/download
 install:
   - type: brew
     cask: ghostty

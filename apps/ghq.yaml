@@ -3,6 +3,7 @@ name: ghq
 version:
   policy: latest
 
+# cf. https://github.com/x-motemen/ghq#installation
 install:
   - type: brew
     package: ghq

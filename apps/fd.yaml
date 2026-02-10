@@ -3,6 +3,7 @@ name: fd
 version:
   policy: latest
 
+# cf. https://github.com/sharkdp/fd#installation
 install:
   - type: brew
     package: fd

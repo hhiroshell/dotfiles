@@ -6,6 +6,7 @@ version:
 requires:
   - go
 
+# cf. https://github.com/k1LoW/deck
 install:
   - type: go
     package: github.com/k1LoW/deck@latest

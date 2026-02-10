@@ -8,6 +8,7 @@ version:
 requires:
   - kubectl
 
+# cf. https://krew.sigs.k8s.io/docs/user-guide/setup/install/
 install:
   - type: custom
     check: command -v kubectl-krew

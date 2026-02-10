@@ -3,6 +3,7 @@ name: tmux
 version:
   policy: latest
 
+# cf. https://github.com/tmux/tmux/wiki/Installing
 install:
   - type: brew
     package: tmux

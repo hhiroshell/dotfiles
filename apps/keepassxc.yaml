@@ -3,6 +3,7 @@ name: keepassxc
 version:
   policy: latest
 
+# cf. https://keepassxc.org/download/
 install:
   - type: brew
     cask: keepassxc
