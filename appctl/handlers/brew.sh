@@ -138,6 +138,54 @@ handler_brew_uninstall() {
     fi
 }
 
+handler_brew_latest_version() {
+    local app_name="$1"
+    local install_entry="$2"
+    local app_json="$3"
+
+    local pkg
+    pkg=$(_brew_get_package "$install_entry")
+
+    if _brew_is_cask "$install_entry"; then
+        brew info --json=v2 --cask "$pkg" 2>/dev/null | jq -r '.casks[0].version // empty'
+    else
+        brew info --json=v2 "$pkg" 2>/dev/null | jq -r '.formulae[0].versions.stable // empty'
+    fi
+}
+
+handler_brew_outdated() {
+    local app_name="$1"
+    local install_entry="$2"
+    local app_json="$3"
+
+    if ! _brew_is_installed "$install_entry"; then
+        log_skip "$app_name: not installed"
+        return 0
+    fi
+
+    local current_version
+    current_version=$(handler_brew_current_version "$app_name" "$install_entry" "$app_json")
+
+    if [[ -z "$current_version" ]]; then
+        log_warn "$app_name: cannot check (no version info)"
+        return 0
+    fi
+
+    local latest_version
+    latest_version=$(handler_brew_latest_version "$app_name" "$install_entry" "$app_json")
+
+    if [[ -z "$latest_version" ]]; then
+        log_warn "$app_name: cannot check (failed to query latest version)"
+        return 0
+    fi
+
+    if [[ "$current_version" != "$latest_version" ]]; then
+        log_warn "$app_name: update available (installed: $current_version, latest: $latest_version)"
+    else
+        log_ok "$app_name: up to date ($current_version)"
+    fi
+}
+
 handler_brew_current_version() {
     local app_name="$1"
     local install_entry="$2"

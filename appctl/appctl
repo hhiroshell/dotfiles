@@ -142,6 +142,18 @@ cmd_status() {
     done
 }
 
+cmd_outdated() {
+    local apps=("$@")
+
+    if [[ ${#apps[@]} -eq 0 ]]; then
+        mapfile -t apps < <(list_apps "$APPS_DIR")
+    fi
+
+    for app in "${apps[@]}"; do
+        process_app outdated "$app" || true
+    done
+}
+
 cmd_list() {
     list_apps "$APPS_DIR"
 }
@@ -216,6 +228,7 @@ Commands:
   upgrade [app...]   Upgrade apps (all if no args)
   uninstall <app...> Uninstall specified apps
   status [app...]    Show app status (all if no args)
+  outdated [app...]  Check for updates (all if no args)
   list               List all defined apps
   doctor             Health check
 
@@ -239,6 +252,7 @@ main() {
         upgrade)   cmd_upgrade "$@" ;;
         uninstall) cmd_uninstall "$@" ;;
         status)    cmd_status "$@" ;;
+        outdated)  cmd_outdated "$@" ;;
         list)      cmd_list ;;
         doctor)    cmd_doctor ;;
         -h|--help|help|"")

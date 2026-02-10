@@ -113,6 +113,62 @@ handler_go_uninstall() {
     fi
 }
 
+handler_go_latest_version() {
+    local app_name="$1"
+    local install_entry="$2"
+    local app_json="$3"
+
+    local binary
+    binary=$(_go_get_binary "$app_name" "$install_entry" "$app_json")
+    local gobin="${GOBIN:-${GOPATH:-$HOME/go}/bin}"
+
+    if [[ ! -x "$gobin/$binary" ]]; then
+        return 0
+    fi
+
+    local module_path
+    module_path=$(go version -m "$gobin/$binary" 2>/dev/null | awk '/^\tmod\t/{print $2}')
+
+    if [[ -z "$module_path" ]]; then
+        return 0
+    fi
+
+    curl -sS --max-time 10 "https://proxy.golang.org/${module_path}/@latest" 2>/dev/null | jq -r '.Version // empty'
+}
+
+handler_go_outdated() {
+    local app_name="$1"
+    local install_entry="$2"
+    local app_json="$3"
+
+    if ! _go_is_installed "$app_name" "$install_entry" "$app_json"; then
+        log_skip "$app_name: not installed"
+        return 0
+    fi
+
+    local current_version
+    current_version=$(handler_go_current_version "$app_name" "$install_entry" "$app_json")
+
+    if [[ -z "$current_version" || "$current_version" == "installed, version unknown" ]]; then
+        log_warn "$app_name: cannot check (no version info)"
+        return 0
+    fi
+
+    local latest_version
+    latest_version=$(handler_go_latest_version "$app_name" "$install_entry" "$app_json")
+
+    if [[ -z "$latest_version" ]]; then
+        log_warn "$app_name: cannot check (failed to query latest version)"
+        return 0
+    fi
+
+    if [[ "$current_version" != "$latest_version" ]]; then
+        log_warn "$app_name: update available (installed: $current_version, latest: $latest_version)"
+    else
+        log_ok "$app_name: up to date ($current_version)"
+    fi
+}
+
 handler_go_current_version() {
     local app_name="$1"
     local install_entry="$2"
