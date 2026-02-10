@@ -12,6 +12,7 @@ requires:
 install:
   - type: custom
     check: command -v kubectl-krew
+    version_cmd: go version -m $(which kubectl-krew) 2>/dev/null | awk '/^\tmod\t/{print $3}'
     script: |
       set -x
       cd "$(mktemp -d)"
