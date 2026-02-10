@@ -31,24 +31,10 @@ $ ./appctl/appctl install
 ### Apply dotfiles
 
 ```console
-$ make install
-# or
 $ chezmoi init --source=. --apply
 ```
 
 ## Commands
-
-| Command                | Description                              |
-|------------------------|------------------------------------------|
-| `make install`         | Apply dotfiles using chezmoi             |
-| `make uninstall`       | Remove chezmoi-managed files             |
-| `make list`            | Show all managed files                   |
-| `make apps-install`    | Install all apps defined in `apps/`      |
-| `make apps-upgrade`    | Upgrade all installed apps               |
-| `make apps-status`     | Show status of all apps                  |
-| `make apps-doctor`     | Health check for apps                    |
-
-Use appctl directly for per-app operations:
 
 | Command                              | Description                     |
 |--------------------------------------|---------------------------------|
@@ -110,8 +96,7 @@ Use appctl directly for per-app operations:
 │   ├── dot_zshrc           # -> ~/.zshrc
 │   └── private_dot_ssh/    # -> ~/.ssh (mode 0600)
 ├── .chezmoiroot            # Points chezmoi to chezmoi/
-├── Makefile
-└── renovate.json           # Dependency update configuration
+└── CLAUDE.md               # Claude Code project instructions
 ```
 
 ## Platform-Specific Settings
