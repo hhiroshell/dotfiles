@@ -6,6 +6,47 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a personal dotfiles repository that manages configuration files using [chezmoi](https://www.chezmoi.io/). The repository uses chezmoi's source directory structure with the `chezmoi/` directory containing all managed dotfiles.
 
+## Design Philosophy
+
+This repository is built on the **appctl approach** — a design that targets a practical operating point between "dotfiles management" and "machine reproducibility."
+
+It pursues neither perfect reproducibility nor a hands-off setup. The core principle is:
+
+> **Assume things will break. Make breakage observable. Keep the ability to fix it.**
+
+### Core Principles
+
+1. **Declare, but don't guarantee.** Apps are declared in YAML, but fulfillment is not guaranteed. Instead, drift between declaration and reality is made **observable** (via `doctor`). This explicitly differs from Nix's guarantee model.
+
+2. **Follow latest by default.** Version pinning is the exception, not the rule. Latest-tracking provides security updates, early detection of breaking changes, and reduced manual update cost. Pinning is an **emergency brake** used only when stability is momentarily needed.
+
+3. **Respect existing ecosystems.** brew / apt / npm / GitHub Releases and native OS behaviors are **wrapped, not replaced**. This makes troubleshooting searchable, handoff easy, and corporate machine restrictions avoidable.
+
+4. **Separate dotfiles from app management.** appctl handles app existence, state, and versions. chezmoi handles file placement, OS diffs, and templates. No symlink dependency. OS-specific diffs are confined to chezmoi. **Mixing responsibilities is intentionally avoided.**
+
+5. **Doctor-centric design.** The system prioritizes `doctor` over `install`. Doctor checks installation presence, dependency satisfaction (`requires`), and version drift (pinned violations). It observes **"how things have drifted"** rather than asserting **"whether things are correct."**
+
+### When This Approach Works Well
+
+- Mixed macOS and Linux environments
+- Corporate-managed machines are involved
+- GUI and CLI tools coexist
+- Latest-version tracking is acceptable
+- Willingness to fix breakage exists
+
+### When to Move On
+
+This design is **not meant to last forever**. Clear signals to consider migration:
+
+- **Doctor is perpetually red** — drift can be observed but no longer fixed in time. The operational scale has outgrown this approach.
+- **Reproducibility becomes mandatory** — CI environments, shared dev setups, or incident investigation demand exact reproduction. Nix, devcontainers, or VMs are more appropriate.
+- **YAML becomes a manual** — install sections bloat, conditionals multiply, bash turns into a DSL. The tool has become the goal. Nix, Ansible, or OS imaging provides stronger abstraction.
+- **Full OS management is needed** — systemd, kernel/driver, OS security policies are out of scope for this design.
+
+### Easy to Walk Away From
+
+A key design property: **appctl is easy to remove.** brew/apt remain intact, chezmoi continues independently, and deleting appctl breaks nothing. This is an intentional design decision. This repository prioritizes **sustainability over completeness** — it preserves the ability to observe and fix failures, and when limits are reached, to walk away cleanly.
+
 ## Key Commands
 
 ### Installation and Setup
