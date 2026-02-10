@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a personal dotfiles repository that manages configuration files using [chezmoi](https://www.chezmoi.io/). The repository uses chezmoi's source directory structure with the `home/` directory containing all managed dotfiles.
+This is a personal dotfiles repository that manages configuration files using [chezmoi](https://www.chezmoi.io/). The repository uses chezmoi's source directory structure with the `chezmoi/` directory containing all managed dotfiles.
 
 ## Key Commands
 
@@ -30,11 +30,11 @@ Or use appctl directly:
 ## Architecture
 
 ### Directory Structure
-- `home/` - chezmoi source directory containing all dotfiles
-  - `home/dot_config/zsh/` - Modular zsh configuration files deployed to `~/.config/zsh/`
+- `chezmoi/` - chezmoi source directory containing all dotfiles
+  - `chezmoi/dot_config/zsh/` - Modular zsh configuration files deployed to `~/.config/zsh/`
 - `appctl/` - Declarative package management tool
 - `apps/` - App definitions (YAML) for appctl
-- `.chezmoiroot` - Points chezmoi to use `home/` as source directory
+- `.chezmoiroot` - Points chezmoi to use `chezmoi/` as source directory
 
 ### appctl - Declarative Package Management
 
@@ -100,7 +100,7 @@ appctl requires `jq` and `yq` to parse YAML. Install them first:
 - Linux: `sudo apt-get install jq && sudo snap install yq`
 
 ### chezmoi Naming Convention
-Files in `home/` use chezmoi's naming convention:
+Files in `chezmoi/` use chezmoi's naming convention:
 - `dot_` prefix → `.` (dotfiles)
 - `private_` prefix → mode 0600 (private files)
 - `.tmpl` suffix → template processing
@@ -129,7 +129,7 @@ chezmoi uses Go templates for OS-specific settings:
 Template files use `{{ .chezmoi.os }}` to conditionally include platform-specific content.
 
 ### Zsh Module System
-The `.zshrc` sources modular configuration files from `~/.config/zsh/` (managed by chezmoi via `home/dot_config/zsh/`):
+The `.zshrc` sources modular configuration files from `~/.config/zsh/` (managed by chezmoi via `chezmoi/dot_config/zsh/`):
 - `git.zsh` - Git-related functions and aliases
 - `kubernetes.zsh` - Kubernetes utilities
 - `misc.zsh` - General utilities and aliases
@@ -140,7 +140,7 @@ These modules are deployed by chezmoi and sourced via `$XDG_CONFIG_HOME/zsh/` at
 ## Working with This Repository
 
 When modifying configurations:
-1. Edit files in `home/` directory (using chezmoi naming convention)
+1. Edit files in `chezmoi/` directory (using chezmoi naming convention)
 2. Run `make install` (or `chezmoi apply`) to apply changes
 3. Test changes by opening a new shell session
 
@@ -150,7 +150,7 @@ When modifying configurations:
 3. Run `./appctl/appctl install myapp` to install
 
 ### Adding New Dotfiles
-1. Create file in `home/` with appropriate chezmoi prefix:
+1. Create file in `chezmoi/` with appropriate chezmoi prefix:
    - Regular dotfile: `dot_filename`
    - Private file: `private_dot_filename`
    - Template: add `.tmpl` suffix

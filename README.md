@@ -86,7 +86,7 @@ $ chezmoi init --source=. --apply
 
 ```
 .
-├── home/                   # chezmoi source directory
+├── chezmoi/                # chezmoi source directory
 │   ├── .chezmoi.toml.tmpl  # chezmoi config template
 │   ├── .chezmoiignore      # files to ignore
 │   ├── dot_claude/         # -> ~/.claude (settings, skills)
@@ -100,7 +100,7 @@ $ chezmoi init --source=. --apply
 │   └── ...
 ├── Brewfile                # Homebrew packages (macOS)
 ├── apt-packages.txt        # apt packages (Linux)
-├── .chezmoiroot            # Points chezmoi to home/
+├── .chezmoiroot            # Points chezmoi to chezmoi/
 └── Makefile
 ```
 
