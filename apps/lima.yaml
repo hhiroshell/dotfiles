@@ -1,5 +1,7 @@
 name: lima
 
+command: limactl
+
 version:
   policy: latest
 
@@ -8,3 +10,14 @@ install:
   - type: brew
     package: lima
     os: macos
+
+  - type: custom
+    os: linux
+    check: command -v limactl
+    script: |
+      VERSION=$(curl -fsSL https://api.github.com/repos/lima-vm/lima/releases/latest | jq -r .tag_name)
+      curl -fsSL "https://github.com/lima-vm/lima/releases/download/${VERSION}/lima-${VERSION:1}-$(uname -s)-$(uname -m).tar.gz" \
+        | sudo tar Cxzvm /usr/local
+    uninstall: |
+      sudo rm -f /usr/local/bin/lima* /usr/local/bin/limactl
+      sudo rm -rf /usr/local/share/lima /usr/local/share/doc/lima
