@@ -191,8 +191,7 @@ When modifying configurations:
    - Regular dotfile: `dot_filename`
    - Private file: `private_dot_filename`
    - Template: add `.tmpl` suffix
-2. Update `.gitignore` whitelist pattern if needed
-3. Run `chezmoi apply` to deploy
+2. Run `chezmoi apply` to deploy
 
 ### Initial Setup on New Machine
 ```bash
