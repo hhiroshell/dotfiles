@@ -1,4 +1,6 @@
-name: docker
+name: docker-cli
+
+command: docker
 
 version:
   policy: latest
@@ -10,7 +12,7 @@ install:
     os: macos
 
   - type: apt
-    package: docker-ce docker-ce-cli containerd.io
+    package: docker-ce-cli docker-buildx-plugin
     os: linux
     pre_install: |
       sudo install -m 0755 -d /etc/apt/keyrings
