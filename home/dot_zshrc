@@ -30,9 +30,6 @@ eval "$(starship init zsh)"
 # load external zsh scripts
 # ==========================
 
-# load zsh scripts from multiple dotfiles repositories
-for repo in $(eval "ghq list --full-path --exact dotfiles"); do
-    for file in $(ls $repo/zsh/*.zsh); do
-        source $file
-    done
+for file in ${XDG_CONFIG_HOME}/zsh/*.zsh; do
+    source $file
 done

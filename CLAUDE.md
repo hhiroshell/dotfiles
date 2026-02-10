@@ -31,9 +31,9 @@ Or use appctl directly:
 
 ### Directory Structure
 - `home/` - chezmoi source directory containing all dotfiles
+  - `home/dot_config/zsh/` - Modular zsh configuration files deployed to `~/.config/zsh/`
 - `appctl/` - Declarative package management tool
 - `apps/` - App definitions (YAML) for appctl
-- `zsh/` - Modular zsh configuration files sourced by `.zshrc` (not managed by chezmoi)
 - `.chezmoiroot` - Points chezmoi to use `home/` as source directory
 
 ### appctl - Declarative Package Management
@@ -115,6 +115,7 @@ chezmoi manages these key configurations:
 - `dot_config/lazygit/` → `~/.config/lazygit/` - Lazygit configuration
 - `dot_config/tmux/` → `~/.config/tmux/` - tmux configuration
 - `dot_config/starship.toml` → `~/.config/starship.toml` - Shell prompt configuration
+- `dot_config/zsh/` → `~/.config/zsh/` - Modular zsh configuration files (git, kubernetes, misc, sdk)
 - `dot_gitconfig`, `dot_gitignore_global` → `~/.gitconfig`, `~/.gitignore_global` - Git configuration
 - `private_dot_ssh/config` → `~/.ssh/config` - SSH configuration
 - `dot_zimrc`, `dot_zshenv`, `dot_zshrc` → `~/.zimrc`, `~/.zshenv`, `~/.zshrc` - Zsh shell configuration
@@ -128,13 +129,13 @@ chezmoi uses Go templates for OS-specific settings:
 Template files use `{{ .chezmoi.os }}` to conditionally include platform-specific content.
 
 ### Zsh Module System
-The `.zshrc` sources modular configuration files from `zsh/`:
+The `.zshrc` sources modular configuration files from `~/.config/zsh/` (managed by chezmoi via `home/dot_config/zsh/`):
 - `git.zsh` - Git-related functions and aliases
 - `kubernetes.zsh` - Kubernetes utilities
 - `misc.zsh` - General utilities and aliases
 - `sdk.zsh` - SDK and development environment setup
 
-These modules are kept in the repo root and sourced via ghq path, not managed by chezmoi.
+These modules are deployed by chezmoi and sourced via `$XDG_CONFIG_HOME/zsh/` at shell startup.
 
 ## Working with This Repository
 
