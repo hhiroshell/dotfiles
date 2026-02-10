@@ -95,9 +95,9 @@ install:
 ```
 
 **Bootstrap Dependencies:**
-appctl requires `jq` and `yq` to parse YAML. Install them first:
-- macOS: `brew install jq yq`
-- Linux: `sudo apt-get install jq && sudo snap install yq`
+appctl requires `jq` and `yq` to parse YAML. Install them manually following official instructions:
+- jq: https://jqlang.github.io/jq/download/
+- yq: https://github.com/mikefarah/yq#install
 
 ### chezmoi Naming Convention
 Files in `chezmoi/` use chezmoi's naming convention:
@@ -163,13 +163,9 @@ When modifying configurations:
 git clone https://github.com/hhiroshell/dotfiles.git
 cd dotfiles
 
-# Install bootstrap dependencies (jq, yq)
-# macOS:
-brew install jq yq
-
-# Linux:
-sudo apt-get install jq
-sudo snap install yq
+# Install bootstrap dependencies (jq, yq) following official instructions:
+#   jq: https://jqlang.github.io/jq/download/
+#   yq: https://github.com/mikefarah/yq#install
 
 # Install chezmoi and other apps
 ./appctl/appctl install chezmoi

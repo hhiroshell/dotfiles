@@ -26,12 +26,9 @@ check_bootstrap_deps() {
 
     if [[ ${#missing[@]} -gt 0 ]]; then
         log_error "Missing required dependencies: ${missing[*]}"
-        log_info "Install them first:"
-        if [[ "$APPCTL_OS" == "macos" ]]; then
-            log_info "  brew install ${missing[*]}"
-        else
-            log_info "  sudo apt-get install jq && sudo snap install yq"
-        fi
+        log_info "Install them manually following official instructions:"
+        log_info "  jq: https://jqlang.github.io/jq/download/"
+        log_info "  yq: https://github.com/mikefarah/yq#install"
         exit 1
     fi
 }
