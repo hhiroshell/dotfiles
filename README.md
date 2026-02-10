@@ -8,8 +8,7 @@ Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 - Platform-specific package managers:
   - [Homebrew](https://brew.sh/) (macOS) - For GUI apps and system tools
   - apt (Ubuntu/Debian) - For system packages and build dependencies
-- [zsh](https://www.zsh.org/) with [zimfw](https://zimfw.sh/)
-- [starship](https://starship.rs/) - Shell prompt
+- [zsh](https://www.zsh.org/)
 
 ## Installation
 
@@ -63,8 +62,7 @@ Use appctl directly for per-app operations:
 ## What's Included
 
 ### Shell
-- **zsh** - Shell configuration with zimfw
-- **starship** - Cross-shell prompt
+- **zsh** - Shell configuration with zimfw plugin manager
 
 ### Editors
 - **Helix** - Modal text editor with zenbones theme
