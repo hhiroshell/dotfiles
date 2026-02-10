@@ -70,6 +70,18 @@ install:
     package: example
     os: linux
 
+  - type: apt
+    package: pkg1 pkg2       # multiple packages (space-separated)
+    os: linux
+    pre_install: |           # run before apt-get install (e.g. add repo)
+      curl -fsSL https://example.com/key.gpg | sudo tee /etc/apt/keyrings/example.gpg >/dev/null
+      echo "deb [signed-by=/etc/apt/keyrings/example.gpg] https://example.com/repo stable main" \
+        | sudo tee /etc/apt/sources.list.d/example.list >/dev/null
+      sudo apt-get update
+    uninstall: |             # run after apt-get remove (e.g. cleanup repo)
+      sudo rm -f /etc/apt/sources.list.d/example.list
+      sudo rm -f /etc/apt/keyrings/example.gpg
+
   - type: go
     package: example.com/cmd/example@latest
 

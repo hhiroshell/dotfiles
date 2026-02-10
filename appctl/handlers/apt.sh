@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
 # apt handler
 
+# Get pre_install script from install entry
+_apt_get_pre_install() {
+    local install_entry="$1"
+    echo "$install_entry" | jq -r '.pre_install // empty'
+}
+
+# Get uninstall script from install entry
+_apt_get_uninstall_script() {
+    local install_entry="$1"
+    echo "$install_entry" | jq -r '.uninstall // empty'
+}
+
 _apt_is_installed() {
     local install_entry="$1"
     local pkg
-    pkg=$(echo "$install_entry" | jq -r '.package')
+    pkg=$(echo "$install_entry" | jq -r '.package' | awk '{print $1}')
     dpkg -s "$pkg" &>/dev/null
 }
 
@@ -37,8 +49,18 @@ handler_apt_install() {
         return 0
     fi
 
+    local pre_install
+    pre_install=$(_apt_get_pre_install "$install_entry")
+    if [[ -n "$pre_install" ]]; then
+        log_info "$app_name: running pre_install script..."
+        if ! eval "$pre_install"; then
+            log_error "$app_name: pre_install script failed"
+            return 1
+        fi
+    fi
+
     log_info "$app_name: installing via apt..."
-    if sudo apt-get install -y "$pkg"; then
+    if sudo apt-get install -y $pkg; then
         log_ok "$app_name: installed"
     else
         log_error "$app_name: installation failed"
@@ -60,8 +82,18 @@ handler_apt_upgrade() {
         return $?
     fi
 
+    local pre_install
+    pre_install=$(_apt_get_pre_install "$install_entry")
+    if [[ -n "$pre_install" ]]; then
+        log_info "$app_name: running pre_install script..."
+        if ! eval "$pre_install"; then
+            log_error "$app_name: pre_install script failed"
+            return 1
+        fi
+    fi
+
     log_info "$app_name: upgrading via apt..."
-    if sudo apt-get install -y --only-upgrade "$pkg"; then
+    if sudo apt-get install -y --only-upgrade $pkg; then
         log_ok "$app_name: upgraded"
     else
         log_ok "$app_name: already up to date"
@@ -82,11 +114,18 @@ handler_apt_uninstall() {
     fi
 
     log_info "$app_name: uninstalling via apt..."
-    if sudo apt-get remove -y "$pkg"; then
+    if sudo apt-get remove -y $pkg; then
         log_ok "$app_name: uninstalled"
     else
         log_error "$app_name: uninstall failed"
         return 1
+    fi
+
+    local uninstall_script
+    uninstall_script=$(_apt_get_uninstall_script "$install_entry")
+    if [[ -n "$uninstall_script" ]]; then
+        log_info "$app_name: running cleanup script..."
+        eval "$uninstall_script"
     fi
 }
 
@@ -96,7 +135,7 @@ handler_apt_current_version() {
     local app_json="$3"
 
     local pkg
-    pkg=$(echo "$install_entry" | jq -r '.package')
+    pkg=$(echo "$install_entry" | jq -r '.package' | awk '{print $1}')
 
     dpkg -s "$pkg" 2>/dev/null | grep '^Version:' | awk '{print $2}'
 }
