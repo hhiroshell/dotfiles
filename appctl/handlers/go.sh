@@ -4,8 +4,9 @@
 # Extract binary name from package path
 _go_get_binary_name() {
     local pkg="$1"
-    # Remove @version suffix and get last component
+    # Remove @version suffix and strip major version path (e.g. /v2, /v3)
     local path="${pkg%%@*}"
+    path=$(echo "$path" | sed 's|/v[0-9]\+$||')
     basename "$path"
 }
 
@@ -122,8 +123,8 @@ handler_go_current_version() {
     local gobin="${GOBIN:-${GOPATH:-$HOME/go}/bin}"
 
     if [[ -x "$gobin/$binary" ]]; then
-        "$gobin/$binary" --version 2>/dev/null | head -1 || \
-        "$gobin/$binary" version 2>/dev/null | head -1 || \
-        echo "installed, version unknown"
+        local ver
+        ver=$(go version -m "$gobin/$binary" 2>/dev/null | awk '/^\tmod\t/{print $3}')
+        echo "${ver:-installed, version unknown}"
     fi
 }
