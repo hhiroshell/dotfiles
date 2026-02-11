@@ -133,7 +133,11 @@ handler_go_latest_version() {
         return 0
     fi
 
-    curl -sS --max-time 10 "https://proxy.golang.org/${module_path}/@latest" 2>/dev/null | jq -r '.Version // empty'
+    # Go module proxy requires case-encoding: uppercase letters become '!' + lowercase
+    local encoded_path
+    encoded_path=$(echo "$module_path" | sed 's/[A-Z]/!&/g' | tr '[:upper:]' '[:lower:]')
+
+    curl -sS --max-time 10 "https://proxy.golang.org/${encoded_path}/@latest" 2>/dev/null | jq -r '.Version // empty'
 }
 
 handler_go_outdated() {
