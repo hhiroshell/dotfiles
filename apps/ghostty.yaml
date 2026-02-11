@@ -4,6 +4,7 @@ version:
   policy: latest
 
 # cf. https://ghostty.org/download
+# Linux: community-maintained .deb from https://github.com/mkasberg/ghostty-ubuntu
 install:
   - type: brew
     cask: ghostty
@@ -12,7 +13,9 @@ install:
   - type: custom
     os: linux
     check: command -v ghostty
-    version_cmd: ghostty +version 2>/dev/null | head -1
+    version_cmd: ghostty --version 2>/dev/null | head -1 | awk '{print $2}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/mkasberg/ghostty-ubuntu/releases/latest" | jq -r '.tag_name | split("-") | .[0]'
     script: |
-      # Install from official apt repository
-      sudo apt-get install -y ghostty
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh)"
+    uninstall: |
+      sudo apt-get remove -y ghostty
