@@ -13,8 +13,9 @@ install:
     os: linux
     check: command -v fzf
     version_cmd: fzf --version 2>/dev/null | awk '{print $1}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/junegunn/fzf/releases/latest" | jq -r '.tag_name | ltrimstr("v")'
     script: |
-      FZF_VERSION=$(curl -s "https://api.github.com/repos/junegunn/fzf/releases/latest" | grep -Po '"tag_name": "v?\K[^"]*')
+      FZF_VERSION=$(curl -sS --max-time 10 "https://api.github.com/repos/junegunn/fzf/releases/latest" | jq -r '.tag_name | ltrimstr("v")')
       curl -Lo /tmp/fzf.tar.gz "https://github.com/junegunn/fzf/releases/latest/download/fzf-${FZF_VERSION}-linux_amd64.tar.gz"
       tar xf /tmp/fzf.tar.gz -C /tmp fzf
       sudo install /tmp/fzf /usr/local/bin
