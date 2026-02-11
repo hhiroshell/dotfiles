@@ -59,6 +59,7 @@ A key design property: **appctl is easy to remove.** brew/apt remain intact, che
 - `./appctl/appctl upgrade [app...]` - Upgrade apps
 - `./appctl/appctl uninstall <app...>` - Uninstall specified apps
 - `./appctl/appctl status [app...]` - Show app status
+- `./appctl/appctl outdated [app...]` - Check for available updates
 - `./appctl/appctl list` - List all defined apps
 - `./appctl/appctl doctor` - Health check
 
@@ -129,6 +130,7 @@ install:
     uninstall: |
       rm -f /usr/local/bin/example
     version_cmd: example --version 2>/dev/null | awk '{print $2}'  # custom version detection
+    latest_cmd: curl -s "https://api.example.com/latest" | jq -r '.tag_name'  # for `outdated` check (custom only)
 ```
 
 **Bootstrap Dependencies:**
