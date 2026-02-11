@@ -129,6 +129,50 @@ handler_apt_uninstall() {
     fi
 }
 
+handler_apt_latest_version() {
+    local app_name="$1"
+    local install_entry="$2"
+    local app_json="$3"
+
+    local pkg
+    pkg=$(echo "$install_entry" | jq -r '.package' | awk '{print $1}')
+
+    apt-cache policy "$pkg" 2>/dev/null | awk '/Candidate:/{print $2}'
+}
+
+handler_apt_outdated() {
+    local app_name="$1"
+    local install_entry="$2"
+    local app_json="$3"
+
+    if ! _apt_is_installed "$install_entry"; then
+        log_skip "$app_name: not installed"
+        return 0
+    fi
+
+    local current_version
+    current_version=$(handler_apt_current_version "$app_name" "$install_entry" "$app_json")
+
+    if [[ -z "$current_version" ]]; then
+        log_warn "$app_name: cannot check (no version info)"
+        return 0
+    fi
+
+    local latest_version
+    latest_version=$(handler_apt_latest_version "$app_name" "$install_entry" "$app_json")
+
+    if [[ -z "$latest_version" ]]; then
+        log_warn "$app_name: cannot check (failed to query latest version)"
+        return 0
+    fi
+
+    if [[ "$current_version" != "$latest_version" ]]; then
+        log_warn "$app_name: update available (installed: $current_version, latest: $latest_version)"
+    else
+        log_ok "$app_name: up to date ($current_version)"
+    fi
+}
+
 handler_apt_current_version() {
     local app_name="$1"
     local install_entry="$2"

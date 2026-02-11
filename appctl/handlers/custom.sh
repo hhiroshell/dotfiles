@@ -136,6 +136,65 @@ handler_custom_uninstall() {
     fi
 }
 
+_custom_get_latest_cmd() {
+    local install_entry="$1"
+    echo "$install_entry" | jq -r '.latest_cmd // empty'
+}
+
+handler_custom_latest_version() {
+    local app_name="$1"
+    local install_entry="$2"
+    local app_json="$3"
+
+    local latest_cmd
+    latest_cmd=$(_custom_get_latest_cmd "$install_entry")
+
+    if [[ -n "$latest_cmd" ]]; then
+        eval "$latest_cmd" 2>/dev/null
+    fi
+}
+
+handler_custom_outdated() {
+    local app_name="$1"
+    local install_entry="$2"
+    local app_json="$3"
+
+    if ! _custom_is_installed "$app_name" "$install_entry" "$app_json"; then
+        log_skip "$app_name: not installed"
+        return 0
+    fi
+
+    local latest_cmd
+    latest_cmd=$(_custom_get_latest_cmd "$install_entry")
+
+    if [[ -z "$latest_cmd" ]]; then
+        log_skip "$app_name: cannot check (no latest_cmd defined)"
+        return 0
+    fi
+
+    local current_version
+    current_version=$(handler_custom_current_version "$app_name" "$install_entry" "$app_json")
+
+    if [[ -z "$current_version" || "$current_version" == "installed, version unknown" ]]; then
+        log_warn "$app_name: cannot check (no version info)"
+        return 0
+    fi
+
+    local latest_version
+    latest_version=$(handler_custom_latest_version "$app_name" "$install_entry" "$app_json")
+
+    if [[ -z "$latest_version" ]]; then
+        log_warn "$app_name: cannot check (failed to query latest version)"
+        return 0
+    fi
+
+    if [[ "$current_version" != "$latest_version" ]]; then
+        log_warn "$app_name: update available (installed: $current_version, latest: $latest_version)"
+    else
+        log_ok "$app_name: up to date ($current_version)"
+    fi
+}
+
 handler_custom_current_version() {
     local app_name="$1"
     local install_entry="$2"
