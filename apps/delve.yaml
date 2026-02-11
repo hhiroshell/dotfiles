@@ -1,5 +1,7 @@
 name: delve
 
+command: dlv
+
 version:
   policy: latest
 
