@@ -12,6 +12,8 @@ install:
   - type: custom
     os: linux
     check: command -v chezmoi
+    version_cmd: chezmoi --version 2>/dev/null | awk '{print $3}' | tr -d ','
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/twpayne/chezmoi/releases/latest" | jq -r '.tag_name'
     script: |
       sudo sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
     uninstall: |
