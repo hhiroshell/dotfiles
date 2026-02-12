@@ -3,12 +3,10 @@ name: hugo
 version:
   policy: latest
 
+requires:
+  - go
+
 # cf. https://gohugo.io/installation/
 install:
-  - type: brew
-    package: hugo
-    os: macos
-
-  - type: apt
-    package: hugo
-    os: linux
+  - type: go
+    package: github.com/gohugoio/hugo@latest
