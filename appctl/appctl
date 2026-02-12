@@ -130,50 +130,32 @@ cmd_uninstall() {
     return $failed
 }
 
-cmd_status() {
-    local apps=("$@")
-
-    if [[ ${#apps[@]} -eq 0 ]]; then
-        mapfile -t apps < <(list_apps "$APPS_DIR")
-    fi
-
-    for app in "${apps[@]}"; do
-        process_app status "$app" || true
-    done
-}
-
-cmd_outdated() {
-    local apps=("$@")
-
-    if [[ ${#apps[@]} -eq 0 ]]; then
-        mapfile -t apps < <(list_apps "$APPS_DIR")
-    fi
-
-    for app in "${apps[@]}"; do
-        process_app outdated "$app" || true
-    done
-}
-
 cmd_list() {
     list_apps "$APPS_DIR"
 }
 
 cmd_doctor() {
-    log_info "System: $APPCTL_OS ($APPCTL_ARCH)"
-    echo
+    local verbose=false
+    if [[ "${1:-}" == "-v" || "${1:-}" == "--verbose" ]]; then
+        verbose=true
+        shift
+    fi
 
-    log_info "Checking apps..."
-    local apps
-    mapfile -t apps < <(list_apps "$APPS_DIR")
+    local apps=("$@")
 
-    local installed=0
-    local missing=0
-    local issues=()
+    if [[ ${#apps[@]} -eq 0 ]]; then
+        mapfile -t apps < <(list_apps "$APPS_DIR")
+    fi
+
+    local count_installed=0
+    local count_not_installed=0
+    local count_outdated=0
+    local count_missing_requires=0
 
     for app in "${apps[@]}"; do
         local app_json
         if ! app_json=$(load_app "$app" "$APPS_DIR" 2>/dev/null); then
-            issues+=("$app: failed to load definition")
+            log_error "$app: failed to load definition"
             continue
         fi
 
@@ -181,42 +163,104 @@ cmd_doctor() {
         install_entry=$(select_install_entry "$app_json")
 
         if [[ -z "$install_entry" ]]; then
-            continue  # Skip apps not for this OS
+            $verbose && log_skip "$app (no install entry for $APPCTL_OS)" || true
+            continue
         fi
 
         local handler_type
         handler_type=$(get_handler_type "$install_entry")
 
-        local status_func="handler_${handler_type}_status"
-        if declare -f "$status_func" &>/dev/null; then
-            if "$status_func" "$app" "$install_entry" "$app_json" &>/dev/null; then
-                ((installed++)) || true
-            else
-                ((missing++)) || true
-                issues+=("$app: not installed")
-            fi
-        fi
-
         # Check requires
+        local missing_reqs=()
         local requires
         requires=$(echo "$app_json" | jq -r '.requires // [] | .[]')
         for req in $requires; do
             if ! command_exists "$req"; then
-                issues+=("$app: missing requirement '$req'")
+                missing_reqs+=("$req")
             fi
         done
+        if [[ ${#missing_reqs[@]} -gt 0 ]]; then
+            ((count_missing_requires++)) || true
+        fi
+
+        # Check installation
+        local status_func="handler_${handler_type}_status"
+        local is_installed=false
+        if declare -f "$status_func" &>/dev/null && "$status_func" "$app" "$install_entry" "$app_json" &>/dev/null; then
+            is_installed=true
+        fi
+
+        if ! $is_installed; then
+            ((count_not_installed++)) || true
+            if [[ ${#missing_reqs[@]} -gt 0 ]]; then
+                log_error "$app: not installed [missing requires: ${missing_reqs[*]}]"
+            else
+                log_error "$app: not installed"
+            fi
+            continue
+        fi
+
+        ((count_installed++)) || true
+
+        # Get current version
+        local current_version=""
+        local version_func="handler_${handler_type}_current_version"
+        if declare -f "$version_func" &>/dev/null; then
+            current_version=$("$version_func" "$app" "$install_entry" "$app_json" 2>/dev/null) || true
+        fi
+        local version_display="${current_version:-unknown}"
+
+        # Check outdated (current vs latest)
+        local outdated_msg=""
+        local can_check_outdated=true
+        if [[ "$handler_type" == "custom" ]]; then
+            local latest_cmd
+            latest_cmd=$(_custom_get_latest_cmd "$install_entry")
+            [[ -z "$latest_cmd" ]] && can_check_outdated=false
+        fi
+
+        if $can_check_outdated && [[ -n "$current_version" && "$current_version" != "installed, version unknown" ]]; then
+            local latest_func="handler_${handler_type}_latest_version"
+            if declare -f "$latest_func" &>/dev/null; then
+                local latest_version
+                latest_version=$("$latest_func" "$app" "$install_entry" "$app_json" 2>/dev/null) || true
+                if [[ -n "$latest_version" && "$current_version" != "$latest_version" ]]; then
+                    outdated_msg="update available (latest: $latest_version)"
+                    ((count_outdated++)) || true
+                fi
+            fi
+        fi
+
+        # Check pinned version drift
+        local drift_msg=""
+        local policy
+        policy=$(get_version_policy "$app_json")
+        if [[ "$policy" == "pinned" && -n "$current_version" && "$current_version" != "installed, version unknown" ]]; then
+            local pinned_version
+            pinned_version=$(get_pinned_version "$app_json")
+            if [[ -n "$pinned_version" && "$current_version" != "$pinned_version" ]]; then
+                drift_msg="pinned version drift (pinned: $pinned_version)"
+            fi
+        fi
+
+        # Build output
+        local issues=()
+        [[ -n "$outdated_msg" ]] && issues+=("$outdated_msg")
+        [[ -n "$drift_msg" ]] && issues+=("$drift_msg")
+        [[ ${#missing_reqs[@]} -gt 0 ]] && issues+=("missing requires: ${missing_reqs[*]}")
+
+        if [[ ${#issues[@]} -gt 0 ]]; then
+            local joined
+            joined=$(printf ", %s" "${issues[@]}")
+            joined="${joined:2}"
+            log_warn "$app: installed ($version_display), $joined"
+        else
+            $verbose && log_ok "$app: installed ($version_display)" || true
+        fi
     done
 
     echo
-    log_info "Summary: $installed installed, $missing missing"
-
-    if [[ ${#issues[@]} -gt 0 ]]; then
-        echo
-        log_warn "Issues found:"
-        for issue in "${issues[@]}"; do
-            echo "  - $issue"
-        done
-    fi
+    log_info "Summary: $count_installed installed, $count_not_installed not installed, $count_outdated outdated, $count_missing_requires missing requires"
 }
 
 usage() {
@@ -227,16 +271,15 @@ Commands:
   install [app...]   Install apps (all if no args)
   upgrade [app...]   Upgrade apps (all if no args)
   uninstall <app...> Uninstall specified apps
-  status [app...]    Show app status (all if no args)
-  outdated [app...]  Check for updates (all if no args)
   list               List all defined apps
-  doctor             Health check
+  doctor [-v] [app...]    Health check (all if no args)
 
 Examples:
   appctl install           # Install all apps
   appctl install git go    # Install specific apps
-  appctl status            # Show status of all apps
-  appctl doctor            # Run health check
+  appctl doctor            # Run health check for all apps
+  appctl doctor -v         # Verbose health check
+  appctl doctor go fzf     # Run health check for specific apps
 EOF
 }
 
@@ -251,10 +294,8 @@ main() {
         install)   cmd_install "$@" ;;
         upgrade)   cmd_upgrade "$@" ;;
         uninstall) cmd_uninstall "$@" ;;
-        status)    cmd_status "$@" ;;
-        outdated)  cmd_outdated "$@" ;;
         list)      cmd_list ;;
-        doctor)    cmd_doctor ;;
+        doctor)    cmd_doctor "$@" ;;
         -h|--help|help|"")
             usage
             ;;
