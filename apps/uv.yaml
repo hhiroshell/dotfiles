@@ -1,8 +1,5 @@
 name: uv
 
-version:
-  policy: latest
-
 # cf. https://docs.astral.sh/uv/getting-started/installation/
 install:
   - type: brew

@@ -1,8 +1,5 @@
 name: lazygit
 
-version:
-  policy: latest
-
 # cf. https://github.com/jesseduffield/lazygit#installation
 install:
   - type: brew

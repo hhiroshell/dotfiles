@@ -1,8 +1,5 @@
 name: ghostty
 
-version:
-  policy: latest
-
 # cf. https://ghostty.org/download
 # Linux: community-maintained .deb from https://github.com/mkasberg/ghostty-ubuntu
 install:

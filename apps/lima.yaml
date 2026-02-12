@@ -2,9 +2,6 @@ name: lima
 
 command: limactl
 
-version:
-  policy: latest
-
 # cf. https://lima-vm.io/docs/installation/
 install:
   - type: brew

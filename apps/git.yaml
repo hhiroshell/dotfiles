@@ -1,8 +1,5 @@
 name: git
 
-version:
-  policy: latest
-
 # cf. https://git-scm.com/downloads
 install:
   - type: brew

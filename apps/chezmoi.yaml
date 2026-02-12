@@ -1,8 +1,5 @@
 name: chezmoi
 
-version:
-  policy: latest
-
 # cf. https://www.chezmoi.io/install/
 install:
   - type: brew

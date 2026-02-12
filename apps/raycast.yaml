@@ -1,8 +1,5 @@
 name: raycast
 
-version:
-  policy: latest
-
 # cf. https://www.raycast.com/
 install:
   - type: brew

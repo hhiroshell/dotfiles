@@ -1,8 +1,5 @@
 name: wget
 
-version:
-  policy: latest
-
 # cf. https://www.gnu.org/software/wget/
 install:
   - type: brew

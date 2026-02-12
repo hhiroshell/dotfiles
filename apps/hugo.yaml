@@ -1,8 +1,5 @@
 name: hugo
 
-version:
-  policy: latest
-
 requires:
   - go
 

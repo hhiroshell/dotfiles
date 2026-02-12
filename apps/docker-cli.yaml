@@ -2,9 +2,6 @@ name: docker-cli
 
 command: docker
 
-version:
-  policy: latest
-
 # cf. https://docs.docker.com/engine/install/
 install:
   - type: brew

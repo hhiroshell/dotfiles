@@ -1,8 +1,5 @@
 name: golangci-lint-langserver
 
-version:
-  policy: latest
-
 requires:
   - go
 

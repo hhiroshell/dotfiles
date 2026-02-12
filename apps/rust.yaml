@@ -2,9 +2,6 @@ name: rust
 
 command: rustup
 
-version:
-  policy: latest
-
 # cf. https://rustup.rs/
 install:
   - type: brew

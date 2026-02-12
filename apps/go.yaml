@@ -1,8 +1,5 @@
 name: go
 
-version:
-  policy: latest
-
 # cf. https://go.dev/doc/install
 install:
   - type: brew

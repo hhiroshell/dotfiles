@@ -1,8 +1,5 @@
 name: google-drive
 
-version:
-  policy: latest
-
 # cf. https://www.google.com/drive/download/
 install:
   - type: brew
