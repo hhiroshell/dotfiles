@@ -13,6 +13,7 @@ install:
   - type: custom
     check: command -v kubectl-krew
     version_cmd: go version -m $(which kubectl-krew) 2>/dev/null | awk '/^\tmod\t/{print $3}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/kubernetes-sigs/krew/releases/latest" | jq -r '.tag_name'
     script: |
       set -x
       cd "$(mktemp -d)"
