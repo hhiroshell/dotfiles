@@ -58,10 +58,8 @@ A key design property: **appctl is easy to remove.** brew/apt remain intact, che
 - `./appctl/appctl install [app...]` - Install apps (all if no args)
 - `./appctl/appctl upgrade [app...]` - Upgrade apps
 - `./appctl/appctl uninstall <app...>` - Uninstall specified apps
-- `./appctl/appctl status [app...]` - Show app status
-- `./appctl/appctl outdated [app...]` - Check for available updates
 - `./appctl/appctl list` - List all defined apps
-- `./appctl/appctl doctor` - Health check
+- `./appctl/appctl doctor [-v] [app...]` - Health check (all if no args, -v for verbose)
 
 ## Architecture
 
