@@ -12,6 +12,8 @@ install:
   - type: custom
     os: linux
     check: command -v lazygit
+    version_cmd: lazygit --version 2>/dev/null | tr ',' '\n' | awk -F= '/^ version=/{print $2}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | jq -r '.tag_name | ltrimstr("v")'
     script: |
       LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
       curl -Lo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
