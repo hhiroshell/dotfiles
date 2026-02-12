@@ -91,6 +91,24 @@ handler_custom_upgrade() {
     local install_entry="$2"
     local app_json="$3"
 
+    if ! _custom_is_installed "$app_name" "$install_entry" "$app_json"; then
+        log_warn "$app_name: not installed, installing..."
+        handler_custom_install "$app_name" "$install_entry" "$app_json"
+        return $?
+    fi
+
+    local latest_cmd
+    latest_cmd=$(_custom_get_latest_cmd "$install_entry")
+    if [[ -n "$latest_cmd" ]]; then
+        local current_version latest_version
+        current_version=$(handler_custom_current_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+        latest_version=$(handler_custom_latest_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+        if [[ -n "$current_version" && "$current_version" != "installed, version unknown" && -n "$latest_version" && "$current_version" == "$latest_version" ]]; then
+            log_ok "$app_name: already up to date ($current_version)"
+            return 0
+        fi
+    fi
+
     # For custom scripts, upgrade is typically just re-running install
     local script
     script=$(_custom_get_script "$install_entry")

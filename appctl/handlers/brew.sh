@@ -91,6 +91,14 @@ handler_brew_upgrade() {
         return $?
     fi
 
+    local current_version latest_version
+    current_version=$(handler_brew_current_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+    latest_version=$(handler_brew_latest_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+    if [[ -n "$current_version" && -n "$latest_version" && "$current_version" == "$latest_version" ]]; then
+        log_ok "$app_name: already up to date ($current_version)"
+        return 0
+    fi
+
     log_info "$app_name: upgrading via brew..."
     if _brew_is_cask "$install_entry"; then
         if brew upgrade --cask "$pkg" 2>/dev/null; then

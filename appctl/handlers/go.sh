@@ -81,6 +81,20 @@ handler_go_upgrade() {
     local pkg
     pkg=$(echo "$install_entry" | jq -r '.package')
 
+    if ! _go_is_installed "$app_name" "$install_entry" "$app_json"; then
+        log_warn "$app_name: not installed, installing..."
+        handler_go_install "$app_name" "$install_entry" "$app_json"
+        return $?
+    fi
+
+    local current_version latest_version
+    current_version=$(handler_go_current_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+    latest_version=$(handler_go_latest_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+    if [[ -n "$current_version" && "$current_version" != "installed, version unknown" && -n "$latest_version" && "$current_version" == "$latest_version" ]]; then
+        log_ok "$app_name: already up to date ($current_version)"
+        return 0
+    fi
+
     log_info "$app_name: upgrading via go install..."
     if go install "$pkg"; then
         log_ok "$app_name: upgraded"

@@ -82,6 +82,14 @@ handler_apt_upgrade() {
         return $?
     fi
 
+    local current_version latest_version
+    current_version=$(handler_apt_current_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+    latest_version=$(handler_apt_latest_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+    if [[ -n "$current_version" && -n "$latest_version" && "$current_version" == "$latest_version" ]]; then
+        log_ok "$app_name: already up to date ($current_version)"
+        return 0
+    fi
+
     local pre_install
     pre_install=$(_apt_get_pre_install "$install_entry")
     if [[ -n "$pre_install" ]]; then
