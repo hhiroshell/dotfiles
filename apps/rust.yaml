@@ -14,5 +14,9 @@ install:
   - type: custom
     os: linux
     check: command -v rustup
+    version_cmd: rustc --version 2>/dev/null | awk '{print $2}'
+    latest_cmd: curl -sS --max-time 10 "https://static.rust-lang.org/dist/channel-rust-stable.toml" | grep -A1 '\[pkg.rustc\]' | awk -F'"' '/version =/{print $2}' | awk '{print $1}'
     script: |
       curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+    uninstall: |
+      rustup self uninstall -y
