@@ -2,6 +2,9 @@
 # Common Settings
 # ================
 
+# appctl
+export PATH="${HOME}/src/github.com/hhiroshell/dotfiles/appctl:${PATH}"
+
 # fzf
 # set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
