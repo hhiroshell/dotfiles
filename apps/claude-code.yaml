@@ -2,9 +2,6 @@ name: claude-code
 
 command: claude
 
-version:
-  policy: latest
-
 # cf. https://code.claude.com/docs/en/setup
 install:
   - type: brew

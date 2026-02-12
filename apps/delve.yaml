@@ -2,9 +2,6 @@ name: delve
 
 command: dlv
 
-version:
-  policy: latest
-
 requires:
   - go
 

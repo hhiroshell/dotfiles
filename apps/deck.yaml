@@ -1,8 +1,5 @@
 name: deck
 
-version:
-  policy: latest
-
 requires:
   - go
 

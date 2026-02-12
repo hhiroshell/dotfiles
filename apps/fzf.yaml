@@ -1,8 +1,5 @@
 name: fzf
 
-version:
-  policy: latest
-
 # cf. https://github.com/junegunn/fzf#installation
 install:
   - type: brew

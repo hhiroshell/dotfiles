@@ -1,8 +1,5 @@
 name: setup-envtest
 
-version:
-  policy: latest
-
 requires:
   - go
 

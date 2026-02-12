@@ -1,8 +1,5 @@
 name: google-japanese-ime
 
-version:
-  policy: latest
-
 # cf. https://www.google.co.jp/ime/
 install:
   - type: brew

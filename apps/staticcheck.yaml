@@ -1,8 +1,5 @@
 name: staticcheck
 
-version:
-  policy: latest
-
 requires:
   - go
 

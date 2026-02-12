@@ -1,8 +1,5 @@
 name: meetingbar
 
-version:
-  policy: latest
-
 # cf. https://github.com/leits/MeetingBar
 install:
   - type: brew

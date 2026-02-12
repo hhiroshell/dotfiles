@@ -19,6 +19,12 @@ _custom_get_uninstall_script() {
     echo "$install_entry" | jq -r '.uninstall // empty'
 }
 
+# Get pinned version from install entry
+_custom_get_pinned_version() {
+    local install_entry="$1"
+    echo "$install_entry" | jq -r '.pinned_version // empty'
+}
+
 # Get custom version command
 _custom_get_version_cmd() {
     local install_entry="$1"
@@ -77,10 +83,20 @@ handler_custom_install() {
         return 1
     fi
 
+    local pinned_version
+    pinned_version=$(_custom_get_pinned_version "$install_entry")
+    if [[ -n "$pinned_version" ]]; then
+        export APPCTL_PINNED_VERSION="$pinned_version"
+    else
+        unset APPCTL_PINNED_VERSION 2>/dev/null || true
+    fi
+
     log_info "$app_name: running custom install script..."
     if eval "$script"; then
+        unset APPCTL_PINNED_VERSION 2>/dev/null || true
         log_ok "$app_name: installed"
     else
+        unset APPCTL_PINNED_VERSION 2>/dev/null || true
         log_error "$app_name: installation failed"
         return 1
     fi
@@ -97,15 +113,28 @@ handler_custom_upgrade() {
         return $?
     fi
 
-    local latest_cmd
-    latest_cmd=$(_custom_get_latest_cmd "$install_entry")
-    if [[ -n "$latest_cmd" ]]; then
-        local current_version latest_version
+    # Pinning guard
+    local pinned_version
+    pinned_version=$(_custom_get_pinned_version "$install_entry")
+    if [[ -n "$pinned_version" ]]; then
+        local current_version
         current_version=$(handler_custom_current_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
-        latest_version=$(handler_custom_latest_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
-        if [[ -n "$current_version" && "$current_version" != "installed, version unknown" && -n "$latest_version" && "$current_version" == "$latest_version" ]]; then
-            log_ok "$app_name: already up to date ($current_version)"
+        if [[ -n "$current_version" && "$current_version" != "installed, version unknown" && "$current_version" == "$pinned_version" ]]; then
+            log_ok "$app_name: already at pinned version ($pinned_version)"
             return 0
+        fi
+        log_info "$app_name: pinned to $pinned_version, upgrading..."
+    else
+        local latest_cmd
+        latest_cmd=$(_custom_get_latest_cmd "$install_entry")
+        if [[ -n "$latest_cmd" ]]; then
+            local current_version latest_version
+            current_version=$(handler_custom_current_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+            latest_version=$(handler_custom_latest_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
+            if [[ -n "$current_version" && "$current_version" != "installed, version unknown" && -n "$latest_version" && "$current_version" == "$latest_version" ]]; then
+                log_ok "$app_name: already up to date ($current_version)"
+                return 0
+            fi
         fi
     fi
 
@@ -118,10 +147,18 @@ handler_custom_upgrade() {
         return 1
     fi
 
+    if [[ -n "$pinned_version" ]]; then
+        export APPCTL_PINNED_VERSION="$pinned_version"
+    else
+        unset APPCTL_PINNED_VERSION 2>/dev/null || true
+    fi
+
     log_info "$app_name: running custom upgrade (reinstall)..."
     if eval "$script"; then
+        unset APPCTL_PINNED_VERSION 2>/dev/null || true
         log_ok "$app_name: upgraded"
     else
+        unset APPCTL_PINNED_VERSION 2>/dev/null || true
         log_error "$app_name: upgrade failed"
         return 1
     fi

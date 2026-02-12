@@ -1,8 +1,5 @@
 name: alt-tab
 
-version:
-  policy: latest
-
 # cf. https://alt-tab-macos.netlify.app/
 install:
   - type: brew

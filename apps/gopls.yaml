@@ -1,8 +1,5 @@
 name: gopls
 
-version:
-  policy: latest
-
 requires:
   - go
 

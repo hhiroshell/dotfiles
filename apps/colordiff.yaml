@@ -1,8 +1,5 @@
 name: colordiff
 
-version:
-  policy: latest
-
 # cf. https://www.colordiff.org/
 install:
   - type: brew

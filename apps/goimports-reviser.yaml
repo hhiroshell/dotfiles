@@ -1,8 +1,5 @@
 name: goimports-reviser
 
-version:
-  policy: latest
-
 requires:
   - go
 

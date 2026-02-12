@@ -85,10 +85,6 @@ appctl is a unified package management tool that works across macOS (Homebrew) a
 name: example
 command: example-bin  # binary name if different from app name (used for status checks)
 
-version:
-  policy: latest  # or pinned
-  value: "1.0.0"  # only for pinned
-
 requires:
   - go          # logical app names (checked before install)
 
@@ -123,8 +119,11 @@ install:
   - type: custom
     os: linux
     check: command -v example
+    pinned_version: "1.0.0"    # optional: pin to specific version (custom only, omit for latest)
     script: |
-      curl -fsSL https://example.com/install.sh | bash
+      # Use APPCTL_PINNED_VERSION env var to install a specific version when pinned
+      VERSION="${APPCTL_PINNED_VERSION:-$(curl -s "https://api.example.com/latest" | jq -r '.tag_name')}"
+      curl -fsSL "https://example.com/install.sh?v=${VERSION}" | bash
     uninstall: |
       rm -f /usr/local/bin/example
     version_cmd: example --version 2>/dev/null | awk '{print $2}'  # custom version detection

@@ -1,8 +1,5 @@
 name: font-hackgen-nerd
 
-version:
-  policy: latest
-
 # cf. https://github.com/yuru7/HackGen
 install:
   - type: brew

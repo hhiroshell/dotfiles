@@ -1,8 +1,5 @@
 name: golangci-lint
 
-version:
-  policy: latest
-
 requires:
   - go
 

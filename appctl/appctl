@@ -10,7 +10,6 @@ source "$APPCTL_DIR/core/os.sh"
 source "$APPCTL_DIR/core/util.sh"
 source "$APPCTL_DIR/core/loader.sh"
 source "$APPCTL_DIR/core/selector.sh"
-source "$APPCTL_DIR/core/version.sh"
 source "$APPCTL_DIR/core/requires.sh"
 
 # Source handlers
@@ -150,6 +149,7 @@ cmd_doctor() {
     local count_installed=0
     local count_not_installed=0
     local count_outdated=0
+    local count_pinned_drift=0
     local count_missing_requires=0
 
     for app in "${apps[@]}"; do
@@ -231,15 +231,14 @@ cmd_doctor() {
             fi
         fi
 
-        # Check pinned version drift
+        # Check pinned version drift (custom handler with pinned_version)
         local drift_msg=""
-        local policy
-        policy=$(get_version_policy "$app_json")
-        if [[ "$policy" == "pinned" && -n "$current_version" && "$current_version" != "installed, version unknown" ]]; then
+        if [[ "$handler_type" == "custom" ]]; then
             local pinned_version
-            pinned_version=$(get_pinned_version "$app_json")
-            if [[ -n "$pinned_version" && "$current_version" != "$pinned_version" ]]; then
+            pinned_version=$(echo "$install_entry" | jq -r '.pinned_version // empty')
+            if [[ -n "$pinned_version" && -n "$current_version" && "$current_version" != "installed, version unknown" && "$current_version" != "$pinned_version" ]]; then
                 drift_msg="pinned version drift (pinned: $pinned_version)"
+                ((count_pinned_drift++)) || true
             fi
         fi
 
@@ -260,7 +259,7 @@ cmd_doctor() {
     done
 
     echo
-    log_info "Summary: $count_installed installed, $count_not_installed not installed, $count_outdated outdated, $count_missing_requires missing requires"
+    log_info "Summary: $count_installed installed, $count_not_installed not installed, $count_outdated outdated, $count_pinned_drift pinned drift, $count_missing_requires missing requires"
 }
 
 usage() {

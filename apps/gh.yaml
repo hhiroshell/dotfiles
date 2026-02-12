@@ -1,8 +1,5 @@
 name: gh
 
-version:
-  policy: latest
-
 # cf. https://github.com/cli/cli#installation
 install:
   - type: brew

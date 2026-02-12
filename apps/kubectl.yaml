@@ -1,8 +1,5 @@
 name: kubectl
 
-version:
-  policy: latest
-
 # cf. https://kubernetes.io/docs/tasks/tools/
 install:
   - type: brew
