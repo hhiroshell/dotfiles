@@ -12,8 +12,11 @@ install:
   - type: custom
     os: linux
     check: command -v kind
+    version_cmd: kind version 2>/dev/null | awk '{print $2}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/kubernetes-sigs/kind/releases/latest" | jq -r '.tag_name'
     script: |
-      curl -Lo /tmp/kind https://kind.sigs.k8s.io/dl/latest/kind-linux-amd64
+      KIND_VERSION=$(curl -sS "https://api.github.com/repos/kubernetes-sigs/kind/releases/latest" | jq -r '.tag_name')
+      curl -Lo /tmp/kind "https://kind.sigs.k8s.io/dl/${KIND_VERSION}/kind-linux-amd64"
       chmod +x /tmp/kind
       sudo mv /tmp/kind /usr/local/bin/kind
     uninstall: |
