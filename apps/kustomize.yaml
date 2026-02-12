@@ -12,6 +12,8 @@ install:
   - type: custom
     os: linux
     check: command -v kustomize
+    version_cmd: kustomize version 2>/dev/null
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/kubernetes-sigs/kustomize/releases" | jq -r '[.[] | select(.tag_name | startswith("kustomize/"))][0].tag_name | split("/")[1]'
     script: |
       curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
       sudo mv kustomize /usr/local/bin/

@@ -12,6 +12,8 @@ install:
   - type: custom
     os: linux
     check: command -v kubectl
+    version_cmd: kubectl version --client -o json 2>/dev/null | jq -r '.clientVersion.gitVersion'
+    latest_cmd: curl -sS --max-time 10 -L "https://dl.k8s.io/release/stable.txt"
     script: |
       curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
       chmod +x kubectl
