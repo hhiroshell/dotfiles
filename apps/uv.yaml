@@ -12,7 +12,8 @@ install:
   - type: custom
     os: linux
     check: command -v uv
-    version_cmd: uv version 2>/dev/null | awk '{print $2}'
+    version_cmd: uv self version 2>/dev/null | awk '{print $2}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/astral-sh/uv/releases/latest" | jq -r '.tag_name'
     script: |
       curl -LsSf https://astral.sh/uv/install.sh | sh
     uninstall: |

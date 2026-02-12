@@ -13,6 +13,7 @@ install:
     os: linux
     check: command -v yq
     version_cmd: yq --version 2>/dev/null | awk '{print $NF}' | sed 's/^v//'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/mikefarah/yq/releases/latest" | jq -r '.tag_name | ltrimstr("v")'
     script: |
       curl -Lo /tmp/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
       sudo install /tmp/yq /usr/local/bin/yq

@@ -12,6 +12,8 @@ install:
   - type: custom
     os: linux
     check: command -v starship
+    version_cmd: starship --version 2>/dev/null | head -1 | awk '{print $2}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/starship/starship/releases/latest" | jq -r '.tag_name | ltrimstr("v")'
     script: |
       curl -sS https://starship.rs/install.sh | sh -s -- -y
     uninstall: |
