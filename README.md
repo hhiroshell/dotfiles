@@ -4,7 +4,7 @@ Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 
 ## Prerequisites
 
-- [pkgmux](pkgmux/) - Declarative package management tool (included in this repo)
+- [pkgmux](pkgmux/) (Package Manager Multiplexer) - Declarative package management tool (included in this repo)
 - Platform-specific package managers:
   - [Homebrew](https://brew.sh/) (macOS) - For GUI apps and system tools
   - apt (Ubuntu/Debian) - For system packages and build dependencies
