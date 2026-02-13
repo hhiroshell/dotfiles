@@ -131,9 +131,14 @@ handler_custom_upgrade() {
             local current_version latest_version
             current_version=$(handler_custom_current_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
             latest_version=$(handler_custom_latest_version "$app_name" "$install_entry" "$app_json" 2>/dev/null) || true
-            if [[ -n "$current_version" && "$current_version" != "installed, version unknown" && -n "$latest_version" && "$current_version" == "$latest_version" ]]; then
-                log_ok "$app_name: already up to date ($current_version)"
-                return 0
+            if [[ -n "$current_version" && "$current_version" != "installed, version unknown" ]]; then
+                if [[ -z "$latest_version" ]]; then
+                    log_warn "$app_name: cannot determine latest version, skipping upgrade"
+                    return 0
+                elif [[ "$current_version" == "$latest_version" ]]; then
+                    log_ok "$app_name: already up to date ($current_version)"
+                    return 0
+                fi
             fi
         fi
     fi
