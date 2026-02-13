@@ -205,7 +205,12 @@ handler_custom_latest_version() {
     latest_cmd=$(_custom_get_latest_cmd "$install_entry")
 
     if [[ -n "$latest_cmd" ]]; then
-        eval "$latest_cmd" 2>/dev/null
+        local result
+        result=$(eval "$latest_cmd" 2>/dev/null) || true
+        # Filter out jq's literal "null" (e.g. from rate-limited GitHub API responses)
+        if [[ -n "$result" && "$result" != "null" ]]; then
+            echo "$result"
+        fi
     fi
 }
 
