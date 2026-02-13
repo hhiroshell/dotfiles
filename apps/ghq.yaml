@@ -7,5 +7,5 @@ install:
     os: macos
 
   - type: go
-    package: github.com/x-motemen/ghq@latest
+    package: github.com/x-motemen/ghq
     os: linux

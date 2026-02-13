@@ -114,7 +114,7 @@ install:
       sudo rm -f /etc/apt/keyrings/example.gpg
 
   - type: go
-    package: example.com/cmd/example@latest
+    package: example.com/cmd/example  # @latest is appended automatically if no @version suffix
 
   - type: custom
     os: linux

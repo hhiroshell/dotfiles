@@ -6,4 +6,4 @@ requires:
 # cf. https://gohugo.io/installation/
 install:
   - type: go
-    package: github.com/gohugoio/hugo@latest
+    package: github.com/gohugoio/hugo

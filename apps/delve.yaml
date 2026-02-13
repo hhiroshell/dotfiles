@@ -8,4 +8,4 @@ requires:
 # cf. https://github.com/go-delve/delve/tree/master/Documentation/installation
 install:
   - type: go
-    package: github.com/go-delve/delve/cmd/dlv@latest
+    package: github.com/go-delve/delve/cmd/dlv

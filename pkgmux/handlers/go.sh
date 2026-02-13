@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 # go install handler
 
+# Append @latest if no @version suffix is present
+_go_normalize_pkg() {
+    local pkg="$1"
+    if [[ "$pkg" != *@* ]]; then
+        echo "${pkg}@latest"
+    else
+        echo "$pkg"
+    fi
+}
+
 # Extract binary name from package path
 _go_get_binary_name() {
     local pkg="$1"
@@ -64,6 +74,8 @@ handler_go_install() {
         return 0
     fi
 
+    pkg=$(_go_normalize_pkg "$pkg")
+
     log_info "$app_name: installing via go install..."
     if go install "$pkg"; then
         log_ok "$app_name: installed"
@@ -94,6 +106,8 @@ handler_go_upgrade() {
         log_ok "$app_name: already up to date ($current_version)"
         return 0
     fi
+
+    pkg=$(_go_normalize_pkg "$pkg")
 
     log_info "$app_name: upgrading via go install..."
     if go install "$pkg"; then
