@@ -161,6 +161,7 @@ chezmoi uses Go templates for OS-specific settings:
 - Ghostty: font-size = 13 (macOS) / 10 (Linux)
 - Kitty: font_size 13 (macOS) / 10 (Linux)
 - Claude Code: notify-send hooks on Linux only
+- Zsh misc.zsh: clipboard aliases (pbcopy/pbpaste via xclip) on Linux only
 
 Template files use `{{ .chezmoi.os }}` to conditionally include platform-specific content.
 
@@ -168,7 +169,7 @@ Template files use `{{ .chezmoi.os }}` to conditionally include platform-specifi
 The `.zshrc` sources modular configuration files from `~/.config/zsh/` (managed by chezmoi via `chezmoi/dot_config/zsh/`):
 - `git.zsh` - Git-related functions and aliases
 - `kubernetes.zsh` - Kubernetes utilities
-- `misc.zsh` - General utilities and aliases
+- `misc.zsh` (templated) - General utilities and aliases (OS-specific clipboard aliases)
 - `sdk.zsh` - SDK and development environment setup
 
 These modules are deployed by chezmoi and sourced via `$XDG_CONFIG_HOME/zsh/` at shell startup.
