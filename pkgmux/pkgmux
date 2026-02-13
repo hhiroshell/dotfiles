@@ -11,6 +11,7 @@ source "$PKGMUX_DIR/core/util.sh"
 source "$PKGMUX_DIR/core/loader.sh"
 source "$PKGMUX_DIR/core/selector.sh"
 source "$PKGMUX_DIR/core/requires.sh"
+source "$PKGMUX_DIR/core/progress.sh"
 
 # Source handlers
 for handler in "$PKGMUX_DIR"/handlers/*.sh; do
@@ -154,6 +155,12 @@ cmd_doctor() {
         mapfile -t apps < <(list_apps "$APPS_DIR")
     fi
 
+    # Progress bar wrapper functions: clear bar before log, redraw after
+    _doctor_log_ok()    { progress_clear; log_ok    "$@"; _progress_draw; }
+    _doctor_log_warn()  { progress_clear; log_warn  "$@"; _progress_draw; }
+    _doctor_log_error() { progress_clear; log_error "$@"; _progress_draw; }
+    _doctor_log_skip()  { progress_clear; log_skip  "$@"; _progress_draw; }
+
     local count_installed=0
     local count_not_installed=0
     local count_outdated=0
@@ -161,10 +168,15 @@ cmd_doctor() {
     local count_missing_requires=0
     local json_results=()
 
+    $json_output || progress_start "${#apps[@]}"
+
+    local _i=0
     for app in "${apps[@]}"; do
+        ((_i++)) || true
+        $json_output || progress_update "$_i" "$app"
         local app_json
         if ! app_json=$(load_app "$app" "$APPS_DIR" 2>/dev/null); then
-            $json_output || log_error "$app: failed to load definition"
+            $json_output || _doctor_log_error "$app: failed to load definition"
             continue
         fi
 
@@ -185,7 +197,7 @@ cmd_doctor() {
                     skipped: true
                 }')")
             else
-                $verbose && log_skip "$app (no install entry for $PKGMUX_OS)" || true
+                $verbose && _doctor_log_skip "$app (no install entry for $PKGMUX_OS)" || true
             fi
             continue
         fi
@@ -233,9 +245,9 @@ cmd_doctor() {
                 }')")
             else
                 if [[ ${#missing_reqs[@]} -gt 0 ]]; then
-                    log_error "$app: not installed [missing requires: ${missing_reqs[*]}]"
+                    _doctor_log_error "$app: not installed [missing requires: ${missing_reqs[*]}]"
                 else
-                    log_error "$app: not installed"
+                    _doctor_log_error "$app: not installed"
                 fi
             fi
             continue
@@ -335,12 +347,14 @@ cmd_doctor() {
                 local joined
                 joined=$(printf ", %s" "${issues[@]}")
                 joined="${joined:2}"
-                log_warn "$app: installed ($version_display), $joined"
+                _doctor_log_warn "$app: installed ($version_display), $joined"
             else
-                $verbose && log_ok "$app: installed ($version_display)" || true
+                $verbose && _doctor_log_ok "$app: installed ($version_display)" || true
             fi
         fi
     done
+
+    progress_done
 
     if $json_output; then
         printf '%s\n' "${json_results[@]}" | jq -s --argjson installed "$count_installed" \
