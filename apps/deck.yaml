@@ -6,4 +6,4 @@ requires:
 # cf. https://github.com/k1LoW/deck
 install:
   - type: go
-    package: github.com/k1LoW/deck/cmd/deck@latest
+    package: github.com/k1LoW/deck/cmd/deck

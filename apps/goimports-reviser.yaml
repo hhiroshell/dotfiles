@@ -6,4 +6,4 @@ requires:
 # cf. https://github.com/incu6us/goimports-reviser#install
 install:
   - type: go
-    package: github.com/incu6us/goimports-reviser/v3@latest
+    package: github.com/incu6us/goimports-reviser/v3

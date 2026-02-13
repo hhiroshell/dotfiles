@@ -6,4 +6,4 @@ requires:
 # cf. https://staticcheck.dev/docs/getting-started/
 install:
   - type: go
-    package: honnef.co/go/tools/cmd/staticcheck@latest
+    package: honnef.co/go/tools/cmd/staticcheck
