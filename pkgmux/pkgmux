@@ -135,10 +135,18 @@ cmd_list() {
 
 cmd_doctor() {
     local verbose=false
-    if [[ "${1:-}" == "-v" || "${1:-}" == "--verbose" ]]; then
-        verbose=true
-        shift
-    fi
+    local json_output=false
+    local remaining_args=()
+
+    # Parse flags
+    for arg in "$@"; do
+        case "$arg" in
+            -v|--verbose) verbose=true ;;
+            --json) json_output=true ;;
+            *) remaining_args+=("$arg") ;;
+        esac
+    done
+    set -- "${remaining_args[@]+"${remaining_args[@]}"}"
 
     local apps=("$@")
 
@@ -151,11 +159,12 @@ cmd_doctor() {
     local count_outdated=0
     local count_pinned_drift=0
     local count_missing_requires=0
+    local json_results=()
 
     for app in "${apps[@]}"; do
         local app_json
         if ! app_json=$(load_app "$app" "$APPS_DIR" 2>/dev/null); then
-            log_error "$app: failed to load definition"
+            $json_output || log_error "$app: failed to load definition"
             continue
         fi
 
@@ -163,7 +172,21 @@ cmd_doctor() {
         install_entry=$(select_install_entry "$app_json")
 
         if [[ -z "$install_entry" ]]; then
-            $verbose && log_skip "$app (no install entry for $PKGMUX_OS)" || true
+            if $json_output; then
+                json_results+=("$(jq -n --arg name "$app" '{
+                    name: $name,
+                    installed: false,
+                    version: null,
+                    latest_version: null,
+                    pinned_version: null,
+                    outdated: false,
+                    pinned_drift: false,
+                    missing_requires: [],
+                    skipped: true
+                }')")
+            else
+                $verbose && log_skip "$app (no install entry for $PKGMUX_OS)" || true
+            fi
             continue
         fi
 
@@ -192,10 +215,28 @@ cmd_doctor() {
 
         if ! $is_installed; then
             ((count_not_installed++)) || true
-            if [[ ${#missing_reqs[@]} -gt 0 ]]; then
-                log_error "$app: not installed [missing requires: ${missing_reqs[*]}]"
+            if $json_output; then
+                local missing_reqs_json="[]"
+                if [[ ${#missing_reqs[@]} -gt 0 ]]; then
+                    missing_reqs_json=$(printf '%s\n' "${missing_reqs[@]}" | jq -R . | jq -s .)
+                fi
+                json_results+=("$(jq -n --arg name "$app" --argjson missing_reqs "$missing_reqs_json" '{
+                    name: $name,
+                    installed: false,
+                    version: null,
+                    latest_version: null,
+                    pinned_version: null,
+                    outdated: false,
+                    pinned_drift: false,
+                    missing_requires: $missing_reqs,
+                    skipped: false
+                }')")
             else
-                log_error "$app: not installed"
+                if [[ ${#missing_reqs[@]} -gt 0 ]]; then
+                    log_error "$app: not installed [missing requires: ${missing_reqs[*]}]"
+                else
+                    log_error "$app: not installed"
+                fi
             fi
             continue
         fi
@@ -212,6 +253,8 @@ cmd_doctor() {
 
         # Check outdated (current vs latest)
         local outdated_msg=""
+        local is_outdated=false
+        local latest_version=""
         local can_check_outdated=true
         if [[ "$handler_type" == "custom" ]]; then
             local latest_cmd
@@ -222,10 +265,10 @@ cmd_doctor() {
         if $can_check_outdated && [[ -n "$current_version" && "$current_version" != "installed, version unknown" ]]; then
             local latest_func="handler_${handler_type}_latest_version"
             if declare -f "$latest_func" &>/dev/null; then
-                local latest_version
                 latest_version=$("$latest_func" "$app" "$install_entry" "$app_json" 2>/dev/null) || true
                 if [[ -n "$latest_version" && "$current_version" != "$latest_version" ]]; then
                     outdated_msg="update available (latest: $latest_version)"
+                    is_outdated=true
                     ((count_outdated++)) || true
                 fi
             fi
@@ -233,33 +276,92 @@ cmd_doctor() {
 
         # Check pinned version drift (custom handler with pinned_version)
         local drift_msg=""
+        local has_pinned_drift=false
+        local pinned_version=""
         if [[ "$handler_type" == "custom" ]]; then
-            local pinned_version
             pinned_version=$(echo "$install_entry" | jq -r '.pinned_version // empty')
             if [[ -n "$pinned_version" && -n "$current_version" && "$current_version" != "installed, version unknown" && "$current_version" != "$pinned_version" ]]; then
                 drift_msg="pinned version drift (pinned: $pinned_version)"
+                has_pinned_drift=true
                 ((count_pinned_drift++)) || true
             fi
         fi
 
-        # Build output
-        local issues=()
-        [[ -n "$outdated_msg" ]] && issues+=("$outdated_msg")
-        [[ -n "$drift_msg" ]] && issues+=("$drift_msg")
-        [[ ${#missing_reqs[@]} -gt 0 ]] && issues+=("missing requires: ${missing_reqs[*]}")
-
-        if [[ ${#issues[@]} -gt 0 ]]; then
-            local joined
-            joined=$(printf ", %s" "${issues[@]}")
-            joined="${joined:2}"
-            log_warn "$app: installed ($version_display), $joined"
+        if $json_output; then
+            local missing_reqs_json="[]"
+            if [[ ${#missing_reqs[@]} -gt 0 ]]; then
+                missing_reqs_json=$(printf '%s\n' "${missing_reqs[@]}" | jq -R . | jq -s .)
+            fi
+            # Normalize version values: treat "installed, version unknown" and empty as null
+            local ver_json="null"
+            if [[ -n "$current_version" && "$current_version" != "installed, version unknown" ]]; then
+                ver_json=$(jq -n --arg v "$current_version" '$v')
+            fi
+            local latest_json="null"
+            if [[ -n "$latest_version" ]]; then
+                latest_json=$(jq -n --arg v "$latest_version" '$v')
+            fi
+            local pinned_json="null"
+            if [[ -n "$pinned_version" ]]; then
+                pinned_json=$(jq -n --arg v "$pinned_version" '$v')
+            fi
+            json_results+=("$(jq -n \
+                --arg name "$app" \
+                --argjson version "$ver_json" \
+                --argjson latest_version "$latest_json" \
+                --argjson pinned_version "$pinned_json" \
+                --argjson outdated "$is_outdated" \
+                --argjson pinned_drift "$has_pinned_drift" \
+                --argjson missing_reqs "$missing_reqs_json" \
+                '{
+                    name: $name,
+                    installed: true,
+                    version: $version,
+                    latest_version: $latest_version,
+                    pinned_version: $pinned_version,
+                    outdated: $outdated,
+                    pinned_drift: $pinned_drift,
+                    missing_requires: $missing_reqs,
+                    skipped: false
+                }')")
         else
-            $verbose && log_ok "$app: installed ($version_display)" || true
+            # Build output
+            local issues=()
+            [[ -n "$outdated_msg" ]] && issues+=("$outdated_msg")
+            [[ -n "$drift_msg" ]] && issues+=("$drift_msg")
+            [[ ${#missing_reqs[@]} -gt 0 ]] && issues+=("missing requires: ${missing_reqs[*]}")
+
+            if [[ ${#issues[@]} -gt 0 ]]; then
+                local joined
+                joined=$(printf ", %s" "${issues[@]}")
+                joined="${joined:2}"
+                log_warn "$app: installed ($version_display), $joined"
+            else
+                $verbose && log_ok "$app: installed ($version_display)" || true
+            fi
         fi
     done
 
-    echo
-    log_info "Summary: $count_installed installed, $count_not_installed not installed, $count_outdated outdated, $count_pinned_drift pinned drift, $count_missing_requires missing requires"
+    if $json_output; then
+        printf '%s\n' "${json_results[@]}" | jq -s --argjson installed "$count_installed" \
+            --argjson not_installed "$count_not_installed" \
+            --argjson outdated "$count_outdated" \
+            --argjson pinned_drift "$count_pinned_drift" \
+            --argjson missing_requires "$count_missing_requires" \
+            '{
+                apps: .,
+                summary: {
+                    installed: $installed,
+                    not_installed: $not_installed,
+                    outdated: $outdated,
+                    pinned_drift: $pinned_drift,
+                    missing_requires: $missing_requires
+                }
+            }'
+    else
+        echo
+        log_info "Summary: $count_installed installed, $count_not_installed not installed, $count_outdated outdated, $count_pinned_drift pinned drift, $count_missing_requires missing requires"
+    fi
 }
 
 usage() {
@@ -271,13 +373,14 @@ Commands:
   upgrade [app...]   Upgrade apps (all if no args)
   uninstall <app...> Uninstall specified apps
   list               List all defined apps
-  doctor [-v] [app...]    Health check (all if no args)
+  doctor [-v] [--json] [app...]    Health check (all if no args)
 
 Examples:
   pkgmux install           # Install all apps
   pkgmux install git go    # Install specific apps
   pkgmux doctor            # Run health check for all apps
   pkgmux doctor -v         # Verbose health check
+  pkgmux doctor --json     # JSON output
   pkgmux doctor go fzf     # Run health check for specific apps
 EOF
 }
