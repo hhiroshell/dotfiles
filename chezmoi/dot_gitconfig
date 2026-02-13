@@ -10,13 +10,8 @@
     editor = hx
     excludesfile = /home/hhiroshell/.gitignore_global
 
-[ghq]
-    root = /home/hhiroshell/src
-
-# -----------
-# github.com
-# -----------
 [github]
     user = hhiroshell
-[credential "https://ghe.corp.yahoo.co.jp"]
-	provider = github
+
+[ghq]
+    root = /home/hhiroshell/src
