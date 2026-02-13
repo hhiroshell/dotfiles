@@ -8,7 +8,7 @@ This is a personal dotfiles repository that manages configuration files using [c
 
 ## Design Philosophy
 
-This repository is built on the **appctl approach** — a design that targets a practical operating point between "dotfiles management" and "machine reproducibility."
+This repository is built on the **pkgmux approach** — a design that targets a practical operating point between "dotfiles management" and "machine reproducibility."
 
 It pursues neither perfect reproducibility nor a hands-off setup. The core principle is:
 
@@ -22,7 +22,7 @@ It pursues neither perfect reproducibility nor a hands-off setup. The core princ
 
 3. **Respect existing ecosystems.** brew / apt / npm / GitHub Releases and native OS behaviors are **wrapped, not replaced**. This makes troubleshooting searchable, handoff easy, and corporate machine restrictions avoidable.
 
-4. **Separate dotfiles from app management.** appctl handles app existence, state, and versions. chezmoi handles file placement, OS diffs, and templates. No symlink dependency. OS-specific diffs are confined to chezmoi. **Mixing responsibilities is intentionally avoided.**
+4. **Separate dotfiles from app management.** pkgmux handles app existence, state, and versions. chezmoi handles file placement, OS diffs, and templates. No symlink dependency. OS-specific diffs are confined to chezmoi. **Mixing responsibilities is intentionally avoided.**
 
 5. **Doctor-centric design.** The system prioritizes `doctor` over `install`. Doctor checks installation presence, dependency satisfaction (`requires`), and version drift (pinned violations). It observes **"how things have drifted"** rather than asserting **"whether things are correct."**
 
@@ -45,7 +45,7 @@ This design is **not meant to last forever**. Clear signals to consider migratio
 
 ### Easy to Walk Away From
 
-A key design property: **appctl is easy to remove.** brew/apt remain intact, chezmoi continues independently, and deleting appctl breaks nothing. This is an intentional design decision. This repository prioritizes **sustainability over completeness** — it preserves the ability to observe and fix failures, and when limits are reached, to walk away cleanly.
+A key design property: **pkgmux is easy to remove.** brew/apt remain intact, chezmoi continues independently, and deleting pkgmux breaks nothing. This is an intentional design decision. This repository prioritizes **sustainability over completeness** — it preserves the ability to observe and fix failures, and when limits are reached, to walk away cleanly.
 
 ## Key Commands
 
@@ -54,25 +54,25 @@ A key design property: **appctl is easy to remove.** brew/apt remain intact, che
 - `chezmoi managed` - Show all managed files
 - `chezmoi purge` - Remove chezmoi-managed files
 
-### Package Management via appctl
-- `./appctl/appctl install [app...]` - Install apps (all if no args)
-- `./appctl/appctl upgrade [app...]` - Upgrade apps
-- `./appctl/appctl uninstall <app...>` - Uninstall specified apps
-- `./appctl/appctl list` - List all defined apps
-- `./appctl/appctl doctor [-v] [app...]` - Health check (all if no args, -v for verbose)
+### Package Management via pkgmux
+- `./pkgmux/pkgmux install [app...]` - Install apps (all if no args)
+- `./pkgmux/pkgmux upgrade [app...]` - Upgrade apps
+- `./pkgmux/pkgmux uninstall <app...>` - Uninstall specified apps
+- `./pkgmux/pkgmux list` - List all defined apps
+- `./pkgmux/pkgmux doctor [-v] [app...]` - Health check (all if no args, -v for verbose)
 
 ## Architecture
 
 ### Directory Structure
 - `chezmoi/` - chezmoi source directory containing all dotfiles
   - `chezmoi/dot_config/zsh/` - Modular zsh configuration files deployed to `~/.config/zsh/`
-- `appctl/` - Declarative package management tool
-- `apps/` - App definitions (YAML) for appctl
+- `pkgmux/` - Declarative package management tool
+- `apps/` - App definitions (YAML) for pkgmux
 - `.chezmoiroot` - Points chezmoi to use `chezmoi/` as source directory
 
-### appctl - Declarative Package Management
+### pkgmux - Declarative Package Management
 
-appctl is a unified package management tool that works across macOS (Homebrew) and Linux (apt). All software is defined declaratively in YAML files in the `apps/` directory.
+pkgmux is a unified package management tool that works across macOS (Homebrew) and Linux (apt). All software is defined declaratively in YAML files in the `apps/` directory.
 
 **Handlers:**
 - `brew` - Homebrew formulas and casks (macOS)
@@ -121,8 +121,8 @@ install:
     check: command -v example
     pinned_version: "1.0.0"    # optional: pin to specific version (custom only, omit for latest)
     script: |
-      # Use APPCTL_PINNED_VERSION env var to install a specific version when pinned
-      VERSION="${APPCTL_PINNED_VERSION:-$(curl -s "https://api.example.com/latest" | jq -r '.tag_name')}"
+      # Use PKGMUX_PINNED_VERSION env var to install a specific version when pinned
+      VERSION="${PKGMUX_PINNED_VERSION:-$(curl -s "https://api.example.com/latest" | jq -r '.tag_name')}"
       curl -fsSL "https://example.com/install.sh?v=${VERSION}" | bash
     uninstall: |
       rm -f /usr/local/bin/example
@@ -131,7 +131,7 @@ install:
 ```
 
 **Bootstrap Dependencies:**
-appctl requires `jq` and `yq` to parse YAML. Install them manually following official instructions:
+pkgmux requires `jq` and `yq` to parse YAML. Install them manually following official instructions:
 - jq: https://jqlang.github.io/jq/download/
 - yq: https://github.com/mikefarah/yq#install
 
@@ -183,7 +183,7 @@ When modifying configurations:
 ### Adding New Apps
 1. Create a YAML file in `apps/` directory (e.g., `apps/myapp.yaml`)
 2. Define the app with appropriate handlers for each OS
-3. Run `./appctl/appctl install myapp` to install
+3. Run `./pkgmux/pkgmux install myapp` to install
 
 ### Adding New Dotfiles
 1. Create file in `chezmoi/` with appropriate chezmoi prefix:
@@ -203,8 +203,8 @@ cd dotfiles
 #   yq: https://github.com/mikefarah/yq#install
 
 # Install chezmoi and other apps
-./appctl/appctl install chezmoi
-./appctl/appctl install
+./pkgmux/pkgmux install chezmoi
+./pkgmux/pkgmux install
 
 # Initialize chezmoi with this repo
 chezmoi init --source=/path/to/dotfiles --apply

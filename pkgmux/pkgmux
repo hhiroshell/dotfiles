@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
-# appctl - Declarative package management for dotfiles
+# pkgmux - Declarative package management for dotfiles
 set -euo pipefail
 
-APPCTL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-APPS_DIR="$(dirname "$APPCTL_DIR")/apps"
+PKGMUX_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+APPS_DIR="$(dirname "$PKGMUX_DIR")/apps"
 
 # Source core modules
-source "$APPCTL_DIR/core/os.sh"
-source "$APPCTL_DIR/core/util.sh"
-source "$APPCTL_DIR/core/loader.sh"
-source "$APPCTL_DIR/core/selector.sh"
-source "$APPCTL_DIR/core/requires.sh"
+source "$PKGMUX_DIR/core/os.sh"
+source "$PKGMUX_DIR/core/util.sh"
+source "$PKGMUX_DIR/core/loader.sh"
+source "$PKGMUX_DIR/core/selector.sh"
+source "$PKGMUX_DIR/core/requires.sh"
 
 # Source handlers
-for handler in "$APPCTL_DIR"/handlers/*.sh; do
+for handler in "$PKGMUX_DIR"/handlers/*.sh; do
     [[ -f "$handler" ]] && source "$handler"
 done
 
@@ -47,7 +47,7 @@ process_app() {
     install_entry=$(select_install_entry "$app_json")
 
     if [[ -z "$install_entry" ]]; then
-        log_skip "$app_name (no install entry for $APPCTL_OS)"
+        log_skip "$app_name (no install entry for $PKGMUX_OS)"
         return 0
     fi
 
@@ -163,7 +163,7 @@ cmd_doctor() {
         install_entry=$(select_install_entry "$app_json")
 
         if [[ -z "$install_entry" ]]; then
-            $verbose && log_skip "$app (no install entry for $APPCTL_OS)" || true
+            $verbose && log_skip "$app (no install entry for $PKGMUX_OS)" || true
             continue
         fi
 
@@ -264,7 +264,7 @@ cmd_doctor() {
 
 usage() {
     cat <<EOF
-Usage: appctl <command> [apps...]
+Usage: pkgmux <command> [apps...]
 
 Commands:
   install [app...]   Install apps (all if no args)
@@ -274,11 +274,11 @@ Commands:
   doctor [-v] [app...]    Health check (all if no args)
 
 Examples:
-  appctl install           # Install all apps
-  appctl install git go    # Install specific apps
-  appctl doctor            # Run health check for all apps
-  appctl doctor -v         # Verbose health check
-  appctl doctor go fzf     # Run health check for specific apps
+  pkgmux install           # Install all apps
+  pkgmux install git go    # Install specific apps
+  pkgmux doctor            # Run health check for all apps
+  pkgmux doctor -v         # Verbose health check
+  pkgmux doctor go fzf     # Run health check for specific apps
 EOF
 }
 

@@ -5,7 +5,7 @@
 # Returns JSON of the selected install entry, or empty if none match
 select_install_entry() {
     local app_json="$1"
-    local current_os="$APPCTL_OS"
+    local current_os="$PKGMUX_OS"
 
     # Get install array and find matching entry
     echo "$app_json" | jq -c --arg os "$current_os" '
@@ -26,7 +26,7 @@ get_handler_type() {
 # Check if an install entry matches current OS
 matches_os() {
     local install_entry="$1"
-    local current_os="$APPCTL_OS"
+    local current_os="$PKGMUX_OS"
 
     local os_field
     os_field=$(echo "$install_entry" | jq -r '.os // empty')

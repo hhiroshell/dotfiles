@@ -23,7 +23,7 @@ check_requires() {
         local app_name
         app_name=$(echo "$app_json" | jq -r '.name')
         log_error "$app_name: missing requirements: ${missing[*]}"
-        log_info "Install them first: appctl install ${missing[*]}"
+        log_info "Install them first: pkgmux install ${missing[*]}"
         return 1
     fi
 

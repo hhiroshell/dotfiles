@@ -19,6 +19,6 @@ detect_arch() {
 }
 
 # Export for use in other scripts
-APPCTL_OS="$(detect_os)"
-APPCTL_ARCH="$(detect_arch)"
-export APPCTL_OS APPCTL_ARCH
+PKGMUX_OS="$(detect_os)"
+PKGMUX_ARCH="$(detect_arch)"
+export PKGMUX_OS PKGMUX_ARCH

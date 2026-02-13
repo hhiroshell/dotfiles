@@ -86,17 +86,17 @@ handler_custom_install() {
     local pinned_version
     pinned_version=$(_custom_get_pinned_version "$install_entry")
     if [[ -n "$pinned_version" ]]; then
-        export APPCTL_PINNED_VERSION="$pinned_version"
+        export PKGMUX_PINNED_VERSION="$pinned_version"
     else
-        unset APPCTL_PINNED_VERSION 2>/dev/null || true
+        unset PKGMUX_PINNED_VERSION 2>/dev/null || true
     fi
 
     log_info "$app_name: running custom install script..."
     if eval "$script"; then
-        unset APPCTL_PINNED_VERSION 2>/dev/null || true
+        unset PKGMUX_PINNED_VERSION 2>/dev/null || true
         log_ok "$app_name: installed"
     else
-        unset APPCTL_PINNED_VERSION 2>/dev/null || true
+        unset PKGMUX_PINNED_VERSION 2>/dev/null || true
         log_error "$app_name: installation failed"
         return 1
     fi
@@ -148,17 +148,17 @@ handler_custom_upgrade() {
     fi
 
     if [[ -n "$pinned_version" ]]; then
-        export APPCTL_PINNED_VERSION="$pinned_version"
+        export PKGMUX_PINNED_VERSION="$pinned_version"
     else
-        unset APPCTL_PINNED_VERSION 2>/dev/null || true
+        unset PKGMUX_PINNED_VERSION 2>/dev/null || true
     fi
 
     log_info "$app_name: running custom upgrade (reinstall)..."
     if eval "$script"; then
-        unset APPCTL_PINNED_VERSION 2>/dev/null || true
+        unset PKGMUX_PINNED_VERSION 2>/dev/null || true
         log_ok "$app_name: upgraded"
     else
-        unset APPCTL_PINNED_VERSION 2>/dev/null || true
+        unset PKGMUX_PINNED_VERSION 2>/dev/null || true
         log_error "$app_name: upgrade failed"
         return 1
     fi

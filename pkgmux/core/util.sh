@@ -50,10 +50,10 @@ get_command() {
     echo "${cmd:-$app_name}"
 }
 
-# Get the directory where appctl is installed
-get_appctl_dir() {
+# Get the directory where pkgmux is installed
+get_pkgmux_dir() {
     local script_path
     script_path="$(cd "$(dirname "${BASH_SOURCE[1]}")" && pwd)"
-    # Go up from core/ or handlers/ to appctl/
+    # Go up from core/ or handlers/ to pkgmux/
     dirname "$script_path"
 }

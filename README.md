@@ -4,7 +4,7 @@ Personal dotfiles managed with [chezmoi](https://www.chezmoi.io/).
 
 ## Prerequisites
 
-- [appctl](appctl/) - Declarative package management tool (included in this repo)
+- [pkgmux](pkgmux/) - Declarative package management tool (included in this repo)
 - Platform-specific package managers:
   - [Homebrew](https://brew.sh/) (macOS) - For GUI apps and system tools
   - apt (Ubuntu/Debian) - For system packages and build dependencies
@@ -25,7 +25,7 @@ $ cd ~/src/github.com/hhiroshell/dotfiles
 ### Install apps
 
 ```console
-$ ./appctl/appctl install
+$ ./pkgmux/pkgmux install
 ```
 
 ### Apply dotfiles
@@ -38,12 +38,12 @@ $ chezmoi init --source=. --apply
 
 | Command                              | Description                     |
 |--------------------------------------|---------------------------------|
-| `./appctl/appctl install [app...]`   | Install apps (all if no args)   |
-| `./appctl/appctl upgrade [app...]`   | Upgrade apps                    |
-| `./appctl/appctl uninstall <app...>` | Uninstall specified apps        |
-| `./appctl/appctl status [app...]`    | Show app status                 |
-| `./appctl/appctl list`               | List all defined apps           |
-| `./appctl/appctl doctor`             | Health check                    |
+| `./pkgmux/pkgmux install [app...]`   | Install apps (all if no args)   |
+| `./pkgmux/pkgmux upgrade [app...]`   | Upgrade apps                    |
+| `./pkgmux/pkgmux uninstall <app...>` | Uninstall specified apps        |
+| `./pkgmux/pkgmux status [app...]`    | Show app status                 |
+| `./pkgmux/pkgmux list`               | List all defined apps           |
+| `./pkgmux/pkgmux doctor`             | Health check                    |
 
 ## What's Included
 
@@ -58,7 +58,7 @@ $ chezmoi init --source=. --apply
 - **Kitty** - GPU-accelerated terminal emulator
 - **tmux** - Terminal multiplexer
 
-### Development Tools (via appctl)
+### Development Tools (via pkgmux)
 - **Languages & Runtimes**: Go, Node.js, Rust, uv
 - **Editors**: Helix
 - **Version Control**: Git, gh, Lazygit, Git Credential Manager
@@ -84,8 +84,8 @@ $ chezmoi init --source=. --apply
 
 ```
 .
-├── appctl/                 # Declarative package management tool
-├── apps/                   # App definitions (YAML) for appctl
+├── pkgmux/                 # Declarative package management tool
+├── apps/                   # App definitions (YAML) for pkgmux
 ├── chezmoi/                # chezmoi source directory
 │   ├── dot_claude/         # -> ~/.claude (settings, skills)
 │   ├── dot_config/         # -> ~/.config (ghostty, helix, kitty, lazygit, tmux, zsh, starship)

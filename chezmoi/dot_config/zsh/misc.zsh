@@ -2,8 +2,8 @@
 # Common Settings
 # ================
 
-# appctl
-export PATH="${HOME}/src/github.com/hhiroshell/dotfiles/appctl:${PATH}"
+# pkgmux
+export PATH="${HOME}/src/github.com/hhiroshell/dotfiles/pkgmux:${PATH}"
 
 # fzf
 # set up fzf key bindings and fuzzy completion
