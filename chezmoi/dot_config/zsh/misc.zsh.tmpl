@@ -31,13 +31,13 @@ alias q='exit'
 # Utilities
 # ==========
 
+{{ if eq .chezmoi.os "linux" -}}
 # Clipboard utilities for compatibility with macOS
-if [[ "$(uname)" == "Linux" ]]; then
-    if command -v xclip &> /dev/null; then
-        alias pbcopy='xclip -selection clipboard'
-        alias pbpaste='xclip -selection clipboard -o'
-    fi
+if command -v xclip &> /dev/null; then
+    alias pbcopy='xclip -selection clipboard'
+    alias pbpaste='xclip -selection clipboard -o'
 fi
+{{ end -}}
 
 today() {
     date '+%Y-%m-%d'
