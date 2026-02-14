@@ -1,4 +1,4 @@
-ghq-cd() {
+_ghq-cd() {
     local repo
     repo=$(ghq list | fzf)
     if [ $? -ne 0 ]; then
@@ -8,122 +8,44 @@ ghq-cd() {
     cd "$(ghq root)/${repo}"
 }
 
-alias gcd='ghq-cd'
+alias gd='_ghq-cd'
 
-alias gh-open-current-dir='open $(git config remote.origin.url | sed -e "s/ssh:\/\/git@/https:\/\//")'
-
-gh-open() {
-    if [ "$1" = "." ] || [ "$1" = "$(pwd)" ]; then
-        gh-open-current-dir
-    else
-        pushd "$1"
-        gh-open-current-dir
-        popd
-    fi
+_gh-browse() {
+    gh browse "$@" &>/dev/null
 }
 
-ghq-gh-open() {
-    if [ -n "$1" ]; then
-        gh-open "$1"
-    else
-        local repo
-        repo=$(ghq list | fzf)
-        if [ $? -ne 0 ]; then
-            return 1
-        fi
+alias gb='_gh-browse'
 
-        gh-open "$(ghq root)/${repo}"
-    fi
-}
-
-alias gho='ghq-gh-open'
-
-git-checkout() {
-    if [ -n "$*" ]; then
-        git checkout "$@"
-    else
-        local selected
-        selected=$(git branch --all | grep -v "HEAD" | fzf --preview 'echo {} | cut -c 3- | xargs git log --color=always')
-        if [ $? -ne 0 ]; then
-	        return 1
-        fi
-
-        git checkout $(echo "${selected}" | cut -c 3- | sed -e 's#remotes/[^/]*/##')
-    fi
-}
-
-alias gco='git-checkout'
-
-_git_status() {
-    local sts
-    if [ -z "$*" ] || [ "$*" = "HEAD" ]; then
-        sts=$(git status --short)
-    else
-        sts=$(git diff --name-status "$@")
-    fi
-
-    echo "${sts}"
-}
-
-git-diff() {
-    local selected
-    selected=$(echo "$(_git_status "$@")" | fzf \
-        --preview 'echo {} | rev | cut -f1 -d" " | rev | xargs git diff --color=always "$@" --' \
-        --multi \
-        --height 90%)
-    if [ $? -ne 0 ]; then
+_gh-fuzzy-clone() {
+    if [ -z "$1" ]; then
+        echo "Usage: ghc <github-url-or-owner/repo>" >&2
         return 1
     fi
 
-    echo $(echo "${selected}" | cut -c 4-)
-}
+    local input="$1"
+    shift
+    local repo="$input"
 
-alias gdf='git-diff'
+    # Strip scheme (https://, http://, ssh://, git://)
+    repo="${repo#*://}"
+    # Strip git@ prefix (SSH URLs)
+    repo="${repo#git@}"
+    # Replace : with / (git@github.com:user/repo format)
+    repo="${repo/:/\/}"
+    # Strip github.com/ prefix
+    repo="${repo#github.com/}"
+    # Extract owner/repo (first two path segments)
+    repo="$(echo "$repo" | cut -d'/' -f1,2)"
+    # Strip .git suffix
+    repo="${repo%.git}"
 
-git-rollback() {
-    local selected
-    selected=$(git-diff)
-    if [ $? -ne 0 ]; then
-	    return 1
+    if [ -z "$repo" ] || ! echo "$repo" | grep -q '/'; then
+        echo "ghc: could not extract owner/repo from: $input" >&2
+        return 1
     fi
 
-    git checkout -- $(echo "${selected}" | sed -e 's/\n/ /g')
+    local dest="$(ghq root)/github.com/${repo}"
+    gh repo clone "$repo" "$dest" "$@"
 }
 
-alias grb='git-rollback'
-
-git-add() {
-    local selected
-    selected=$(git-diff)
-    if [ $? -ne 0 ]; then
-	    return 1
-    fi
-
-    git add $(echo "${selected}" | sed -e 's/\n/ /g')
-}
-
-alias gad='git-add'
-
-git-add-interactive() {
-    local selected
-    selected=$(git-diff)
-    if [ $? -ne 0 ]; then
-	    return 1
-    fi
-
-    git add -p $(echo "${selected}" | sed -e 's/\n/ /g')
-}
-
-alias gadi='git-add-interactive'
-
-git-reset() {
-    local selected
-    selected=$(git-diff)
-    if [ $? -ne 0 ]; then
-	    return 1
-    fi
-
-    git reset $(echo "${selected}" | sed -e 's/\n/ /g')
-}
-
-alias grs='git-reset'
+alias gc='_gh-fuzzy-clone'
