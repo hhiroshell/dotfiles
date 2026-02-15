@@ -31,7 +31,7 @@ ide() {
         # Only launch Helix if not already running in this pane
         local hx_cmd=$(tmux display-message -t "$hx_pane" -p "#{pane_current_command}")
         if [[ "$hx_cmd" != "hx" ]]; then
-            tmux send-keys -t "$hx_pane" C-u "hx" C-m
+            tmux send-keys -t "$hx_pane" C-u "hx ." C-m
         fi
     fi
 
@@ -87,4 +87,18 @@ ide() {
     if [[ "$kill_current" == true ]]; then
         tmux kill-pane -t "$current_pane"
     fi
+}
+
+# Reload all buffers in a Helix pane within the current tmux session.
+# Silently does nothing if not in tmux or no HELIX_PANE is found.
+hx-reload() {
+    [[ -z "$TMUX" ]] && return 0
+
+    local hx_pane
+    hx_pane=$(tmux list-panes -s -F "#{pane_id} #{pane_title}" \
+        | awk '/HELIX_PANE/ {print $1; exit}')
+
+    [[ -z "$hx_pane" ]] && return 0
+
+    tmux send-keys -t "$hx_pane" Escape ":rla" Enter
 }

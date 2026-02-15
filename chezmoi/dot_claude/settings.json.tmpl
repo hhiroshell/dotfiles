@@ -22,8 +22,19 @@
           }
         ]
       }
-    ]
+    ],
 {{ end }}
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "zsh -c 'source ~/.config/zsh/tmux.zsh && hx-reload'"
+          }
+        ]
+      }
+    ]
   },
   "enabledPlugins": {
     "code-review@claude-plugins-official": true,
