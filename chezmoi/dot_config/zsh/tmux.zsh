@@ -7,7 +7,7 @@ ide() {
         return 1
     fi
 
-    local threshold=200
+    local threshold=256
     local window_id=$(tmux display-message -p "#{window_id}")
 
     # Find existing panes by title in the current window
