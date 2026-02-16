@@ -102,16 +102,19 @@ ide() {
     fi
 }
 
-# Reload all buffers in a Helix pane within the current tmux session.
+# Reload all buffers in a Helix pane within the current tmux window.
 # Silently does nothing if not in tmux or no HELIX_PANE is found.
 hx-reload() {
     [[ -z "$TMUX" ]] && return 0
 
+    local window_id=$(tmux display-message -p "#{window_id}")
     local hx_pane
-    hx_pane=$(tmux list-panes -s -F "#{pane_id} #{pane_title}" \
+    hx_pane=$(tmux list-panes -t "$window_id" -F "#{pane_id} #{pane_title}" \
         | awk '/HELIX_PANE/ {print $1; exit}')
 
     [[ -z "$hx_pane" ]] && return 0
 
-    tmux send-keys -t "$hx_pane" Escape ":rla" Enter
+    tmux send-keys -t "$hx_pane" Escape
+    sleep 0.05
+    tmux send-keys -t "$hx_pane" ":reload-all" Enter
 }
