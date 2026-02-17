@@ -1,0 +1,13 @@
+name: freecad
+
+# cf. https://www.freecad.org/downloads.php
+install:
+  - type: custom
+    os: linux
+    check: snap list freecad 2>/dev/null | grep -q freecad
+    version_cmd: snap list freecad 2>/dev/null | awk '/^freecad/{print $2}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/FreeCAD/FreeCAD/releases/latest" | jq -r '.tag_name'
+    script: |
+      sudo snap install freecad
+    uninstall: |
+      sudo snap remove freecad
