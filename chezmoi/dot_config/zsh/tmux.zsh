@@ -73,7 +73,7 @@ ide() {
     # --- Phase 5: Launch apps if not already running ---
     local hx_cmd=$(tmux display-message -t "$hx_pane" -p "#{pane_current_command}")
     if [[ "$hx_cmd" != "hx" ]]; then
-        tmux send-keys -t "$hx_pane" C-u "hx ." C-m
+        tmux send-keys -t "$hx_pane" C-u "hx README.md" C-m
     fi
 
     local cl_cmd=$(tmux display-message -t "$cl_pane" -p "#{pane_current_command}")
@@ -100,6 +100,8 @@ ide() {
     if [[ "$width" -ge "$threshold" ]]; then
         tmux resize-pane -t "$hx_pane" -x $(( width * 2 / 3 ))
     fi
+
+    tmux select-pane -t "$hx_pane"
 }
 
 # Reload all buffers in a Helix pane within the current tmux window.
