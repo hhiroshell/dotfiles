@@ -1,0 +1,16 @@
+name: bambu-studio
+
+requires:
+  - flatpak
+
+# cf. https://bambulab.com/en/download/studio
+install:
+  - type: custom
+    os: linux
+    check: flatpak list 2>/dev/null | grep -q com.bambulab.BambuStudio
+    version_cmd: flatpak info com.bambulab.BambuStudio 2>/dev/null | awk '/Version:/{print $2}'
+    latest_cmd: flatpak remote-info flathub com.bambulab.BambuStudio 2>/dev/null | grep -oP 'Update to \K[0-9]+(\.[0-9]+)+'
+    script: |
+      flatpak install -y flathub com.bambulab.BambuStudio
+    uninstall: |
+      flatpak uninstall -y com.bambulab.BambuStudio
