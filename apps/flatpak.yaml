@@ -1,0 +1,14 @@
+name: flatpak
+
+# cf. https://flatpak.org/setup/
+install:
+  - type: custom
+    os: linux
+    check: command -v flatpak
+    version_cmd: dpkg -s flatpak 2>/dev/null | grep '^Version:' | awk '{print $2}'
+    latest_cmd: apt-cache policy flatpak 2>/dev/null | awk '/Candidate:/{print $2}'
+    script: |
+      sudo apt-get install -y flatpak
+      flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    uninstall: |
+      sudo apt-get remove -y flatpak
