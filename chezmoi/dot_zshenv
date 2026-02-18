@@ -15,6 +15,9 @@ export XDG_DATA_DIRS="/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local
 # cf. https://docs.qmk.fm/#/newbs_getting_started?id=set-up-qmk
 PATH="$HOME/.local/bin:$PATH"
 
+# pkgmux
+export PATH="${HOME}/src/github.com/hhiroshell/dotfiles/pkgmux:${PATH}"
+
 # krew
 export PATH="$PATH:${KREW_ROOT:-$HOME/.krew}/bin"
 
