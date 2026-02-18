@@ -5,7 +5,7 @@ command: docker
 # cf. https://docs.docker.com/engine/install/
 install:
   - type: brew
-    cask: docker
+    package: docker
     os: macos
 
   - type: apt
