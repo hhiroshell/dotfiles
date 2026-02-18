@@ -60,7 +60,7 @@ _pkgmux_doctor_schedule() {
     fi
 
     # Update timestamp immediately to prevent concurrent runs
-    echo "$EPOCHSECONDS" > "$_pkgmux_timestamp_file"
+    echo "$EPOCHSECONDS" >| "$_pkgmux_timestamp_file"
 
     # Remove stale output so precmd doesn't show old results
     rm -f "$_pkgmux_output_file"
