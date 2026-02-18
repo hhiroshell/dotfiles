@@ -13,7 +13,7 @@ autoload -Uz add-zsh-hook
 _pkgmux_cache_dir="${HOME}/.cache/pkgmux"
 _pkgmux_output_file="${_pkgmux_cache_dir}/doctor-output"
 _pkgmux_timestamp_file="${_pkgmux_cache_dir}/last-doctor"
-_pkgmux_interval=$((24 * 60 * 60))  # 24 hours
+_pkgmux_interval=$((4 * 60 * 60))  # 4 hours
 
 # --- precmd hook: format and display doctor results (one-shot) ---
 _pkgmux_doctor_display() {
