@@ -3,7 +3,7 @@ name: font-hackgen-nerd
 # cf. https://github.com/yuru7/HackGen
 install:
   - type: brew
-    cask: font-hackgen-nerd
+    package: font-hackgen-nerd
     os: macos
 
   - type: custom
