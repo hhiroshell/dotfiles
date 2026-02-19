@@ -15,6 +15,12 @@ load_app() {
     yq -o=json "$app_file"
 }
 
+# Check if an app is disabled
+is_disabled() {
+    local app_json="$1"
+    [[ $(echo "$app_json" | jq -r '.disabled // false') == "true" ]]
+}
+
 # List all available app names
 list_apps() {
     local apps_dir="$1"
