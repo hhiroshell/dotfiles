@@ -42,7 +42,7 @@ $ chezmoi init --source=. --apply
 | `./pkgmux/pkgmux upgrade [app...]`   | Upgrade apps                    |
 | `./pkgmux/pkgmux uninstall <app...>` | Uninstall specified apps        |
 | `./pkgmux/pkgmux status [app...]`    | Show app status                 |
-| `./pkgmux/pkgmux list`               | List all defined apps           |
+| `./pkgmux/pkgmux list`               | List all defined apps (disabled apps shown with marker) |
 | `./pkgmux/pkgmux doctor`             | Health check                    |
 
 ## What's Included

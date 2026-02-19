@@ -83,6 +83,7 @@ pkgmux is a unified package management tool that works across macOS (Homebrew) a
 **App Definition Schema:**
 ```yaml
 name: example
+disabled: true        # optional: skip this app in install/upgrade/uninstall/doctor (still shown in list)
 command: example-bin  # binary name if different from app name (used for status checks)
 
 requires:
