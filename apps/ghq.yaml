@@ -1,11 +1,9 @@
 name: ghq
 
+requires:
+  - go
+
 # cf. https://github.com/x-motemen/ghq#installation
 install:
-  - type: brew
-    package: ghq
-    os: macos
-
   - type: go
     package: github.com/x-motemen/ghq
-    os: linux
