@@ -1,6 +1,6 @@
 name: google-japanese-ime
 
-# cf. https://www.google.co.jp/ime/
+# cf. https://www.google.co.jp/ime/index.html#download
 install:
   - type: brew
     cask: google-japanese-ime

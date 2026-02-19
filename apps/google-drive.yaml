@@ -1,6 +1,6 @@
 name: google-drive
 
-# cf. https://www.google.com/drive/download/
+# cf. https://support.google.com/drive/answer/10838124
 install:
   - type: brew
     cask: google-drive

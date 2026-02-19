@@ -3,7 +3,7 @@ name: gopls
 requires:
   - go
 
-# cf. https://github.com/golang/tools/tree/master/gopls#installation
+# cf. https://go.dev/gopls/#installation
 install:
   - type: go
     package: golang.org/x/tools/gopls
