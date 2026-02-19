@@ -5,3 +5,23 @@ install:
   - type: brew
     cask: font-hackgen-nerd
     os: macos
+
+  - type: custom
+    os: linux
+    check: fc-list | grep -i hackgen
+    pinned_version: "v2.10.0"
+    version_cmd: cat ~/.local/share/fonts/HackGenNF/.version 2>/dev/null
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/yuru7/HackGen/releases/latest" | jq -r '.tag_name'
+    script: |
+      VERSION="${PKGMUX_PINNED_VERSION:-$(curl -sS --max-time 10 "https://api.github.com/repos/yuru7/HackGen/releases/latest" | jq -r '.tag_name')}"
+      TMPDIR=$(mktemp -d)
+      trap 'rm -rf "$TMPDIR"' EXIT
+      curl -fsSL "https://github.com/yuru7/HackGen/releases/download/${VERSION}/HackGen_NF_${VERSION}.zip" -o "$TMPDIR/hackgen.zip"
+      unzip -q "$TMPDIR/hackgen.zip" -d "$TMPDIR"
+      mkdir -p ~/.local/share/fonts/HackGenNF
+      find "$TMPDIR" -name '*.ttf' -exec cp {} ~/.local/share/fonts/HackGenNF/ \;
+      echo "$VERSION" > ~/.local/share/fonts/HackGenNF/.version
+      fc-cache -f
+    uninstall: |
+      rm -rf ~/.local/share/fonts/HackGenNF
+      fc-cache -f
