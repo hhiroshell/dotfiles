@@ -3,12 +3,18 @@ name: golangci-lint
 requires:
   - go
 
-# cf. https://golangci-lint.run/welcome/install/
+# cf. https://golangci-lint.run/docs/welcome/install/local/
 install:
   - type: brew
     package: golangci-lint
     os: macos
 
-  - type: go
-    package: github.com/golangci/golangci-lint/cmd/golangci-lint
+  - type: custom
     os: linux
+    check: command -v golangci-lint
+    version_cmd: golangci-lint version 2>/dev/null | awk '{print $4}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/golangci/golangci-lint/releases/latest" | jq -r '.tag_name | ltrimstr("v")'
+    script: |
+      curl -sSfL https://golangci-lint.run/install.sh | sudo sh -s -- -b /usr/local/bin
+    uninstall: |
+      sudo rm -f /usr/local/bin/golangci-lint
