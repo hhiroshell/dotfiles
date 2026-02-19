@@ -44,6 +44,11 @@ process_app() {
         return 1
     fi
 
+    if is_disabled "$app_json"; then
+        log_skip "$app_name (disabled)"
+        return 0
+    fi
+
     local install_entry
     install_entry=$(select_install_entry "$app_json")
 
@@ -131,7 +136,14 @@ cmd_uninstall() {
 }
 
 cmd_list() {
-    list_apps "$APPS_DIR"
+    local app_name app_json
+    while IFS= read -r app_name; do
+        if app_json=$(load_app "$app_name" "$APPS_DIR" 2>/dev/null) && is_disabled "$app_json"; then
+            echo "$app_name (disabled)"
+        else
+            echo "$app_name"
+        fi
+    done < <(list_apps "$APPS_DIR")
 }
 
 cmd_doctor() {
@@ -177,6 +189,26 @@ cmd_doctor() {
         local app_json
         if ! app_json=$(load_app "$app" "$APPS_DIR" 2>/dev/null); then
             $json_output || _doctor_log_error "$app: failed to load definition"
+            continue
+        fi
+
+        if is_disabled "$app_json"; then
+            if $json_output; then
+                json_results+=("$(jq -n --arg name "$app" '{
+                    name: $name,
+                    installed: false,
+                    version: null,
+                    latest_version: null,
+                    pinned_version: null,
+                    outdated: false,
+                    pinned_drift: false,
+                    missing_requires: [],
+                    disabled: true,
+                    skipped: true
+                }')")
+            else
+                $verbose && _doctor_log_skip "$app (disabled)" || true
+            fi
             continue
         fi
 
