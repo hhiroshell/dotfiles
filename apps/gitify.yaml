@@ -1,6 +1,8 @@
 name: gitify
 
-# cf. https://www.gitify.io/, https://github.com/gitify-app/gitify
+disabled: true
+
+# cf. https://www.gitify.io/
 install:
   - type: brew
     cask: gitify
