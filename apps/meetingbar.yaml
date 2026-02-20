@@ -3,5 +3,5 @@ name: meetingbar
 # cf. https://github.com/leits/MeetingBar
 install:
   - type: brew
-    package: meetingbar
+    cask: meetingbar
     os: macos
