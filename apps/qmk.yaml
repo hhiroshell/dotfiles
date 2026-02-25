@@ -1,0 +1,16 @@
+name: qmk
+
+requires:
+  - uv
+
+# cf. https://docs.qmk.fm/newbs_getting_started
+install:
+  - type: custom
+    os: linux
+    check: command -v qmk
+    version_cmd: qmk --version 2>/dev/null
+    latest_cmd: curl -s https://pypi.org/pypi/qmk/json | jq -r '.info.version'
+    script: |
+      curl -fsSL https://install.qmk.fm | SKIP_UV=1 sh
+    uninstall: |
+      uv tool uninstall qmk
