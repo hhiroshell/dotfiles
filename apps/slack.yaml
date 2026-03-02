@@ -1,0 +1,7 @@
+name: google-chrome
+
+# cf. https://slack.com/intl/us-en/downloads/
+install:
+  - type: brew
+    cask: slack
+    os: macos

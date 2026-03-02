@@ -1,0 +1,7 @@
+name: bash
+
+# cf. https://brew.sh/
+install:
+  - type: brew
+    package: bash
+    os: macos
