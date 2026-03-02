@@ -8,10 +8,10 @@
 
 [core]
     editor = hx
-    excludesfile = /home/hhiroshell/.gitignore_global
+    excludesfile = ~/.gitignore_global
 
 [github]
     user = hhiroshell
 
 [ghq]
-    root = /home/hhiroshell/src
+    root = ~/src
