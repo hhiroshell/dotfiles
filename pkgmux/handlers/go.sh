@@ -16,7 +16,7 @@ _go_get_binary_name() {
     local pkg="$1"
     # Remove @version suffix and strip major version path (e.g. /v2, /v3)
     local path="${pkg%%@*}"
-    path=$(echo "$path" | sed 's|/v[0-9]\+$||')
+    path=$(echo "$path" | sed -E 's|/v[0-9]+$||')
     basename "$path"
 }
 
