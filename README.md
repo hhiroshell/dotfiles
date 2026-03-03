@@ -28,11 +28,13 @@ $ cd ~/src/github.com/hhiroshell/dotfiles
 $ ./pkgmux/pkgmux install
 ```
 
-### Apply dotfiles
+### Initialize chezmoi and apply dotfiles
 
 ```console
 $ chezmoi init --source=. --apply
 ```
+
+This renders `.chezmoi.toml.tmpl` into chezmoi's config (setting `sourceDir` to this repo) and applies all managed dotfiles.
 
 ## Commands
 
