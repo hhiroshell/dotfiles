@@ -4,12 +4,7 @@ command: claude
 
 # cf. https://code.claude.com/docs/en/setup
 install:
-  - type: brew
-    cask: claude-code
-    os: macos
-
   - type: custom
-    os: linux
     check: command -v claude
     version_cmd: claude --version 2>/dev/null | awk '{print $1}'
     latest_cmd: curl -sS --max-time 10 "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/latest"  # GCS bucket URL from the official install script
