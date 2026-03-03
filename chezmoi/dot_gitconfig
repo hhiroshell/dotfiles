@@ -1,7 +1,3 @@
-[credential]
-    helper = /usr/local/bin/git-credential-manager
-    credentialStore = gpg
-
 [user]
     name = "Hiroshi Hayakawa"
     email = hhiroshell@gmail.com
