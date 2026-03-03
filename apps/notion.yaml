@@ -1,0 +1,7 @@
+name: notion
+
+# cf. https://www.notion.com/desktop
+install:
+  - type: brew
+    cask: notion
+    os: macos

@@ -1,0 +1,17 @@
+name: cmd-eikana
+
+# cf. https://github.com/dominion525/cmd-eikana
+install:
+  - type: custom
+    os: macos
+    check: test -d "/Applications/⌘英かな.app"
+    version_cmd: defaults read "/Applications/⌘英かな.app/Contents/Info.plist" CFBundleShortVersionString 2>/dev/null
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/dominion525/cmd-eikana/releases/latest" | jq -r '.tag_name | ltrimstr("v")'
+    script: |
+      VERSION=$(curl -sS --max-time 10 "https://api.github.com/repos/dominion525/cmd-eikana/releases/latest" | jq -r '.tag_name')
+      curl -fsSL -o /tmp/cmd-eikana.zip "https://github.com/dominion525/cmd-eikana/releases/download/${VERSION}/cmd-eikana-${VERSION}-arm64.zip"
+      unzip -o /tmp/cmd-eikana.zip -d /tmp/cmd-eikana
+      cp -R "/tmp/cmd-eikana/⌘英かな.app" /Applications/
+      rm -rf /tmp/cmd-eikana.zip /tmp/cmd-eikana
+    uninstall: |
+      rm -rf "/Applications/⌘英かな.app"
