@@ -1,0 +1,26 @@
+name: nodejs
+
+command: node
+
+# The requires check uses command -v nvm which will always fail since nvm is a shell function,
+# not a binary. This would block both install and doctor. nvm's presence is implicitly checked
+# via the install script sourcing.
+#
+# requires:
+#   - nvm
+
+install:
+  - type: custom
+    os: macos
+    check: ls "$HOME/.config/nvm/versions/node/" 2>/dev/null | grep -q .
+    version_cmd: set +eu; . "$HOME/.config/nvm/nvm.sh" 2>/dev/null; node --version 2>/dev/null | sed 's/^v//'
+    latest_cmd: curl -sS --max-time 10 "https://nodejs.org/dist/index.json" | jq -r '.[0].version' | sed 's/^v//'
+    script: |
+      set +eu
+      . "$HOME/.config/nvm/nvm.sh"
+      nvm install node
+    uninstall: |
+      set +eu
+      . "$HOME/.config/nvm/nvm.sh"
+      nvm deactivate
+      rm -rf "$HOME/.config/nvm/versions/node"

@@ -1,0 +1,23 @@
+name: java
+
+# The requires check uses command -v sdkman which will always fail since sdk is a shell function,
+# not a binary. This would block both install and doctor. sdkman's presence is implicitly checked
+# via the install script sourcing.
+#
+# requires:
+#   - adkman
+
+install:
+  - type: custom
+    os: macos
+    check: test -d "$HOME/.sdkman/candidates/java/current"
+    pinned_version: "25.0.1-tem"
+    script: |
+      set +eu
+      . "$HOME/.sdkman/bin/sdkman-init.sh"
+      sdk install java "$PKGMUX_PINNED_VERSION"
+    uninstall: |
+      set +eu
+      . "$HOME/.sdkman/bin/sdkman-init.sh"
+      sdk uninstall java "$(basename "$(readlink "$HOME/.sdkman/candidates/java/current")")"
+    version_cmd: basename "$(readlink "$HOME/.sdkman/candidates/java/current")" 2>/dev/null

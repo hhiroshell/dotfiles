@@ -1,0 +1,15 @@
+name: python
+
+requires:
+  - uv
+
+install:
+  - type: custom
+    os: macos
+    check: uv python find --no-config 2>/dev/null | grep -q "\.local/share/uv/python/"
+    version_cmd: '"$(uv python find --no-config 2>/dev/null)" --version 2>/dev/null | awk ''{print $2}'''
+    latest_cmd: uv python list --only-downloads 2>/dev/null | grep -v freethreaded | awk '{print $1}' | sed 's/^cpython-//; s/-.*$//' | grep -m1 '^[0-9.]*$'
+    script: |
+      uv python install --default
+    uninstall: |
+      rm -rf "$HOME/.local/share/uv/python"

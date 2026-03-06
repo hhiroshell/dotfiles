@@ -1,0 +1,14 @@
+name: nvm
+
+# cf. https://github.com/nvm-sh/nvm#installing-and-updating
+install:
+  - type: custom
+    os: macos
+    check: test -d "$HOME/.config/nvm"
+    version_cmd: set +eu; . "$HOME/.config/nvm/nvm.sh" 2>/dev/null; nvm --version
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/nvm-sh/nvm/releases/latest" | jq -r '.tag_name' | sed 's/^v//'
+    script: |
+      VERSION=$(curl -sS --max-time 10 "https://api.github.com/repos/nvm-sh/nvm/releases/latest" | jq -r '.tag_name')
+      curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/${VERSION}/install.sh" | bash
+    uninstall: |
+      rm -rf "$HOME/.config/nvm"
