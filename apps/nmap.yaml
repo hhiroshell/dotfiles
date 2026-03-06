@@ -1,0 +1,11 @@
+name: nmap
+
+# cf. https://nmap.org/download.html
+install:
+  - type: brew
+    package: nmap
+    os: macos
+
+  - type: apt
+    package: nmap
+    os: linux
