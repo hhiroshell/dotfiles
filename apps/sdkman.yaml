@@ -1,0 +1,15 @@
+name: sdkman
+
+command: sdk
+
+# cf. https://sdkman.io/install/
+install:
+  - type: custom
+    os: macos
+    check: test -d "$HOME/.sdkman"
+    version_cmd: cat "$HOME/.sdkman/var/version" 2>/dev/null
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/sdkman/sdkman-cli/releases/latest" | jq -r '.tag_name'
+    script: |
+      curl -s "https://get.sdkman.io" | bash
+    uninstall: |
+      rm -rf "$HOME/.sdkman"
