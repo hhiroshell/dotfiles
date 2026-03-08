@@ -1,0 +1,24 @@
+name: pnpm
+
+# The requires check uses command -v nvm which will always fail since nvm is a shell function,
+# not a binary. This would block both install and doctor. nvm's presence is implicitly checked
+# via the install script sourcing.
+#
+# requires:
+#   - nvm
+
+# cf. https://pnpm.io/installation
+install:
+  - type: custom
+    os: macos
+    check: set +eu; . "$HOME/.config/nvm/nvm.sh" 2>/dev/null; command -v pnpm
+    version_cmd: set +eu; . "$HOME/.config/nvm/nvm.sh" 2>/dev/null; pnpm --version
+    latest_cmd: npm view pnpm@latest-10 version 2>/dev/null
+    script: |
+      set +eu
+      . "$HOME/.config/nvm/nvm.sh"
+      npm install -g pnpm@latest-10
+    uninstall: |
+      set +eu
+      . "$HOME/.config/nvm/nvm.sh"
+      npm uninstall -g pnpm

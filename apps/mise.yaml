@@ -1,0 +1,7 @@
+name: mise
+
+# cf. https://mise.jdx.dev/installing-mise.html
+install:
+  - type: brew
+    package: mise
+    os: macos
