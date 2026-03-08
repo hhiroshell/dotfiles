@@ -28,4 +28,14 @@ export GOPATH="$HOME/.go"
 export PATH="$PATH:$GOPATH/bin"
 
 # Rust
-. "$HOME/.cargo/env"
+[[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
+
+
+{{ if eq .chezmoi.os "darwin" -}}
+# ===========
+# Credentials
+# ===========
+
+# GitHub
+export GITHUB_TOKEN=$(security find-generic-password -s "GITHUB_TOKEN" -a "$USER" -w 2>/dev/null)
+{{ end -}}
