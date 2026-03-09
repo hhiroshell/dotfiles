@@ -1,4 +1,6 @@
-name: java
+name: java-temlin
+
+command: java
 
 # The requires check uses command -v sdkman which will always fail since sdk is a shell function,
 # not a binary. This would block both install and doctor. sdkman's presence is implicitly checked
@@ -11,13 +13,14 @@ install:
   - type: custom
     os: macos
     check: test -d "$HOME/.sdkman/candidates/java/current"
-    pinned_version: "25.0.1-tem"
+    version_cmd: basename "$(readlink "$HOME/.sdkman/candidates/java/current")" 2>/dev/null
+    latest_cmd: set +eu; . "$HOME/.sdkman/bin/sdkman-init.sh" && sdk list java | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+-tem' | head -1
     script: |
       set +eu
       . "$HOME/.sdkman/bin/sdkman-init.sh"
-      sdk install java "$PKGMUX_PINNED_VERSION"
+      VERSION="${PKGMUX_PINNED_VERSION:-$(sdk list java | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+-tem' | head -1)}"
+      sdk install java "$VERSION"
     uninstall: |
       set +eu
       . "$HOME/.sdkman/bin/sdkman-init.sh"
       sdk uninstall java "$(basename "$(readlink "$HOME/.sdkman/candidates/java/current")")"
-    version_cmd: basename "$(readlink "$HOME/.sdkman/candidates/java/current")" 2>/dev/null
