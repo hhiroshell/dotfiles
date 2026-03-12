@@ -1,0 +1,7 @@
+name: clusterctl
+
+# cf. https://cluster-api.sigs.k8s.io/user/quick-start.html
+install:
+  - type: brew
+    package: clusterctl
+    os: macos
