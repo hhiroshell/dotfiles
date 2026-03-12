@@ -30,12 +30,14 @@ export PATH="$PATH:$GOPATH/bin"
 # Rust
 [[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 
-
-{{ if eq .chezmoi.os "darwin" -}}
-# ===========
-# Credentials
-# ===========
-
-# GitHub
-export GITHUB_TOKEN=$(security find-generic-password -s "GITHUB_TOKEN" -a "$USER" -w 2>/dev/null)
-{{ end -}}
+# When this environment variable becomes necessary again, revive
+# it in a way that doesn't affect the entire environment.
+#
+# {{ if eq .chezmoi.os "darwin" -}}
+# # ===========
+# # Credentials
+# # ===========
+#
+# # GitHub
+# export GITHUB_TOKEN=$(security find-generic-password -s "GITHUB_TOKEN" -a "$USER" -w 2>/dev/null)
+# {{ end -}}
