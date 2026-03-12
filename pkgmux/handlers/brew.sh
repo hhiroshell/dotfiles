@@ -21,7 +21,7 @@ _brew_is_cask() {
 _brew_is_installed() {
     local install_entry="$1"
     local pkg
-    pkg=$(_brew_get_package "$install_entry")
+    pkg=$(_brew_get_package "$install_entry" | awk '{print $1}')
 
     if _brew_is_cask "$install_entry"; then
         brew list --cask "$pkg" &>/dev/null
@@ -61,14 +61,14 @@ handler_brew_install() {
 
     log_info "$app_name: installing via brew..."
     if _brew_is_cask "$install_entry"; then
-        if brew install --cask "$pkg"; then
+        if brew install --cask $pkg; then
             log_ok "$app_name: installed"
         else
             log_error "$app_name: installation failed"
             return 1
         fi
     else
-        if brew install "$pkg"; then
+        if brew install $pkg; then
             log_ok "$app_name: installed"
         else
             log_error "$app_name: installation failed"
@@ -101,13 +101,13 @@ handler_brew_upgrade() {
 
     log_info "$app_name: upgrading via brew..."
     if _brew_is_cask "$install_entry"; then
-        if brew upgrade --cask "$pkg" 2>/dev/null; then
+        if brew upgrade --cask $pkg 2>/dev/null; then
             log_ok "$app_name: upgraded"
         else
             log_ok "$app_name: already up to date"
         fi
     else
-        if brew upgrade "$pkg" 2>/dev/null; then
+        if brew upgrade $pkg 2>/dev/null; then
             log_ok "$app_name: upgraded"
         else
             log_ok "$app_name: already up to date"
@@ -130,14 +130,14 @@ handler_brew_uninstall() {
 
     log_info "$app_name: uninstalling via brew..."
     if _brew_is_cask "$install_entry"; then
-        if brew uninstall --cask "$pkg"; then
+        if brew uninstall --cask $pkg; then
             log_ok "$app_name: uninstalled"
         else
             log_error "$app_name: uninstall failed"
             return 1
         fi
     else
-        if brew uninstall "$pkg"; then
+        if brew uninstall $pkg; then
             log_ok "$app_name: uninstalled"
         else
             log_error "$app_name: uninstall failed"
@@ -152,7 +152,7 @@ handler_brew_latest_version() {
     local app_json="$3"
 
     local pkg
-    pkg=$(_brew_get_package "$install_entry")
+    pkg=$(_brew_get_package "$install_entry" | awk '{print $1}')
 
     if _brew_is_cask "$install_entry"; then
         brew info --json=v2 --cask "$pkg" 2>/dev/null | jq -r '.casks[0].version // empty'
@@ -200,7 +200,7 @@ handler_brew_current_version() {
     local app_json="$3"
 
     local pkg
-    pkg=$(_brew_get_package "$install_entry")
+    pkg=$(_brew_get_package "$install_entry" | awk '{print $1}')
 
     if _brew_is_cask "$install_entry"; then
         brew list --cask --versions "$pkg" 2>/dev/null | awk '{print $2}'

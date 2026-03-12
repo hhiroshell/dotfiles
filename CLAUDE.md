@@ -95,7 +95,15 @@ install:
     os: macos
 
   - type: brew
+    package: pkg1 pkg2    # multiple formulas (space-separated)
+    os: macos
+
+  - type: brew
     cask: example-app     # cask (GUI app)
+    os: macos
+
+  - type: brew
+    cask: app1 app2       # multiple casks (space-separated)
     os: macos
 
   - type: apt

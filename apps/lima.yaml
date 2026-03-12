@@ -5,7 +5,7 @@ command: limactl
 # cf. https://lima-vm.io/docs/installation/
 install:
   - type: brew
-    package: lima
+    package: lima lima-additional-guestagents
     os: macos
 
   - type: custom
