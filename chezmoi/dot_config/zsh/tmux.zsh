@@ -19,6 +19,13 @@ ide() {
     local current_pane=$(tmux display-message -p "#{pane_id}")
     local hx_pane cl_pane p
 
+    # On macOS, 'claude' is a symlink to a versioned binary (e.g., "2.1.76"), so
+    # tmux's pane_current_command returns the target's basename, not "claude".
+    # Resolve the real name so all comparisons work on both macOS and Linux.
+    local claude_bin
+    claude_bin=$(basename "$(readlink "$(command -v claude)" 2>/dev/null)" 2>/dev/null)
+    [[ -z "$claude_bin" ]] && claude_bin="claude"
+
     # --- Phase 1: Find panes by title ---
     hx_pane=$(tmux list-panes -t "$window_id" -F "#{pane_id} #{pane_title}" \
         | awk '/HELIX_PANE/ {print $1; exit}')
@@ -34,7 +41,7 @@ ide() {
             if [[ -z "$hx_pane" && "$cmd" == "hx" ]]; then
                 hx_pane="$p"
                 tmux select-pane -t "$hx_pane" -T "HELIX_PANE"
-            elif [[ -z "$cl_pane" && "$cmd" == "claude" ]]; then
+            elif [[ -z "$cl_pane" && "$cmd" == "$claude_bin" ]]; then
                 cl_pane="$p"
                 tmux select-pane -t "$cl_pane" -T "CLAUDE_PANE"
             fi
@@ -47,7 +54,7 @@ ide() {
     # other program.
     if [[ "$current_pane" != "$hx_pane" && "$current_pane" != "$cl_pane" ]]; then
         local cur_cmd=$(tmux display-message -t "$current_pane" -p "#{pane_current_command}")
-        if [[ -z "$hx_pane" && "$cur_cmd" != "claude" ]]; then
+        if [[ -z "$hx_pane" && "$cur_cmd" != "$claude_bin" ]]; then
             hx_pane="$current_pane"
             tmux select-pane -t "$hx_pane" -T "HELIX_PANE"
         elif [[ -z "$cl_pane" && "$cur_cmd" != "hx" ]]; then
@@ -77,7 +84,7 @@ ide() {
     fi
 
     local cl_cmd=$(tmux display-message -t "$cl_pane" -p "#{pane_current_command}")
-    if [[ "$cl_cmd" != "claude" ]]; then
+    if [[ "$cl_cmd" != "$claude_bin" ]]; then
         tmux send-keys -t "$cl_pane" C-u "claude" C-m
     fi
 
