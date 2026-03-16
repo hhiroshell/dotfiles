@@ -1,0 +1,7 @@
+name: terraform
+
+# cf. https://developer.hashicorp.com/terraform/install
+install:
+  - type: brew
+    package: hashicorp/tap/terraform
+    os: macos
