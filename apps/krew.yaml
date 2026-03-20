@@ -12,11 +12,16 @@ install:
     version_cmd: go version -m $(which kubectl-krew) 2>/dev/null | awk '/^\tmod\t/{print $3}'
     latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/kubernetes-sigs/krew/releases/latest" | jq -r '.tag_name'
     script: |
-      set -x
-      cd "$(mktemp -d)"
-      OS="$(uname | tr '[:upper:]' '[:lower:]')"
-      ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')"
-      KREW="krew-${OS}_${ARCH}"
-      curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
-      tar zxvf "${KREW}.tar.gz"
-      ./"${KREW}" install krew
+      if command -v kubectl-krew >/dev/null 2>&1; then
+        kubectl krew update
+        kubectl krew upgrade krew
+      else
+        set -x
+        cd "$(mktemp -d)"
+        OS="$(uname | tr '[:upper:]' '[:lower:]')"
+        ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/aarch64/arm64/')"
+        KREW="krew-${OS}_${ARCH}"
+        curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+        tar zxvf "${KREW}.tar.gz"
+        ./"${KREW}" install krew
+      fi
