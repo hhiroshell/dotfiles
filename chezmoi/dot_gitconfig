@@ -1,3 +1,6 @@
+[credential]
+    helper = /usr/local/bin/git-credential-manager
+
 [user]
     name = "Hiroshi Hayakawa"
     email = hhiroshell@gmail.com

@@ -6,11 +6,6 @@ skip_global_compinit=1
 export XDG_CONFIG_HOME="${HOME}/.config"
 export XDG_DATA_DIRS="/var/lib/flatpak/exports/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
 
-
-# =====
-# PATH
-# =====
-
 # some applications (e.g., qmk, Claude Code) will be placed here
 # cf. https://docs.qmk.fm/#/newbs_getting_started?id=set-up-qmk
 PATH="$HOME/.local/bin:$PATH"
@@ -30,14 +25,13 @@ export PATH="$PATH:$GOPATH/bin"
 # Rust
 [[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 
+# Git Credential Manager
+export GCM_CREDENTIAL_STORE=gpg
+
 # When this environment variable becomes necessary again, revive
 # it in a way that doesn't affect the entire environment.
 #
 # {{ if eq .chezmoi.os "darwin" -}}
-# # ===========
-# # Credentials
-# # ===========
-#
 # # GitHub
 # export GITHUB_TOKEN=$(security find-generic-password -s "GITHUB_TOKEN" -a "$USER" -w 2>/dev/null)
 # {{ end -}}
