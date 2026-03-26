@@ -1,0 +1,7 @@
+name: watch
+
+# cf. https://formulae.brew.sh/formula/watch
+install:
+  - type: brew
+    package: watch
+    os: macos

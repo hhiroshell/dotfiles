@@ -1,0 +1,17 @@
+name: kubectl-tree
+
+command: kubectl-tree
+
+requires:
+  - kubectl-krew
+
+# cf. https://github.com/ahmetb/kubectl-tree
+install:
+  - type: custom
+    check: command -v kubectl-tree
+    version_cmd: kubectl krew info tree 2>/dev/null | awk '/^VERSION/{print $2}' | sed 's/^v//'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/ahmetb/kubectl-tree/releases/latest" | jq -r '.tag_name | ltrimstr("v")'
+    script: |
+      kubectl krew install tree
+    uninstall: |
+      kubectl krew uninstall tree
