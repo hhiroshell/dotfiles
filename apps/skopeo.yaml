@@ -1,0 +1,7 @@
+name: skopeo
+
+# cf. https://github.com/containers/skopeo/blob/main/install.md
+install:
+  - type: brew
+    package: skopeo
+    os: macos
