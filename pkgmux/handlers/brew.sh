@@ -205,6 +205,9 @@ handler_brew_current_version() {
     if _brew_is_cask "$install_entry"; then
         brew list --cask --versions "$pkg" 2>/dev/null | awk '{print $2}'
     else
-        brew list --versions "$pkg" 2>/dev/null | awk '{print $2}'
+        # Strip Homebrew revision suffix (e.g. 7.98_1 -> 7.98) so it matches
+        # the upstream version returned by `brew info --json=v2`.
+        # The _N suffix means a formula rebuild without an upstream version bump
+        brew list --versions "$pkg" 2>/dev/null | awk '{print $2}' | sed 's/_[0-9]*$//'
     fi
 }
