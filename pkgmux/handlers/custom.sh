@@ -13,6 +13,12 @@ _custom_get_script() {
     echo "$install_entry" | jq -r '.script // empty'
 }
 
+# Get the upgrade script (optional; falls back to install script if absent)
+_custom_get_upgrade_script() {
+    local install_entry="$1"
+    echo "$install_entry" | jq -r '.upgrade // empty'
+}
+
 # Get the uninstall script
 _custom_get_uninstall_script() {
     local install_entry="$1"
@@ -143,9 +149,12 @@ handler_custom_upgrade() {
         fi
     fi
 
-    # For custom scripts, upgrade is typically just re-running install
+    # Use a dedicated upgrade script if defined, otherwise fall back to re-running install
     local script
-    script=$(_custom_get_script "$install_entry")
+    script=$(_custom_get_upgrade_script "$install_entry")
+    if [[ -z "$script" ]]; then
+        script=$(_custom_get_script "$install_entry")
+    fi
 
     if [[ -z "$script" ]]; then
         log_error "$app_name: no install script defined"
@@ -158,7 +167,7 @@ handler_custom_upgrade() {
         unset PKGMUX_PINNED_VERSION 2>/dev/null || true
     fi
 
-    log_info "$app_name: running custom upgrade (reinstall)..."
+    log_info "$app_name: running custom upgrade..."
     if eval "$script"; then
         unset PKGMUX_PINNED_VERSION 2>/dev/null || true
         log_ok "$app_name: upgraded"

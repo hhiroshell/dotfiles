@@ -133,6 +133,8 @@ install:
       # Use PKGMUX_PINNED_VERSION env var to install a specific version when pinned
       VERSION="${PKGMUX_PINNED_VERSION:-$(curl -s "https://api.example.com/latest" | jq -r '.tag_name')}"
       curl -fsSL "https://example.com/install.sh?v=${VERSION}" | bash
+    upgrade: |                   # optional: custom upgrade script; falls back to re-running script if absent
+      example-self-update
     uninstall: |
       rm -f /usr/local/bin/example
     version_cmd: example --version 2>/dev/null | awk '{print $2}'  # custom version detection

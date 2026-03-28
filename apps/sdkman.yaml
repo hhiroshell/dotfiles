@@ -11,5 +11,8 @@ install:
     latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/sdkman/sdkman-cli/releases/latest" | jq -r '.tag_name'
     script: |
       curl -s "https://get.sdkman.io" | bash
+    upgrade: |
+      # sdk is a shell function, so sdkman-init.sh must be sourced first
+      source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk selfupdate
     uninstall: |
       rm -rf "$HOME/.sdkman"
