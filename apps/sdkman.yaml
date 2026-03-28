@@ -12,7 +12,11 @@ install:
     script: |
       curl -s "https://get.sdkman.io" | bash
     upgrade: |
-      # sdk is a shell function, so sdkman-init.sh must be sourced first
-      source "$HOME/.sdkman/bin/sdkman-init.sh" && sdk selfupdate
+      # sdk is a shell function, so sdkman-init.sh must be sourced first.
+      # set +u is required because sdkman-init.sh references variables (e.g. ZSH_VERSION,
+      # sdkman_curl_retry) that are not set in a non-interactive bash context.
+      set +u
+      source "$HOME/.sdkman/bin/sdkman-init.sh"
+      sdk selfupdate
     uninstall: |
       rm -rf "$HOME/.sdkman"
