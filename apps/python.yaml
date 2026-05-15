@@ -11,5 +11,7 @@ install:
     latest_cmd: uv python list --only-downloads 2>/dev/null | grep -v freethreaded | awk '{print $1}' | sed 's/^cpython-//; s/-.*$//' | grep -m1 '^[0-9.]*$'
     script: |
       uv python install --default
+    upgrade: |
+      uv python upgrade
     uninstall: |
       rm -rf "$HOME/.local/share/uv/python"
