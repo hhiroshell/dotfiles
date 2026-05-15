@@ -1,0 +1,7 @@
+name: ansible
+
+# cf. https://docs.ansible.com/ansible/latest/installation_guide/index.html
+install:
+  - type: brew
+    package: ansible
+    os: macos
