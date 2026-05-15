@@ -1,0 +1,16 @@
+name: google-cloud-cli-beta
+
+requires:
+  - gcloud
+
+# cf. https://cloud.google.com/sdk/docs/components
+install:
+  - type: custom
+    os: macos
+    check: gcloud components list --filter="id=beta AND state.name=Installed" --format="value(id)" 2>/dev/null | grep -q beta
+    version_cmd: gcloud components list --filter="id=beta" --format="value(current_version_string)" 2>/dev/null
+    latest_cmd: gcloud components list --filter="id=beta" --format="value(latest_version_string)" 2>/dev/null
+    script: |
+      gcloud components install beta --quiet
+    uninstall: |
+      gcloud components remove beta --quiet
