@@ -1,0 +1,7 @@
+name: jmeter
+
+# cf. https://formulae.brew.sh/formula/jmeter
+install:
+  - type: brew
+    package: jmeter
+    os: macos
