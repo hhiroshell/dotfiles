@@ -30,7 +30,6 @@ export GCM_CREDENTIAL_STORE=gpg
 
 # When this environment variable becomes necessary again, revive
 # it in a way that doesn't affect the entire environment.
-#
 # {{ if eq .chezmoi.os "darwin" -}}
 # # GitHub
 # export GITHUB_TOKEN=$(security find-generic-password -s "GITHUB_TOKEN" -a "$USER" -w 2>/dev/null)
