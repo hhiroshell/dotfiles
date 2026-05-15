@@ -1,0 +1,7 @@
+name: flux
+
+# cf. https://fluxcd.io/flux/installation/
+install:
+  - type: brew
+    package: fluxcd/tap/flux
+    os: macos
