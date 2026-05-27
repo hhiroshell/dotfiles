@@ -1,0 +1,10 @@
+name: kubectl-cnpg
+
+requires:
+  - kubectl
+
+# cf. https://cloudnative-pg.io/docs/devel/kubectl-plugin
+install:
+  - type: brew
+    package: kubectl-cnpg
+    os: macos
