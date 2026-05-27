@@ -1,0 +1,7 @@
+name: microsoft-teams
+
+# cf. https://www.microsoft.com/en-us/microsoft-teams/download-app
+install:
+  - type: brew
+    cask: microsoft-teams
+    os: macos
