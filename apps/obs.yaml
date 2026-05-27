@@ -1,0 +1,7 @@
+name: obs
+
+# cf. https://obsproject.com/download
+install:
+  - type: brew
+    cask: obs
+    os: macos
