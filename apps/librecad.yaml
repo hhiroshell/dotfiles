@@ -1,0 +1,7 @@
+name: librecad
+
+# cf. https://docs.librecad.org/en/latest/getstart/install.html
+install:
+  - type: apt
+    package: librecad
+    os: linux
