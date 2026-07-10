@@ -12,5 +12,7 @@ install:
     latest_cmd: flatpak remote-info flathub com.bambulab.BambuStudio 2>/dev/null | grep -oP 'Update to \K[0-9]+(\.[0-9]+)+'
     script: |
       flatpak install -y flathub com.bambulab.BambuStudio
+    upgrade: |
+      flatpak update -y com.bambulab.BambuStudio
     uninstall: |
       flatpak uninstall -y com.bambulab.BambuStudio
