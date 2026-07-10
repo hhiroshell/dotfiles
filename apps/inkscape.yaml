@@ -1,0 +1,16 @@
+name: inkscape
+
+requires:
+  - flatpak
+
+# cf. https://wiki.inkscape.org/wiki/Installing_Inkscape#Linux
+install:
+  - type: custom
+    os: linux
+    check: flatpak list 2>/dev/null | grep -q org.inkscape.Inkscape
+    version_cmd: flatpak info org.inkscape.Inkscape 2>/dev/null | awk '/Version:/{print $2}'
+    latest_cmd: flatpak remote-info flathub org.inkscape.Inkscape 2>/dev/null | awk '/Version:/{print $2}'
+    script: |
+      flatpak install -y flathub org.inkscape.Inkscape
+    uninstall: |
+      flatpak uninstall -y org.inkscape.Inkscape
