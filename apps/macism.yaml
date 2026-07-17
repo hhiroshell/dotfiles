@@ -1,0 +1,8 @@
+name: macism
+
+# CLI to switch macOS input sources (used by tmux to turn off IME on prefix key).
+# cf. https://github.com/laishulu/macism
+install:
+  - type: brew
+    package: laishulu/homebrew/macism
+    os: macos
