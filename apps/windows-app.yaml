@@ -1,0 +1,7 @@
+name: windows-app
+
+# cf. https://aka.ms/WindowsApp
+install:
+  - type: brew
+    cask: windows-app
+    os: macos
