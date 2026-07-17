@@ -1,0 +1,9 @@
+name: awscli
+
+command: aws
+
+# cf. https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+install:
+  - type: brew
+    package: awscli
+    os: macos
