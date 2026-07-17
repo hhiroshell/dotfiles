@@ -25,18 +25,21 @@ is_disabled() {
 in_profile() {
     local app_json="$1"
 
-    # No profiles field (or null) => universal (applies everywhere)
-    if ! echo "$app_json" | jq -e '(.profiles // null) != null' &>/dev/null; then
-        return 0
-    fi
-
-    # No active profile => filter inert (backward compatible)
-    [[ -z "${PKGMUX_PROFILE:-}" ]] && return 0
-
-    # Applies if the active profile is in the list. Normalize a bare string to
-    # a single-element array, mirroring matches_os in selector.sh.
-    echo "$app_json" | jq -e --arg p "$PKGMUX_PROFILE" \
-        '(.profiles | if type == "array" then . else [.] end) | any(. == $p)' &>/dev/null
+    # A single jq -e collapses the three checks into one subprocess:
+    #   - profiles absent/null => universal (applies everywhere)
+    #   - no active profile    => filter inert (backward compatible)
+    #   - otherwise            => active profile must be in the list
+    # Uses `has("profiles") and .profiles != null` rather than `.profiles // null`
+    # so a YAML-coerced falsy value (e.g. `profiles: no`) fails closed to the
+    # membership test instead of being treated as absent. Normalizes a bare
+    # string to a single-element array, mirroring matches_os in selector.sh.
+    echo "$app_json" | jq -e --arg p "${PKGMUX_PROFILE:-}" '
+        if (has("profiles") | not) or .profiles == null or $p == "" then
+            true
+        else
+            (.profiles | if type == "array" then . else [.] end) | any(. == $p)
+        end
+    ' &>/dev/null
 }
 
 # List all available app names
