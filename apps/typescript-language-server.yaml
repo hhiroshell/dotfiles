@@ -1,0 +1,7 @@
+name: typescript-language-server
+
+# cf. https://github.com/typescript-language-server/typescript-language-server#installing
+install:
+  - type: brew
+    package: typescript-language-server
+    os: macos
