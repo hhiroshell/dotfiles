@@ -78,6 +78,7 @@ pkgmux is a unified package management tool that works across macOS (Homebrew) a
 - `brew` - Homebrew formulas and casks (macOS)
 - `apt` - apt packages (Linux)
 - `go` - go install (requires: go)
+- `mise` - tools via [mise](https://mise.jdx.dev/) with exact version pinning, same on macOS/Linux (requires: mise)
 - `custom` - Custom install scripts
 
 **App Definition Schema:**
@@ -126,10 +127,17 @@ install:
   - type: go
     package: example.com/cmd/example  # @latest is appended automatically if no @version suffix
 
+  - type: mise
+    tool: terraform            # mise tool name or backend spec (aqua:..., ubi:..., pipx:...)
+    pinned_version: "1.9.5"    # optional: pin to exact version; omit to track latest
+    # Pin precedence: this field > PKGMUX_PINNED_VERSION env var > latest.
+    # `mise use -g` writes ~/.config/mise/config.toml (outside chezmoi); the
+    # active version is the source of truth, observable via `mise current`.
+
   - type: custom
     os: linux
     check: command -v example
-    pinned_version: "1.0.0"    # optional: pin to specific version (custom only, omit for latest)
+    pinned_version: "1.0.0"    # optional: pin to specific version (custom/mise, omit for latest)
     script: |
       # Use PKGMUX_PINNED_VERSION env var to install a specific version when pinned
       VERSION="${PKGMUX_PINNED_VERSION:-$(curl -s "https://api.example.com/latest" | jq -r '.tag_name')}"
