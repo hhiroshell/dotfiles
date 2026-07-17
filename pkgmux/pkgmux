@@ -326,6 +326,12 @@ cmd_doctor() {
             local latest_cmd
             latest_cmd=$(_custom_get_latest_cmd "$install_entry")
             [[ -z "$latest_cmd" ]] && can_check_outdated=false
+        elif [[ "$handler_type" == "mise" ]]; then
+            # A pinned mise tool is deliberately held at its version; report it as
+            # drift (below) rather than nagging "outdated" toward latest.
+            local mise_pin
+            mise_pin=$(echo "$install_entry" | jq -r '.pinned_version // empty')
+            [[ -n "$mise_pin" ]] && can_check_outdated=false
         fi
 
         if $can_check_outdated && [[ -n "$current_version" && "$current_version" != "installed, version unknown" ]]; then
@@ -340,11 +346,11 @@ cmd_doctor() {
             fi
         fi
 
-        # Check pinned version drift (custom handler with pinned_version)
+        # Check pinned version drift (custom/mise handlers with pinned_version)
         local drift_msg=""
         local has_pinned_drift=false
         local pinned_version=""
-        if [[ "$handler_type" == "custom" ]]; then
+        if [[ "$handler_type" == "custom" || "$handler_type" == "mise" ]]; then
             pinned_version=$(echo "$install_entry" | jq -r '.pinned_version // empty')
             if [[ -n "$pinned_version" && -n "$current_version" && "$current_version" != "installed, version unknown" && "$current_version" != "$pinned_version" ]]; then
                 drift_msg="pinned version drift (pinned: $pinned_version)"
