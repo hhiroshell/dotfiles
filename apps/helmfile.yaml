@@ -1,0 +1,7 @@
+name: helmfile
+
+# cf. https://github.com/helmfile/helmfile#installation
+install:
+  - type: brew
+    package: helmfile
+    os: macos
