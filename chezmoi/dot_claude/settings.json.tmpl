@@ -1,29 +1,5 @@
 {
   "hooks": {
-{{ if eq .chezmoi.os "linux" }}
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "notify-send -a 'Claude Code' -i dialog-question -u normal \"$(basename \"$PWD\")\" 'Waiting for your input'"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "notify-send -a 'Claude Code' -i emblem-default -u normal \"$(basename \"$PWD\")\" 'Finished my work'"
-          }
-        ]
-      }
-    ],
-{{ end }}
     "PostToolUse": [
       {
         "matcher": "Write|Edit|NotebookEdit",
@@ -40,6 +16,17 @@
     "code-review@claude-plugins-official": true,
     "commit-commands@claude-plugins-official": true,
     "gopls-lsp@claude-plugins-official": true,
-    "plugin-dev@claude-plugins-official": true
-  }
+    "plugin-dev@claude-plugins-official": true,
+    "claude-notifications-go@claude-notifications-go": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-notifications-go": {
+      "source": {
+        "source": "github",
+        "repo": "777genius/claude-notifications-go"
+      }
+    }
+  },
+  "skipWorkflowUsageWarning": true,
+  "theme": "light-daltonized"
 }

@@ -1,0 +1,8 @@
+{
+  "notifications": {
+    "desktop": {
+      "sound": false
+    },
+    "notifyOnlyWhenUnfocused": true
+  }
+}
