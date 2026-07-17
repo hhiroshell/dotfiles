@@ -84,7 +84,7 @@ pkgmux is a unified package management tool that works across macOS (Homebrew) a
 ```yaml
 name: example
 disabled: true        # optional: skip this app in install/upgrade/uninstall/doctor (still shown in list)
-profiles: [work]      # optional: only apply on these machine profiles (PKGMUX_PROFILE); omit = all profiles
+profiles: [work]      # optional: only apply on these machine profiles (see "Machine Profiles"); omit = all
 command: example-bin  # binary name if different from app name (used for status checks)
 
 requires:
@@ -141,6 +141,21 @@ install:
     version_cmd: example --version 2>/dev/null | awk '{print $2}'  # custom version detection
     latest_cmd: curl -s "https://api.example.com/latest" | jq -r '.tag_name'  # for `outdated` check (custom only)
 ```
+
+**Machine Profiles:**
+
+The optional `profiles:` field restricts an app to specific machine profiles, so one set of app definitions can serve machines with different roles (e.g. `work` vs `personal`).
+
+- **Active profile:** pkgmux reads the active profile from the `PKGMUX_PROFILE` environment variable, falling back to the `~/.config/pkgmux/profile` marker file when the variable is unset.
+- **Semantics:**
+  - No `profiles:` field ⇒ the app applies everywhere (universal).
+  - No active profile set ⇒ the filter is inert and all apps apply (backward-compatible — nothing changes for machines that don't use profiles).
+  - `profiles:` accepts a bare string (`profiles: work`) or an array (`profiles: [work, personal]`); the app applies when the active profile matches any entry.
+- **Behavior across commands:**
+  - `install` / `upgrade` skip apps not in the active profile.
+  - `uninstall` ignores the filter and always acts, so an app installed under a previous profile can still be removed after switching profiles.
+  - `list` prints `(not in profile: <profile>)` for filtered apps.
+  - `doctor --json` emits `"not_in_profile": true` on skipped apps; plain `doctor` shows the skip only in verbose mode (`-v`).
 
 **Bootstrap Dependencies:**
 pkgmux requires `jq` and `yq` to parse YAML. Install them manually following official instructions:
