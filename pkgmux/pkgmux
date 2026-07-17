@@ -50,7 +50,10 @@ process_app() {
         return 0
     fi
 
-    if ! in_profile "$app_json"; then
+    # uninstall ignores the profile filter: PKGMUX_PROFILE changes over a
+    # machine's lifetime, so an app installed under a previous profile must
+    # still be removable after switching. install/upgrade keep filtering.
+    if [[ "$action" != "uninstall" ]] && ! in_profile "$app_json"; then
         log_skip "$app_name (not in profile: ${PKGMUX_PROFILE:-none})"
         return 0
     fi
