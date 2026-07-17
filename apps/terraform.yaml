@@ -1,7 +1,11 @@
 name: terraform
 
-# cf. https://developer.hashicorp.com/terraform/install
+# Managed via mise for exact version pinning (works the same on macOS/Linux).
+# cf. https://mise.jdx.dev/  |  https://developer.hashicorp.com/terraform/install
+requires:
+  - mise
+
 install:
-  - type: brew
-    package: hashicorp/tap/terraform
-    os: macos
+  - type: mise
+    tool: terraform
+    # pinned_version: "1.9.5"   # optional; omit to track latest
