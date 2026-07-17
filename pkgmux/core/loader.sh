@@ -21,6 +21,24 @@ is_disabled() {
     [[ $(echo "$app_json" | jq -r '.disabled // false') == "true" ]]
 }
 
+# Check if an app applies to the current profile (PKGMUX_PROFILE)
+in_profile() {
+    local app_json="$1"
+
+    # No profiles field (or null) => universal (applies everywhere)
+    if ! echo "$app_json" | jq -e '(.profiles // null) != null' &>/dev/null; then
+        return 0
+    fi
+
+    # No active profile => filter inert (backward compatible)
+    [[ -z "${PKGMUX_PROFILE:-}" ]] && return 0
+
+    # Applies if the active profile is in the list. Normalize a bare string to
+    # a single-element array, mirroring matches_os in selector.sh.
+    echo "$app_json" | jq -e --arg p "$PKGMUX_PROFILE" \
+        '(.profiles | if type == "array" then . else [.] end) | any(. == $p)' &>/dev/null
+}
+
 # List all available app names
 list_apps() {
     local apps_dir="$1"
