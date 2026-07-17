@@ -128,7 +128,10 @@ install:
     package: example.com/cmd/example  # @latest is appended automatically if no @version suffix
 
   - type: mise
-    tool: terraform            # mise tool name or backend spec (aqua:..., ubi:..., pipx:...)
+    tool: terraform            # a registered mise tool (e.g. terraform, node), OR a
+                               # backend spec to install from a specific source, e.g.
+                               # aqua:owner/repo, ubi:owner/repo, pipx:pkg, npm:pkg.
+                               # See https://mise.jdx.dev/registry.html and the backend docs.
     pinned_version: "1.9.5"    # optional: pin to exact version; omit to track latest
     # Pin precedence: this field > PKGMUX_PINNED_VERSION env var > latest.
     # `mise use -g` writes ~/.config/mise/config.toml (outside chezmoi); the
