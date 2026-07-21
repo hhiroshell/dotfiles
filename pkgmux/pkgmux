@@ -7,7 +7,6 @@ APPS_DIR="$(dirname "$PKGMUX_DIR")/apps"
 
 # Source core modules
 source "$PKGMUX_DIR/core/os.sh"
-source "$PKGMUX_DIR/core/profile.sh"
 source "$PKGMUX_DIR/core/util.sh"
 source "$PKGMUX_DIR/core/loader.sh"
 source "$PKGMUX_DIR/core/selector.sh"
