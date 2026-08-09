@@ -1,0 +1,10 @@
+name: steam
+
+# cf. https://help.steampowered.com/en/faqs/view/4BD4-4528-6B2E-8327
+install:
+  - type: apt
+    package: steam-installer
+    os: linux
+    pre_install: |
+      sudo dpkg --add-architecture i386
+      sudo apt-get update
