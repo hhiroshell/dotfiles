@@ -111,6 +111,54 @@ ide() {
     tmux select-pane -t "$hx_pane"
 }
 
+# Rename the tmux window running a Claude Code session to
+# "<repo>: <claude-session-name>" so the window/status bar reflects which
+# conversation is running. Intended to run as a Claude Code hook (Stop /
+# SessionStart), which passes session_id/cwd as a JSON payload on stdin.
+#
+# The session's live title (auto-slug, or whatever /rename set) and its
+# exact tmux target live in ~/.claude/sessions/<pid>.json — NOT in
+# sessions-index.json, which on this machine is only rewritten sporadically
+# and has no entry at all for a session that's still running. Matching by
+# tmux target (rather than trusting $TMUX in the hook's own environment)
+# also means this works correctly even if the hook subprocess's env differs
+# from the pane that's actually running Claude.
+sync-tmux-window-name() {
+    command -v tmux >/dev/null 2>&1 || return 0
+
+    local input session_id
+    input=$(cat)
+    session_id=$(echo "$input" | jq -r '.session_id // empty')
+    [[ -z "$session_id" ]] && return 0
+
+    local session_file f
+    for f in $(find ~/.claude/sessions -maxdepth 1 -name '*.json' 2>/dev/null); do
+        [[ "$(jq -r '.sessionId // empty' "$f" 2>/dev/null)" == "$session_id" ]] && { session_file="$f"; break }
+    done
+    [[ -z "$session_file" ]] && return 0
+
+    local session_name tmux_target
+    session_name=$(jq -r '.name // empty' "$session_file" 2>/dev/null)
+    tmux_target=$(jq -r '.tmux // empty' "$session_file" 2>/dev/null)
+    [[ -z "$session_name" || -z "$tmux_target" ]] && return 0
+
+    local cwd
+    cwd=$(echo "$input" | jq -r '.cwd // empty')
+    [[ -z "$cwd" ]] && cwd=$(jq -r '.cwd // empty' "$session_file")
+
+    local repo_name
+    repo_name=$(basename "$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null || echo "$cwd")")
+
+    local max_len=40
+    if (( ${#session_name} > max_len )); then
+        session_name="${session_name[1,$max_len]}…"
+    fi
+
+    # tmux_target is "session:window.pane" — window rename needs "session:window"
+    local window_target="${tmux_target%.*}"
+    tmux rename-window -t "$window_target" "${repo_name}: ${session_name}"
+}
+
 # Reload all buffers in a Helix pane within the current tmux window.
 # Silently does nothing if not in tmux or no HELIX_PANE is found.
 hx-reload() {
