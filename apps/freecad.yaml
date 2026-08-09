@@ -1,13 +1,18 @@
 name: freecad
 
-# cf. https://www.freecad.org/downloads.php
+# cf. https://github.com/FreeCAD/FreeCAD/releases
 install:
   - type: custom
     os: linux
-    check: snap list freecad 2>/dev/null | grep -q freecad
-    version_cmd: snap list freecad 2>/dev/null | awk '/^freecad/{print $2}'
-    latest_cmd: snap info freecad 2>/dev/null | awk '/latest\/stable:/{print $2}'
+    check: command -v freecad
+    version_cmd: freecad freecadcmd --version 2>/dev/null | head -1 | awk '{print $2}' | tr -d ','
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/FreeCAD/FreeCAD/releases/latest" | jq -r '.tag_name'
     script: |
-      sudo snap install freecad
+      sudo apt-get install -y libfuse2t64
+      FREECAD_URL=$(curl -sS --max-time 10 "https://api.github.com/repos/FreeCAD/FreeCAD/releases/latest" | jq -r '.assets[] | select(.name | test("Linux-x86_64.*\\.AppImage$")) | .browser_download_url')
+      curl -Lo /tmp/freecad.AppImage "$FREECAD_URL"
+      chmod +x /tmp/freecad.AppImage
+      sudo install /tmp/freecad.AppImage /usr/local/bin/freecad
+      rm /tmp/freecad.AppImage
     uninstall: |
-      sudo snap remove freecad
+      sudo rm -f /usr/local/bin/freecad
