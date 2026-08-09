@@ -1,28 +1,32 @@
 ---
-allowed-tools: Bash(gh browse:*)
+allowed-tools: Bash(gh browse:*), Bash(gh pr view:*), Bash(gh pr list:*), Bash(git branch:*), Bash(git status:*), Bash(git log:*), Bash(git diff:*)
 argument-hint: "[<number> | <path>] [flags]"
-description: "Opens the current GitHub repository (or an issue, PR, file, or commit) in the browser — same as the gb zsh alias"
+description: "Opens the current GitHub repository, or the PR you're working on, in the browser — same as the gb zsh alias, plus PR auto-detection when called with no arguments"
 ---
 
 ## Context
 
 - Arguments passed to this skill: $ARGUMENTS
+- Current branch: !`git branch --show-current`
 
 ## Behavior specification
 
-Run exactly this command, passing through any arguments given, and discard its output:
+### If arguments were given
+
+Behave exactly like the `gb` zsh alias — pass the arguments straight through and discard output:
 
 ```
 gh browse $ARGUMENTS &>/dev/null
 ```
 
-This mirrors the `gb` zsh alias (`chezmoi/dot_config/zsh/git.zsh`), which is defined as:
+A number opens that issue or PR, a file path opens that file, flags like `--branch`/`--commit`/`--settings` are forwarded as-is. Do not print explanations or ask for confirmation — just run it silently.
 
-```sh
-_gh-browse() {
-    gh browse "$@" &>/dev/null
-}
-alias gb='_gh-browse'
-```
+### If no arguments were given
 
-With no arguments, it opens the current repository's page. A number opens that issue or PR. A file path opens that file. Flags like `--branch`, `--commit`, `--settings` are forwarded as-is. Do not print explanations or ask for confirmation — just run the command silently, matching the original alias's behavior of suppressing all output.
+Try to open the pull request for the work currently in progress, instead of just the repo's homepage:
+
+1. Run `gh pr view --json number,url,title,state 2>/dev/null` (uses the current branch). If it returns an open PR, open it with `gh browse <number> &>/dev/null` and stop.
+2. If that finds nothing (no PR for the current branch, or `gh pr view` errors), run `gh pr list --state open --json number,title,headRefName,url` and compare the PRs against the current branch name, recent commits (`git log --oneline -5`), and pending changes (`git status --porcelain`, `git diff --stat`). Only if exactly one PR is a clear, confident match for the current work, open it the same way.
+3. If no PR can be confidently identified, fall back to the original behavior — `gh browse &>/dev/null` — which opens the repository's homepage. Briefly tell the user you fell back because no matching PR was found (one line, no elaboration).
+
+Never guess between multiple equally-plausible PRs — fall back instead. Always run the final `gh browse` command silently (`&>/dev/null`); only step 3's fallback message is user-visible output.
