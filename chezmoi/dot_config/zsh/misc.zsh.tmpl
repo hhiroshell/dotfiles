@@ -2,6 +2,10 @@
 # Common Settings
 # ================
 
+# Disable terminal flow control (Ctrl-S/Ctrl-Q XOFF/XON) so Ctrl-S is free
+# to use as an ordinary keybinding (e.g. tmux's window-sort binding).
+stty -ixon
+
 # fzf
 # set up fzf key bindings and fuzzy completion
 source <(fzf --zsh)
