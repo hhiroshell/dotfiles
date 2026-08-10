@@ -25,8 +25,11 @@ export PATH="$PATH:$GOPATH/bin"
 # Rust
 [[ -f "$HOME/.cargo/env" ]] && . "$HOME/.cargo/env"
 
-# Git Credential Manager
+{{ if ne .chezmoi.os "darwin" -}}
+# Git Credential Manager (Linux only; macOS uses the gh CLI as its credential helper)
 export GCM_CREDENTIAL_STORE=gpg
+
+{{ end -}}
 
 # When this environment variable becomes necessary again, revive
 # it in a way that doesn't affect the entire environment.

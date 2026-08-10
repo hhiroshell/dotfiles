@@ -63,14 +63,14 @@ This renders `.chezmoi.toml.tmpl` into chezmoi's config (setting `sourceDir` to 
 ### Development Tools (via pkgmux)
 - **Languages & Runtimes**: Go, Node.js, Rust, uv
 - **Editors**: Helix
-- **Version Control**: Git, gh, Lazygit, Git Credential Manager
+- **Version Control**: Git, gh, Lazygit, Git Credential Manager (Linux only; macOS uses gh as its git credential helper)
 - **Containers & Kubernetes**: Docker CLI, Lima, kubectl, kind, krew, kustomize
 - **Go Tools**: gopls, golangci-lint, staticcheck, delve, goimports-reviser, setup-envtest, golangci-lint-langserver
 - **CLI Utilities**: fzf, fd, jq, yq, ghq, btop, colordiff, curl, wget, hugo, deck, chezmoi, starship
 - **AI**: Claude Code
 
 ### macOS GUI Apps (via Homebrew Cask)
-- Alt-Tab, Ghostty, Git Credential Manager, Gitify, Google Chrome, Google Drive, Google Japanese IME, HiddenBar, KeePassXC, Mac Mouse Fix, MeetingBar, Raycast
+- Alt-Tab, Ghostty, Gitify, Google Chrome, Google Drive, Google Japanese IME, HiddenBar, KeePassXC, Mac Mouse Fix, MeetingBar, Raycast
 - **Fonts**: HackGen Nerd
 
 ### Git

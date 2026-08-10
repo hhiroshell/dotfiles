@@ -20,7 +20,7 @@ Quick reference for all app definitions in `apps/`. Sorted alphabetically.
 | ghostty | brew (cask), custom | both | custom: version_cmd, latest_cmd, uninstall |
 | ghq | brew, go | both | go handler scoped to linux |
 | git | brew, apt | both | |
-| git-credential-manager | brew (cask) | macos | **disabled** |
+| git-credential-manager | custom | linux | custom: version_cmd, latest_cmd, uninstall |
 | gitify | brew (cask) | macos | **disabled** |
 | go | brew, custom | both | custom: version_cmd, latest_cmd, uninstall; uses PKGMUX_PINNED_VERSION |
 | goimports-reviser | go | cross-platform | requires: go |
@@ -57,8 +57,8 @@ Quick reference for all app definitions in `apps/`. Sorted alphabetically.
 ## Summary Statistics
 
 - **Total apps:** 49
-- **macOS only:** 10 (alt-tab, font-hackgen-nerd, git-credential-manager, gitify, google-drive, google-japanese-ime, hiddenbar, mac-mouse-fix, meetingbar, raycast)
-- **Linux only:** 1 (curl)
+- **macOS only:** 9 (alt-tab, font-hackgen-nerd, gitify, google-drive, google-japanese-ime, hiddenbar, mac-mouse-fix, meetingbar, raycast)
+- **Linux only:** 2 (curl, git-credential-manager)
 - **Both (OS-specific handlers):** 29
 - **Cross-platform (no OS filter):** 9 (deck, delve, goimports-reviser, golangci-lint-langserver, gopls, hugo, krew, setup-envtest, staticcheck)
 
@@ -67,7 +67,7 @@ Quick reference for all app definitions in `apps/`. Sorted alphabetically.
 | Handler | Count |
 |---|---|
 | brew (formula) | 26 |
-| brew (cask) | 17 |
+| brew (cask) | 16 |
 | apt | 14 |
 | custom | 18 |
 | go | 14 |
@@ -79,4 +79,4 @@ Quick reference for all app definitions in `apps/`. Sorted alphabetically.
 - **has `pre_install`** (apt repo setup): docker-cli, gh
 - **uses `PKGMUX_PINNED_VERSION`**: go
 - **cross-platform custom** (no `os` filter on custom handler): krew
-- **disabled**: git-credential-manager, gitify
+- **disabled**: gitify

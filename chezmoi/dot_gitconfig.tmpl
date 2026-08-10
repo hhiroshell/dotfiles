@@ -1,0 +1,29 @@
+{{ if eq .chezmoi.os "darwin" -}}
+# GitHub credentials are served by the gh CLI. The empty `helper` resets the
+# list inherited from the system gitconfig (osxkeychain), so gh is the only
+# helper consulted for these hosts.
+[credential "https://github.com"]
+    helper =
+    helper = !gh auth git-credential
+
+[credential "https://gist.github.com"]
+    helper =
+    helper = !gh auth git-credential
+{{- else -}}
+[credential]
+    helper = /usr/local/bin/git-credential-manager
+{{- end }}
+
+[user]
+    name = "Hiroshi Hayakawa"
+    email = hhiroshell@gmail.com
+
+[core]
+    editor = hx
+    excludesfile = ~/.gitignore_global
+
+[github]
+    user = hhiroshell
+
+[ghq]
+    root = ~/src
