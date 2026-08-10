@@ -104,7 +104,8 @@ handler_apt_upgrade() {
     if sudo apt-get install -y --only-upgrade $pkg; then
         log_ok "$app_name: upgraded"
     else
-        log_ok "$app_name: already up to date"
+        log_error "$app_name: upgrade failed"
+        return 1
     fi
 }
 
