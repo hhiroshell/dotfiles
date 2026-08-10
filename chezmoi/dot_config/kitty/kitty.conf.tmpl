@@ -6,6 +6,11 @@ scrollback_lines 20000
 
 # Key mappings
 map shift+enter send_text all \n
+{{ if eq .chezmoi.os "darwin" }}
+# Send Alt (ESC prefix) for Option+key instead of composing Unicode characters,
+# so tmux bindings such as "prefix M-1" (select-layout even-horizontal) arrive.
+macos_option_as_alt yes
+{{ end }}
 
 # Font
 font_family HackGen Console NF
