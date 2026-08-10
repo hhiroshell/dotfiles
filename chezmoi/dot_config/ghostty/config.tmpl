@@ -6,6 +6,13 @@ scrollback-limit = 20000
 
 # Key mappings
 keybind = shift+enter=text:\n
+{{ if eq .chezmoi.os "darwin" }}
+# Send Alt (ESC prefix) for Option+key instead of composing Unicode characters.
+# Ghostty only defaults this to true for U.S. Standard / U.S. International
+# layouts; with a Japanese input source it would default to false and swallow
+# tmux bindings such as "prefix M-1" (select-layout even-horizontal).
+macos-option-as-alt = true
+{{ end }}
 
 # Notifications
 desktop-notifications = true
