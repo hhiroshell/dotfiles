@@ -61,14 +61,14 @@ handler_brew_install() {
 
     log_info "$app_name: installing via brew..."
     if _brew_is_cask "$install_entry"; then
-        if brew install --cask $pkg; then
+        if brew install --cask --no-ask $pkg; then
             log_ok "$app_name: installed"
         else
             log_error "$app_name: installation failed"
             return 1
         fi
     else
-        if brew install $pkg; then
+        if brew install --no-ask $pkg; then
             log_ok "$app_name: installed"
         else
             log_error "$app_name: installation failed"
@@ -101,16 +101,18 @@ handler_brew_upgrade() {
 
     log_info "$app_name: upgrading via brew..."
     if _brew_is_cask "$install_entry"; then
-        if brew upgrade --cask $pkg 2>/dev/null; then
+        if brew upgrade --cask --no-ask $pkg; then
             log_ok "$app_name: upgraded"
         else
-            log_ok "$app_name: already up to date"
+            log_error "$app_name: upgrade failed"
+            return 1
         fi
     else
-        if brew upgrade $pkg 2>/dev/null; then
+        if brew upgrade --no-ask $pkg; then
             log_ok "$app_name: upgraded"
         else
-            log_ok "$app_name: already up to date"
+            log_error "$app_name: upgrade failed"
+            return 1
         fi
     fi
 }
