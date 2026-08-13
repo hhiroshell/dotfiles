@@ -111,18 +111,25 @@ ide() {
     tmux select-pane -t "$hx_pane"
 }
 
-# Rename the tmux window running a Claude Code session to
+# Keep the tmux window running a Claude Code session named
 # "<repo>: <claude-session-name>" so the window/status bar reflects which
-# conversation is running. Intended to run as a Claude Code hook (Stop /
-# SessionStart), which passes session_id/cwd as a JSON payload on stdin.
+# conversation is running. Intended to run as a Claude Code hook (SessionStart
+# / Stop), which passes session_id/cwd as a JSON payload on stdin.
 #
-# The session's live title (auto-slug, or whatever /rename set) and its
-# exact tmux target live in ~/.claude/sessions/<pid>.json — NOT in
-# sessions-index.json, which on this machine is only rewritten sporadically
-# and has no entry at all for a session that's still running. Matching by
-# tmux target (rather than trusting $TMUX in the hook's own environment)
-# also means this works correctly even if the hook subprocess's env differs
-# from the pane that's actually running Claude.
+# The session's live title (auto-slug, or whatever /rename set) and its exact
+# tmux target live in ~/.claude/sessions/<pid>.json — NOT in
+# sessions-index.json, which on this machine is only rewritten sporadically and
+# has no entry at all for a session that's still running. Matching by tmux
+# target (rather than trusting $TMUX in the hook's own environment) also means
+# this works correctly even if the hook subprocess's env differs from the pane
+# that's actually running Claude.
+#
+# Renaming directly from the hook does NOT work reliably: Claude Code writes
+# the name asynchronously and at moments no hook observes. At SessionStart it
+# is still a placeholder ("<repo>-<n>"), the derived name lands around or after
+# the first Stop, and /rename fires no hook at all — so a one-shot rename shows
+# a stale name most of the time. The hook therefore only starts a watcher that
+# polls the session file for as long as the Claude process lives.
 sync-tmux-window-name() {
     command -v tmux >/dev/null 2>&1 || return 0
 
@@ -131,32 +138,83 @@ sync-tmux-window-name() {
     session_id=$(echo "$input" | jq -r '.session_id // empty')
     [[ -z "$session_id" ]] && return 0
 
+    # Newest first: a dead session leaves its file behind, and a resumed
+    # session reuses the same sessionId under a new pid. Taking any match
+    # would rename whatever window the *old* run happened to occupy.
     local session_file f
-    for f in $(find ~/.claude/sessions -maxdepth 1 -name '*.json' 2>/dev/null); do
-        [[ "$(jq -r '.sessionId // empty' "$f" 2>/dev/null)" == "$session_id" ]] && { session_file="$f"; break }
+    for f in ~/.claude/sessions/*.json(Nom); do
+        if [[ "$(jq -r '.sessionId // empty' "$f" 2>/dev/null)" == "$session_id" ]]; then
+            # A file whose pid is still alive is the running session; anything
+            # else is a leftover. Keep the newest match as a fallback.
+            if kill -0 "${f:t:r}" 2>/dev/null; then
+                session_file="$f"
+                break
+            fi
+            [[ -z "$session_file" ]] && session_file="$f"
+        fi
     done
     [[ -z "$session_file" ]] && return 0
 
-    local session_name tmux_target
-    session_name=$(jq -r '.name // empty' "$session_file" 2>/dev/null)
-    tmux_target=$(jq -r '.tmux // empty' "$session_file" 2>/dev/null)
-    [[ -z "$session_name" || -z "$tmux_target" ]] && return 0
+    # No tmux target means this session isn't running under tmux. Bail out
+    # before touching tmux at all, so a non-tmux session never spawns a server.
+    [[ -n "$(jq -r '.tmux // empty' "$session_file" 2>/dev/null)" ]] || return 0
 
-    local cwd
-    cwd=$(echo "$input" | jq -r '.cwd // empty')
-    [[ -z "$cwd" ]] && cwd=$(jq -r '.cwd // empty' "$session_file")
+    local claude_pid="${session_file:t:r}"
+    local lock="${TMPDIR:-/tmp}/cc-winname-${claude_pid}.pid"
+    [[ -f "$lock" ]] && kill -0 "$(<"$lock")" 2>/dev/null && return 0
 
-    local repo_name
-    repo_name=$(basename "$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null || echo "$cwd")")
+    # Start via `tmux run-shell -b` so the watcher is a child of the tmux
+    # server, not of this hook: Claude Code may reap the hook's process tree
+    # once the hook returns, which would kill a plain background job. As a
+    # bonus the watcher goes away with the tmux server.
+    tmux run-shell -b \
+        "zsh -c 'source ~/.config/zsh/tmux.zsh && _sync-tmux-window-name-watch ${claude_pid}'"
+}
+
+# Poll one Claude Code session file and keep its tmux window name in sync.
+# Exits once the session's process is gone. Started only by
+# sync-tmux-window-name; not meant to be run by hand.
+_sync-tmux-window-name-watch() {
+    local claude_pid="$1"
+    local session_file="$HOME/.claude/sessions/${claude_pid}.json"
+    local lock="${TMPDIR:-/tmp}/cc-winname-${claude_pid}.pid"
+
+    # Re-check the lock now that we're the process that will hold it. Two
+    # hooks racing could still both get here; a duplicate watcher is harmless
+    # (both compute the same name) and the loser's lock is cleaned up below.
+    [[ -f "$lock" ]] && kill -0 "$(<"$lock")" 2>/dev/null && return 0
+    print -r -- $$ >! "$lock"
 
     local max_len=40
-    if (( ${#session_name} > max_len )); then
-        session_name="${session_name[1,$max_len]}…"
-    fi
+    local name tmux_target window_target cwd last_cwd repo_name desired
 
-    # tmux_target is "session:window.pane" — window rename needs "session:window"
-    local window_target="${tmux_target%.*}"
-    tmux rename-window -t "$window_target" "${repo_name}: ${session_name}"
+    while kill -0 "$claude_pid" 2>/dev/null && [[ -f "$session_file" ]]; do
+        name=$(jq -r '.name // empty' "$session_file" 2>/dev/null)
+        tmux_target=$(jq -r '.tmux // empty' "$session_file" 2>/dev/null)
+
+        if [[ -n "$name" && -n "$tmux_target" ]]; then
+            cwd=$(jq -r '.cwd // empty' "$session_file" 2>/dev/null)
+            if [[ "$cwd" != "$last_cwd" ]]; then
+                repo_name=$(basename "$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null || echo "$cwd")")
+                last_cwd="$cwd"
+            fi
+
+            (( ${#name} > max_len )) && name="${name[1,$max_len]}…"
+            desired="${repo_name}: ${name}"
+
+            # tmux_target is "session:window.pane" — renaming needs "session:window".
+            # Compare against the window's actual name rather than the last value
+            # we wrote, so a name clobbered by anything else is repaired too.
+            window_target="${tmux_target%.*}"
+            if [[ "$(tmux display-message -t "$window_target" -p '#{window_name}' 2>/dev/null)" != "$desired" ]]; then
+                tmux rename-window -t "$window_target" "$desired" 2>/dev/null
+            fi
+        fi
+
+        sleep 2
+    done
+
+    rm -f "$lock"
 }
 
 # Reload all buffers in a Helix pane within the current tmux window.
