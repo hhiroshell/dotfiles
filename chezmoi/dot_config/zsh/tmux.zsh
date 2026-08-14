@@ -159,8 +159,13 @@ sync-tmux-window-name() {
     # before touching tmux at all, so a non-tmux session never spawns a server.
     [[ -n "$(jq -r '.tmux // empty' "$session_file" 2>/dev/null)" ]] || return 0
 
+    # The filename stem is the pid. Insist on digits: it is interpolated into
+    # the `zsh -c` string below, so a name like `1'; rm -rf ~; '.json` in that
+    # directory would be shell code rather than an argument.
     local claude_pid="${session_file:t:r}"
-    local lock="${TMPDIR:-/tmp}/cc-winname-${claude_pid}.pid"
+    [[ "$claude_pid" == <-> ]] || return 0
+
+    local lock="$(_sync-tmux-window-name-lock "$claude_pid")"
     [[ -f "$lock" ]] && kill -0 "$(<"$lock")" 2>/dev/null && return 0
 
     # Start via `tmux run-shell -b` so the watcher is a child of the tmux
@@ -171,13 +176,20 @@ sync-tmux-window-name() {
         "zsh -c 'source ~/.config/zsh/tmux.zsh && _sync-tmux-window-name-watch ${claude_pid}'"
 }
 
+# Path of the watcher's lock for a Claude pid. The hook and the watcher must
+# agree on it byte for byte or the single-watcher guard silently stops working,
+# so it is derived in exactly one place.
+_sync-tmux-window-name-lock() {
+    print -r -- "${TMPDIR:-/tmp}/cc-winname-$1.pid"
+}
+
 # Poll one Claude Code session file and keep its tmux window name in sync.
 # Exits once the session's process is gone. Started only by
 # sync-tmux-window-name; not meant to be run by hand.
 _sync-tmux-window-name-watch() {
     local claude_pid="$1"
     local session_file="$HOME/.claude/sessions/${claude_pid}.json"
-    local lock="${TMPDIR:-/tmp}/cc-winname-${claude_pid}.pid"
+    local lock="$(_sync-tmux-window-name-lock "$claude_pid")"
 
     # Re-check the lock now that we're the process that will hold it. Two
     # hooks racing could still both get here; a duplicate watcher is harmless
