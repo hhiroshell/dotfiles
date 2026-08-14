@@ -201,16 +201,28 @@ _sync-tmux-window-name-watch() {
     local name tmux_target window_target cwd last_cwd repo_name desired
 
     while kill -0 "$claude_pid" 2>/dev/null && [[ -f "$session_file" ]]; do
-        name=$(jq -r '.name // empty' "$session_file" 2>/dev/null)
-        tmux_target=$(jq -r '.tmux // empty' "$session_file" 2>/dev/null)
+        # One jq per poll rather than one per field: three invocations would
+        # spawn ~1.5 processes/second for the whole session, and could each
+        # observe a different mid-write state of the file. A parse failure
+        # (file caught half-written) leaves every field empty, so the guard
+        # below just waits for the next tick.
+        IFS=$'\t' read -r name tmux_target cwd < <(
+            jq -r '[.name // "", .tmux // "", .cwd // ""] | @tsv' "$session_file" 2>/dev/null
+        )
 
-        if [[ -n "$name" && -n "$tmux_target" ]]; then
-            cwd=$(jq -r '.cwd // empty' "$session_file" 2>/dev/null)
+        # All three are needed to build the name. Requiring cwd here also means
+        # last_cwd (initially empty) can never spuriously match it and skip the
+        # repo_name lookup, which would rename the window to a bare ": <name>".
+        if [[ -n "$name" && -n "$tmux_target" && -n "$cwd" ]]; then
             if [[ "$cwd" != "$last_cwd" ]]; then
                 repo_name=$(basename "$(git -C "$cwd" rev-parse --show-toplevel 2>/dev/null || echo "$cwd")")
                 last_cwd="$cwd"
             fi
 
+            # The name is model-derived and lands in the status line, which
+            # interprets escape sequences — drop control characters before it
+            # gets there. Strip first so truncation counts visible characters.
+            name="${name//[[:cntrl:]]/}"
             (( ${#name} > max_len )) && name="${name[1,$max_len]}…"
             desired="${repo_name}: ${name}"
 
