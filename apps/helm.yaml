@@ -1,7 +1,0 @@
-name: helm
-
-# cf. https://helm.sh/docs/intro/install/
-install:
-  - type: brew
-    package: helm
-    os: macos
