@@ -165,8 +165,7 @@ sync-tmux-window-name() {
     local claude_pid="${session_file:t:r}"
     [[ "$claude_pid" == <-> ]] || return 0
 
-    local lock="$(_sync-tmux-window-name-lock "$claude_pid")"
-    [[ -f "$lock" ]] && kill -0 "$(<"$lock")" 2>/dev/null && return 0
+    _sync-tmux-window-name-locked "$claude_pid" && return 0
 
     # Start via `tmux run-shell -b` so the watcher is a child of the tmux
     # server, not of this hook: Claude Code may reap the hook's process tree
@@ -183,6 +182,17 @@ _sync-tmux-window-name-lock() {
     print -r -- "${TMPDIR:-/tmp}/cc-winname-$1.pid"
 }
 
+# True while a live watcher already owns the lock for this Claude pid. The
+# session file is a second signal on purpose: once it is gone the session has
+# ended, so a lock naming it is stale no matter which pid it records. That is
+# what stops a recycled watcher pid from making a leftover lock look live and
+# wedging the guard for good.
+_sync-tmux-window-name-locked() {
+    local lock="$(_sync-tmux-window-name-lock "$1")"
+    [[ -f "$lock" && -f "$HOME/.claude/sessions/$1.json" ]] || return 1
+    kill -0 "$(<"$lock")" 2>/dev/null
+}
+
 # Poll one Claude Code session file and keep its tmux window name in sync.
 # Exits once the session's process is gone. Started only by
 # sync-tmux-window-name; not meant to be run by hand.
@@ -194,7 +204,7 @@ _sync-tmux-window-name-watch() {
     # Re-check the lock now that we're the process that will hold it. Two
     # hooks racing could still both get here; a duplicate watcher is harmless
     # (both compute the same name) and the loser's lock is cleaned up below.
-    [[ -f "$lock" ]] && kill -0 "$(<"$lock")" 2>/dev/null && return 0
+    _sync-tmux-window-name-locked "$claude_pid" && return 0
     print -r -- $$ >! "$lock"
 
     local max_len=40
