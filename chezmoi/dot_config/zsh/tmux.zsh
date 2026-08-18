@@ -201,11 +201,20 @@ _sync-tmux-window-name-watch() {
     local session_file="$HOME/.claude/sessions/${claude_pid}.json"
     local lock="$(_sync-tmux-window-name-lock "$claude_pid")"
 
-    # Re-check the lock now that we're the process that will hold it. Two
-    # hooks racing could still both get here; a duplicate watcher is harmless
-    # (both compute the same name) and the loser's lock is cleaned up below.
+    # Claim the lock with an exclusive create (noclobber gives O_EXCL) rather
+    # than a forced write: if the path already exists — including as a symlink
+    # someone else planted in a shared /tmp — the open fails instead of
+    # clobbering whatever it points at.
     _sync-tmux-window-name-locked "$claude_pid" && return 0
-    print -r -- $$ >! "$lock"
+    if ! (setopt noclobber; print -r -- $$ > "$lock") 2>/dev/null; then
+        # The path exists. Re-check liveness before touching it: another
+        # watcher may have claimed it in the moment since the check above, and
+        # that one wins. Otherwise the file is stale or planted, so drop it
+        # (unlinking a symlink leaves its target alone) and take the lock.
+        _sync-tmux-window-name-locked "$claude_pid" && return 0
+        rm -f "$lock"
+        (setopt noclobber; print -r -- $$ > "$lock") 2>/dev/null || return 0
+    fi
 
     local max_len=40
     local name tmux_target window_target cwd last_cwd repo_name desired
