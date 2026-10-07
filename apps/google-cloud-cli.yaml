@@ -5,5 +5,5 @@ command: gcloud
 # cf. https://docs.cloud.google.com/sdk/docs/install-sdk
 install:
   - type: brew
-    cask: google-cloud-sdk
+    cask: gcloud-cli
     os: macos
