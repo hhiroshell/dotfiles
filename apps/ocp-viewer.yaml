@@ -6,6 +6,7 @@ requires:
 # cf. https://bernhard-42.github.io/ocp_viewer_docs/viewers/ocp_viewer/installation/
 install:
   - type: custom
+    os: linux
     check: command -v ocp-viewer
     version_cmd: uv tool list 2>/dev/null | awk '$1 == "ocp-viewer" {print $2}' | sed 's/^v//'
     latest_cmd: curl -sS --max-time 10 "https://pypi.org/pypi/ocp-viewer/json" | jq -r '.info.version'
