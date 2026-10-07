@@ -1,0 +1,18 @@
+name: ocp-viewer
+
+requires:
+  - uv
+
+# cf. https://bernhard-42.github.io/ocp_viewer_docs/viewers/ocp_viewer/installation/
+install:
+  - type: custom
+    check: command -v ocp-viewer
+    version_cmd: uv tool list 2>/dev/null | awk '$1 == "ocp-viewer" {print $2}' | sed 's/^v//'
+    latest_cmd: curl -sS --max-time 10 "https://pypi.org/pypi/ocp-viewer/json" | jq -r '.info.version'
+    script: |
+      # cadquery-ocp provides the OCP module (OCCT bindings) required at runtime
+      uv tool install ocp-viewer --with cadquery-ocp
+    upgrade: |
+      uv tool upgrade ocp-viewer
+    uninstall: |
+      uv tool uninstall ocp-viewer
