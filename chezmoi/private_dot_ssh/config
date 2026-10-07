@@ -1,5 +1,7 @@
 AddKeysToAgent yes
 
+Include ~/.ssh/config.d/*
+
 Host *
     ForwardAgent yes
 
