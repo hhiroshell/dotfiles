@@ -18,6 +18,19 @@ _brew_is_cask() {
     echo "$install_entry" | jq -e '.cask != null' &>/dev/null
 }
 
+# Tap the repositories of tap-qualified names (<user>/<repo>/<name>).
+# Homebrew no longer taps them implicitly on install.
+_brew_ensure_taps() {
+    local pkgs="$1"
+    local pkg tap
+    for pkg in $pkgs; do
+        [[ "$pkg" == */*/* ]] || continue
+        tap="${pkg%/*}"
+        brew tap | grep -qixF "$tap" && continue
+        brew tap "$tap" || return 1
+    done
+}
+
 _brew_is_installed() {
     local install_entry="$1"
     local pkg
@@ -63,6 +76,10 @@ handler_brew_install() {
     fi
 
     log_info "$app_name: installing via brew..."
+    if ! _brew_ensure_taps "$pkg"; then
+        log_error "$app_name: failed to tap repository"
+        return 1
+    fi
     if _brew_is_cask "$install_entry"; then
         if brew install --cask --no-ask $pkg; then
             log_ok "$app_name: installed"

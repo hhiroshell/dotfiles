@@ -95,6 +95,8 @@ For macOS packages. Two variants:
 
 Use `package` for CLI tools, `cask` for GUI applications. Never combine both in one entry.
 
+For packages outside homebrew-core/cask, use the tap-qualified name (`<user>/<repo>/<name>`, e.g. `fluxcd/tap/flux`). pkgmux taps the repository before install, since Homebrew no longer does it implicitly. Always use the tap-qualified name when an unrelated package with the same short name exists in the official repositories (e.g. `stablyai/orca/orca` vs. the official `orca` cask).
+
 ### apt
 
 For Linux packages via apt-get:

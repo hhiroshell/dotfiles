@@ -106,6 +106,10 @@ install:
     cask: app1 app2       # multiple casks (space-separated)
     os: macos
 
+  - type: brew
+    cask: user/repo/app   # tap-qualified name: the tap is added automatically before install
+    os: macos
+
   - type: apt
     package: example
     os: linux
