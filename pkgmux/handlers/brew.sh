@@ -24,7 +24,10 @@ _brew_is_installed() {
     pkg=$(_brew_get_package "$install_entry" | awk '{print $1}')
 
     if _brew_is_cask "$install_entry"; then
-        brew list --cask "$pkg" &>/dev/null
+        # `brew list --cask` succeeds when only Caskroom/<pkg>/.metadata is left
+        # (e.g. after an auto-updating app replaced itself), but `--versions`
+        # prints nothing in that state, so it reflects what brew can upgrade.
+        [[ -n "$(brew list --cask --versions "$pkg" 2>/dev/null)" ]]
     else
         brew list "$pkg" &>/dev/null
     fi
