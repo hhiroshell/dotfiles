@@ -1,0 +1,9 @@
+name: wireguard-tools
+
+command: wg
+
+# cf. https://www.wireguard.com/install/
+install:
+  - type: brew
+    package: wireguard-tools
+    os: macos
