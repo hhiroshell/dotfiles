@@ -1,0 +1,39 @@
+name: keyd
+
+requires:
+  - git
+
+# keyd only reads /etc/keyd/*.conf, so the config is managed by chezmoi at
+# ~/.config/keyd/default.conf and symlinked into /etc/keyd.
+# Ubuntu 24.04 has no apt package for keyd, so build it from source.
+# cf. https://github.com/rvaiya/keyd#from-source
+install:
+  - type: custom
+    os: linux
+    check: command -v keyd
+    version_cmd: keyd --version 2>/dev/null | awk '{print $2}'
+    latest_cmd: curl -sS --max-time 10 "https://api.github.com/repos/rvaiya/keyd/releases/latest" | jq -r '.tag_name'
+    script: |
+      (
+        set -e
+        KEYD_VERSION="${PKGMUX_PINNED_VERSION:-$(curl -sS "https://api.github.com/repos/rvaiya/keyd/releases/latest" | jq -r '.tag_name')}"
+        KEYD_SRC=$(mktemp -d)
+        trap 'rm -rf "$KEYD_SRC"' EXIT
+        git clone --depth 1 --branch "$KEYD_VERSION" https://github.com/rvaiya/keyd "$KEYD_SRC"
+        make -C "$KEYD_SRC"
+        sudo make -C "$KEYD_SRC" install
+        sudo ln -sfn "$HOME/.config/keyd/default.conf" /etc/keyd/default.conf
+        sudo systemctl enable keyd
+        sudo systemctl restart keyd
+      )
+    uninstall: |
+      sudo systemctl disable --now keyd
+      sudo rm -f /etc/keyd/default.conf
+      sudo rm -rf /usr/local/bin/keyd \
+        /usr/local/bin/keyd-application-mapper \
+        /usr/local/share/doc/keyd/ \
+        /usr/local/share/man/man1/keyd*.gz \
+        /usr/local/share/keyd/ \
+        /usr/local/lib/systemd/system/keyd.service \
+        /usr/local/lib/sysusers.d/keyd.conf
+      sudo groupdel keyd || true

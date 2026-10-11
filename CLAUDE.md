@@ -160,8 +160,10 @@ Files in `chezmoi/` use chezmoi's naming convention:
 chezmoi manages these key configurations:
 - `dot_claude/settings.json.tmpl` → `~/.claude/settings.json` - Claude Code settings (templated for OS-specific hooks)
 - `dot_claude/skills/` → `~/.claude/skills/` - Claude Code custom skills
+- `dot_config/private_fcitx5/private_config` → `~/.config/fcitx5/config` - fcitx5 global options (Linux only; IME on/off bound to Henkan/Muhenkan)
 - `dot_config/ghostty/config.tmpl` → `~/.config/ghostty/config` - Ghostty terminal (templated for OS-specific font-size)
 - `dot_config/helix/` → `~/.config/helix/` - Helix editor configuration
+- `dot_config/keyd/default.conf` → `~/.config/keyd/default.conf` - keyd key remapping (Linux only; symlinked from `/etc/keyd/default.conf` by `apps/keyd.yaml`, apply with `sudo keyd reload`)
 - `dot_config/kitty/kitty.conf.tmpl` → `~/.config/kitty/kitty.conf` - Kitty terminal (templated for OS-specific font_size)
 - `dot_config/lazygit/` → `~/.config/lazygit/` - Lazygit configuration
 - `dot_config/tmux/` → `~/.config/tmux/` - tmux configuration
@@ -177,6 +179,7 @@ chezmoi uses Go templates for OS-specific settings:
 - Kitty: font_size 13 (macOS) / 10 (Linux)
 - Claude Code: notify-send hooks on Linux only
 - Zsh misc.zsh: clipboard aliases (pbcopy/pbpaste via xclip) on Linux only
+- fcitx5 / keyd configs: deployed on Linux only (excluded via `.chezmoiignore`)
 
 Template files use `{{ .chezmoi.os }}` to conditionally include platform-specific content.
 
