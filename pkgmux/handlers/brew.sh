@@ -18,6 +18,14 @@ _brew_is_cask() {
     echo "$install_entry" | jq -e '.cask != null' &>/dev/null
 }
 
+# Check if a cask updates itself (auto_updates in its definition).
+# `brew upgrade` skips such casks unless --greedy, and forcing it fails once
+# the app has replaced itself (e.g. /Applications/<App>.app owned by root).
+_brew_is_auto_updates_cask() {
+    local pkg="$1"
+    brew info --json=v2 --cask "$pkg" 2>/dev/null | jq -e '.casks[0].auto_updates == true' &>/dev/null
+}
+
 # Tap the repositories of tap-qualified names (<user>/<repo>/<name>).
 # Homebrew no longer taps them implicitly on install.
 _brew_ensure_taps() {
@@ -119,15 +127,26 @@ handler_brew_upgrade() {
         return 0
     fi
 
-    log_info "$app_name: upgrading via brew..."
     if _brew_is_cask "$install_entry"; then
-        if brew upgrade --cask --no-ask $pkg; then
+        local p targets=""
+        for p in $pkg; do
+            if _brew_is_auto_updates_cask "$p"; then
+                log_skip "$app_name: $p updates itself, skipping brew upgrade"
+            else
+                targets+="${targets:+ }$p"
+            fi
+        done
+        [[ -z "$targets" ]] && return 0
+
+        log_info "$app_name: upgrading via brew..."
+        if brew upgrade --cask --no-ask $targets; then
             log_ok "$app_name: upgraded"
         else
             log_error "$app_name: upgrade failed"
             return 1
         fi
     else
+        log_info "$app_name: upgrading via brew..."
         if brew upgrade --no-ask $pkg; then
             log_ok "$app_name: upgraded"
         else
@@ -177,7 +196,9 @@ handler_brew_latest_version() {
     pkg=$(_brew_get_package "$install_entry" | awk '{print $1}')
 
     if _brew_is_cask "$install_entry"; then
-        brew info --json=v2 --cask "$pkg" 2>/dev/null | jq -r '.casks[0].version // empty'
+        # Report nothing for self-updating casks: the version brew recorded goes
+        # stale once the app updates itself, so comparing it would be misleading
+        brew info --json=v2 --cask "$pkg" 2>/dev/null | jq -r '.casks[0] | select(.auto_updates != true) | .version // empty'
     else
         brew info --json=v2 "$pkg" 2>/dev/null | jq -r '.formulae[0].versions.stable // empty'
     fi
@@ -191,6 +212,16 @@ handler_brew_outdated() {
     if ! _brew_is_installed "$install_entry"; then
         log_skip "$app_name: not installed"
         return 0
+    fi
+
+    # The version brew recorded goes stale once the app updates itself
+    if _brew_is_cask "$install_entry"; then
+        local pkg
+        pkg=$(_brew_get_package "$install_entry" | awk '{print $1}')
+        if _brew_is_auto_updates_cask "$pkg"; then
+            log_skip "$app_name: $pkg updates itself, not tracked by brew"
+            return 0
+        fi
     fi
 
     local current_version
